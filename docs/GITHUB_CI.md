@@ -1,0 +1,222 @@
+# GitHub Actions — Android Release Build (Pure Gradle)
+
+Αυτόματο release .aab (και προαιρετικά .apk) για το **TRAKL** χωρίς EAS quota, χωρίς Android Studio, χωρίς τοπικό Gradle setup.
+
+> **Variants** που αποφεύγουμε:
+>
+> - A) EAS build μέσω GitHub Actions → μετράει στο EAS quota (δεν το θέλουμε).
+> - B) **GitHub Actions + καθαρό Gradle** → αυτό που κάνουμε. Τρέχει `expo prebuild` + `./gradlew bundleRelease` απευθείας στο Ubuntu runner.
+>
+> **Δεν αγγίζει καθόλου το EAS.** Το `EXPO_TOKEN` δεν χρειάζεται.
+
+## Τι χτίζεται
+
+- **App Bundle (.aab)** — production release, signed με το `android-upload-key.p12`.
+- **Προαιρετικά APK (.apk)** — αν επιλεγεί `release-apk` στο manual trigger.
+- **Mapping files** — για deobfuscation στο Play Console.
+
+Όλα ανεβαίνουν ως **GitHub Artifacts** (retention 30 ημέρες), downloadable από το Actions run.
+
+## Δομή
+
+```
+.github/
+  workflows/
+    react-native-cicd.yml          # Το κύριο workflow (pure Gradle)
+  .secrets/                        # gitignored — base64 keystore για local dry-run
+  .gitignore                       # αγνοεί το .secrets/
+scripts/
+  encode-keystore.ps1              # base64-encode του .p12
+  setup-github-secrets.ps1         # local validator + guidance
+  local-dry-run.ps1                # local mirror του CI (Windows)
+  run-dry-run.ps1                  # wrapper με τα local secrets
+  _syntax-check.ps1                # PowerShell syntax validator
+```
+
+## Prerequisites
+
+- GitHub repo (π.χ. `your-account/trakl` ή παρόμοιο).
+- To `android-upload-key.p12` τοπικά + τα credentials του.
+- Public repo → unlimited free minutes. Private repo → 2000 λεπτά/μήνα (αρκετά).
+
+## Setup — Βήμα-βήμα
+
+### 1. Encode το keystore (μία φορά)
+
+```powershell
+cd c:\dev\trakl-test
+powershell -ExecutionPolicy Bypass -File scripts\encode-keystore.ps1
+```
+
+Αυτό γράφει single-line base64 στο `.github\.secrets\android-upload-key.base64.txt`.
+(verify locally με `Get-FileHash android-upload-key.p12 -Algorithm SHA256`)
+
+### 2. Push τον workflow
+
+```bash
+git add .github/workflows/react-native-cicd.yml scripts/
+git commit -m "ci: add GitHub Actions Android release workflow (pure Gradle)"
+git push origin main
+```
+
+### 3. Βάλε τα 4 secrets στο GitHub
+
+`GitHub repo → Settings → Secrets and variables → Actions → New repository secret`
+
+| Secret name                 | Value                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------- |
+| `ANDROID_KEYSTORE_BASE64`   | Περιεχόμενο αρχείου `.github\.secrets\android-upload-key.base64.txt` (μία γραμμή, ~3220 chars) |
+| `ANDROID_KEYSTORE_PASSWORD` | Το password του .p12 keystore                                                                    |
+| `ANDROID_KEY_ALIAS`         | `upload`                                                                                       |
+| `ANDROID_KEY_PASSWORD`      | Το password του key (συνήθως ίδιο με store password)                                          |
+
+> ⚠️ **Ποτέ μην commit-άρεις πραγματικά passwords στο repo.** Βάλε τα μόνο στα GitHub Secrets. Το `MYAPP_UPLOAD_KEY_PASSWORD` και `MYAPP_UPLOAD_STORE_PASSWORD` στο `gradle.properties` πρέπει να **αφαιρεθούν** πριν το commit για production (βλ. "Security hardening" παρακάτω).
+
+### 3b. Βάλε τα 2 configuration variables στο GitHub
+
+`GitHub repo → Settings → Secrets and variables → Actions → Variables tab → New repository variable`
+
+| Variable name          | Value                                                           |
+| ---------------------- | --------------------------------------------------------------- |
+| `TRAKL_ANDROID_PACKAGE` | Το πραγματικό application ID από Play Console, π.χ. `com.example.trakl` |
+| `TRAKL_IOS_BUNDLE_ID`   | Το iOS bundle identifier, π.χ. `com.example.trakl`          |
+
+> Αν δεν οριστούν, το workflow χρησιμοποιεί τις προεπιλογές `com.example.trakl`. Αυτές **δεν πρέπει** να φτάσουν στο Play Console αν το app σου έχει άλλο package name — θα δεις το σφάλμα "οι υπάρχοντες χρήστες δεν μπορούν να κάνουν αναβάθμιση".
+
+### 4. Trigger
+
+- **Manual**: `Actions → React Native CI/CD (Android Release) → Run workflow`
+  - `build_type`: `release-aab` (προεπιλογή) ή `release-apk`
+  - `version_code`: **πρέπει να είναι μεγαλύτερο από τον προηγούμενο** κωδικό στο Play Console. Η προεπιλογή είναι `9` επειδή ο πιο πρόσφατος που έχει ανέβει είναι `8`.
+  - `version_name`: όνομα έκδοσης, π.χ. `1.0.1`
+- **Auto**: push στο `main` (εκτός `*.md`/`docs/**`/`.github/**`)
+
+> Σιγουρέψου ότι έχεις ορίσει το `TRAKL_ANDROID_PACKAGE` variable πριν το πρώτο release, αλλιώς το Play Console θα δει άλλο application ID και θα απορρίψει το upload.
+
+### 5. Download το .aab
+
+`Actions → τρέχον run → Artifacts (κάτω) → app-release-aab → app-release.aab`
+
+Upload στο Google Play Console → App releases → Internal testing / Production.
+
+## Τι γίνεται στο workflow
+
+| Βήμα                                                           | Τι κάνει                                                   |
+| -------------------------------------------------------------- | ---------------------------------------------------------- |
+| 1. Resolve inputs                                              | Υπολογίζει versionCode/versionName με ασφαλείς προεπιλογές |
+| 2. Checkout                                                    | Pulls τον κώδικα                                           |
+| 3. Setup JDK 17                                                | Temurin JDK 17 + Gradle cache                              |
+| 4. Setup Node 20                                               | Node.js 20 + npm cache                                     |
+| 5. Setup Android SDK                                           | API 35, build-tools 35.0.0, NDK 26.1.10909125              |
+| 6. `npm ci`                                                    | Clean install από package-lock.json                        |
+| 7. `npx expo prebuild --platform android --clean --no-install` | Regenerate android/ folder από app.config.ts               |
+| 8. Decode keystore                                             | Base64 secret → `android/app/upload-keystore.p12`          |
+| 9. `keytool` p12→jks                                           | Convert σε JKS + εκτύπωση SHA1 για Play Console            |
+| 10. Patch gradle.properties                                    | Set MYAPP*UPLOAD*\* (file, alias, passwords)               |
+| 11. Verify versionCode/applicationId                           | Επιβεβαιώνει ότι το versionCode είναι > 8                  |
+| 12. `./gradlew bundleRelease`                                  | Κυρίως build — παράγει .aab                                |
+| 13. Verify AAB signing                                         | Εκτυπώνει SHA1 του .aab για σύγκριση με Play Console       |
+| 14. Upload AAB artifact                                        | `app-release.aab` (30-day retention)                       |
+| 15. Upload mapping                                             | `mapping.txt` για Play Console deobfuscation               |
+
+## Trigger inputs
+
+`workflow_dispatch` έχει τα εξής inputs:
+
+- `build_type`:
+  - `release-aab` (default) — μόνο .aab
+  - `release-apk` — .aab **+** .apk (πιο αργό)
+- `version_code` (default `9`) — Android `versionCode`, πρέπει να είναι μεγαλύτερο από τον προηγούμενο στο Play Console.
+- `version_name` (default `1.0.1`) — Android `versionName`, το string που βλέπουν οι χρήστες.
+
+## Troubleshooting
+
+### ❌ `Plugin [id: 'com.facebook.react.settings'] was not found`
+
+Σημαίνει ότι το expo prebuild δεν έτρεξε ή δεν είδε τα node_modules. Λύσεις:
+
+- Βεβαιώσου ότι `npm ci` τρέχει πριν το prebuild.
+- Μη σβήνεις το `node_modules/` step.
+
+### ❌ `Missing Android release signing properties.`
+
+Σημαίνει ότι τα 4 secrets δεν έχουν μπει ή είναι κενά. Έλεγξε Settings → Secrets.
+
+### ❌ `keytool error: ... Integrity check failed`
+
+Λάθος password. Ξαναβάλε `ANDROID_KEYSTORE_PASSWORD`.
+
+### ❌ `Could not find tools.jar`
+
+JDK 17 δεν εγκαταστάθηκε σωστά. Έλεγξε ότι `setup-java` χρησιμοποιεί `temurin`.
+
+### ❌ `SDK location not found`
+
+Το `android/local.properties` λείπει. Το `android-actions/setup-android@v3` θα έπρεπε να το γράψει αυτόματα. Αν όχι, πρόσθεσε:
+
+```yaml
+- name: Write local.properties
+  run: echo "sdk.dir=$ANDROID_HOME" >> android/local.properties
+```
+
+### ❌ Play Console: "Δεν μπορείτε να διαθέσετε αυτή την έκδοση, επειδή δεν επιτρέπει στους υπάρχοντες χρήστες να κάνουν αναβάθμιση..."
+
+Αυτό σχεδόν πάντα σημαίνει ότι το νέο .aab δεν είναι συμβατό με την υπάρχουσα κυκλοφορία. Έλεγξε με σειρά:
+
+1. **applicationId / package name**
+   - Το workflow τυπώνει το `applicationId` από το `app/build.gradle`.
+   - Πρέπει να είναι ίδιο με το app που ήδη υπάρχει στο Play Console.
+   - Ορίζεται από το variable `TRAKL_ANDROID_PACKAGE` στο GitHub.
+
+2. **versionCode**
+   - Πρέπει να είναι **μεγαλύτερο** από τον τελευταίο κωδικό στο Play Console.
+   - Οι προειδοποιήσεις αναφέρουν version codes `1` και `8`, άρα η νέα έκδοση πρέπει να είναι `> 8`.
+
+3. **Signing certificate SHA1 (πιο συχνή αιτία)**
+   - Το workflow τυπώνει το SHA1 του upload certificate.
+   - Σύγκρινέ το με: `Play Console → App integrity → App signing → Upload key certificate → SHA-1 certificate fingerprint`.
+   - Αν διαφέρει, δημιούργησε νέο upload key request στο Play Console ή χρησιμοποίησε το αρχικό keystore.
+
+4. **Τοπικός έλεγχος του .aab**
+   ```powershell
+   powershell -File scripts\_verify-aab-play-ready.ps1 -AabPath C:\Users\moham\Downloads\app-release-aab\app-release.aab
+   ```
+
+### ⚠️ Play Console: "Δεν υπάρχει αρχείο απεμπλοκής που να συσχετίζεται με το App Bundle"
+
+Αυτό είναι warning, όχι error. Για να το διορθώσεις:
+
+1. Κατέβασε το artifact `android-mapping` από το Actions run.
+2. Περιέχει το `mapping.txt`.
+3. Στο Play Console πήγαινε: `Release → Deobfuscation files → Upload` και ανέβασε το `mapping.txt`.
+
+> Το `mapping.txt` παράγεται μόνο όταν το release build τρέχει με `minifyEnabled true` (προεπιλογή του Expo release template).
+
+## Security hardening (προαιρετικό, προτείνεται)
+
+Το τρέχον `android/gradle.properties` περιέχει passwords σε **plaintext**. Αυτό δεν πρέπει να γίνει commit.
+
+Βήματα:
+
+1. **Πριν το πρώτο commit**, αφαίρεσε τις 4 γραμμές `MYAPP_UPLOAD_*` από `android/gradle.properties`.
+2. Το workflow ήδη τις γράφει dynamically (sed replace) — δεν χρειάζονται στο source.
+3. Αν ήδη τις έκανες commit, **rotate τα passwords** πριν σβήσεις το git history.
+
+Για μελλοντική χρήση, μπορείς να κάνεις τα secrets **environment-scoped** (`Settings → Environments → production`) αντί για repository-wide.
+
+## Local dry-run (προαιρετικό)
+
+Αν θέλεις να τεστάρεις τοπικά πριν push:
+
+```powershell
+$env:ANDROID_KEYSTORE_PASSWORD = "<your-keystore-password>"  # NEVER commit real secrets
+$env:ANDROID_KEY_ALIAS         = "upload"
+$env:ANDROID_KEY_PASSWORD      = $env:ANDROID_KEYSTORE_PASSWORD
+powershell -File scripts\local-dry-run.ps1
+```
+
+> ⚠️ Σε Windows με broken `node_modules` (π.χ. missing `pngjs/lib/sync-inflate.js`) το local dry-run θα αποτύχει. Αυτό είναι ακριβώς το πρόβλημα που λύνει το cloud CI — στο fresh GitHub runner τα deps εγκαθίστανται σωστά.
+
+## Γιατί δεν βάζουμε EXPO_TOKEN
+
+Το `EXPO_TOKEN` χρειάζεται μόνο αν τρέξεις `eas build`. Εδώ τρέχουμε `expo prebuild` (local file generation) + `gradlew bundleRelease` (Gradle). **Κανένα EAS call, κανένα quota consumption.**

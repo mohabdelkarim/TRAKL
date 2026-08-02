@@ -1,0 +1,12 @@
+{
+  "entry": ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "src/**/*.{ts,tsx}"],
+  "project": [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "src/**/*.{ts,tsx}",
+    "__tests__/**/*.{ts,tsx}",
+    "scripts/**/*.{mjs,ts,js}"
+  ],
+  "ignoreBinaries": ["ast-grep"],
+  "ignoreDependencies": ["eslint-plugin-security"]
+}
