@@ -51,7 +51,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Knip results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: knip-results
@@ -82,7 +82,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload jscpd results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: jscpd-results
@@ -112,7 +112,7 @@ jobs:
         run: npx ast-grep scan --json > ast-grep-results.json || true
 
       - name: Upload ast-grep results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ast-grep-results

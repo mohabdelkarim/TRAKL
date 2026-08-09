@@ -132,7 +132,7 @@ jobs:
           sarif_file: kics-results/results.sarif
 
       - name: Upload KICS results as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: kics-results
