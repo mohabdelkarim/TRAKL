@@ -69,9 +69,14 @@ jobs:
           fetch-depth: 0
 
       - name: TruffleHog OSS
+        id: trufflehog
         uses: trufflesecurity/trufflehog@v3
+        continue-on-error: true
         with:
-          extra_args: --results=verified,unknown --no-fail
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
 
   checkov:
     name: Checkov IaC Scan

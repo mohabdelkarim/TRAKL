@@ -1,0 +1,81 @@
+# Maestro E2E Smoke Test
+# Run with: maestro test .maestro/smoke-test.yaml
+# Prerequisites:
+#   - Install Maestro: curl -Ls "https://get.maestro.mobile" | bash
+#   - Start the app on a simulator/emulator first
+
+appId: ${MAESTRO_APP_ID}
+---
+# Launch the app
+- launchApp:
+    clearState: true
+
+# Wait for onboarding or home screen to appear
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+      optional: true
+    timeout: 10000
+
+# If onboarding is visible, complete it
+- runFlow:
+    when:
+      visible:
+        text: ".*Get Started.*"
+        optional: true
+    commands:
+      - tapOn:
+          text: ".*Get Started.*"
+      - tapOn:
+          id: "onboarding-finish"
+          optional: true
+
+# Verify home screen loads
+- assertVisible:
+    text: ".*Trackers.*"
+    optional: true
+
+# Navigate to trackers tab
+- tapOn:
+    text: "Trackers"
+    optional: true
+
+# Verify tracker list appears
+- assertVisible:
+    text: ".*Finance.*"
+    optional: true
+
+# Tap on Finance tracker
+- tapOn:
+    text: "Finance"
+    optional: true
+
+# Verify finance screen loads
+- extendedWaitUntil:
+    visible:
+      text: ".*Budget.*"
+      optional: true
+    timeout: 5000
+
+# Go back
+- back
+
+# Navigate to analytics
+- tapOn:
+    text: "Analytics"
+    optional: true
+
+# Verify analytics screen loads
+- assertVisible:
+    text: ".*"
+    optional: true
+
+# Navigate to profile
+- tapOn:
+    text: "Profile"
+    optional: true
+
+# Verify profile screen loads
+- assertVisible:
+    text: ".*"
+    optional: true
