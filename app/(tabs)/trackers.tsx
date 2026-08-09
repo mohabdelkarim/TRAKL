@@ -263,6 +263,8 @@ export default function TrackersScreen() {
                       key={d.tr.key}
                       feedback="chip"
                       onPress={() => router.push(d.tr.route)}
+                      accessibilityRole="button"
+                      accessibilityLabel={d.name}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',

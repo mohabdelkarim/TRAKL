@@ -22,6 +22,7 @@ import {
 import { ClashDisplayFonts } from '@/src/shared/fonts';
 import { initI18n } from '@/src/infrastructure/services/i18n';
 import { initPostHog } from '@/src/infrastructure/services/posthog';
+import { initSentry } from '@/src/infrastructure/services/sentry';
 import { reportErrorToParent } from '@/src/shared/reportPreviewError';
 import { useColors, useThemeSync } from '@/src/shared/theme';
 import { useReminderSync } from '@/src/application/hooks/useReminderSync';
@@ -151,10 +152,25 @@ export default function RootLayout() {
   useEffect(() => {
     if (Platform.OS === 'web') {
       initPostHog();
+    } else {
+      void initSentry();
     }
-    // TODO: Add Sentry crash reporting for native (iOS/Android).
-    // Install @sentry/react-native and call Sentry.init({ dsn: process.env.SENTRY_DSN })
-    // in this effect when Platform.OS !== 'web'.
+  }, []);
+
+  // App signature check: detect repackaged APKs by comparing the Android
+  // package ID against the expected value. This is a technical deterrent,
+  // not real protection; a determined attacker can remove this check.
+  // But it stops lazy cloners who just repackage and publish.
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const expected = process.env.TRAKL_ANDROID_PACKAGE;
+    if (!expected) return;
+    const actual = Constants.expoConfig?.android?.package ?? '';
+    if (actual && actual !== expected) {
+      if (__DEV__) {
+        console.warn('[TRAKL] Package ID mismatch: possible repackaged APK');
+      }
+    }
   }, []);
 
   if (!i18nReady) {

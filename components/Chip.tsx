@@ -20,6 +20,8 @@ export function Chip({ label, active, onPress, accent }: ChipProps) {
       feedback="chip"
       onPress={onPress}
       accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: active }}
       style={{
         backgroundColor: bg,
         borderWidth: accent && !active ? 1 : 0,

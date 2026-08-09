@@ -24,7 +24,12 @@ export function TrackerMiniCard({ tracker, stat, name, onPress }: CompactProps) 
   const accents = useTrackerAccents();
   const accent = accents[tracker.key];
   return (
-    <PressableScale feedback="card" onPress={onPress}>
+    <PressableScale
+      feedback="card"
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={name ?? tracker.name}
+    >
       <View
         style={{
           width: 140,
@@ -83,6 +88,8 @@ export function TrackerGridCard({
       onPress={onPress}
       onLongPress={onLongPress}
       delayLongPress={300}
+      accessibilityRole="button"
+      accessibilityLabel={name ?? tracker.name}
       className="flex-1"
     >
       <Card padded={false} className="flex-1 overflow-hidden" style={{ height: 188 }}>

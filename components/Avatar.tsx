@@ -33,6 +33,8 @@ export function Avatar({ image, emoji, size, emojiSize, bordered }: Props) {
 
   return (
     <View
+      accessibilityRole="image"
+      accessibilityLabel={emoji}
       style={{
         width: size,
         height: size,

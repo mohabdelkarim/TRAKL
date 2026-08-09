@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- License changed from MIT to GPL-3.0 with dual-license option (open source GPLv3 / commercial)
 - Split `stats.ts` (983 lines) into domain-specific modules under `src/application/stats/`
 - Optimized `bestStreak` and `habitStreak` — pre-compute completion Set instead of O(n×60) loop
 - Added single-pass `monthSummary` to eliminate duplicate array iterations in finance stats
@@ -26,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PrimaryButton` now accepts `testID` prop
 - Lefthook pre-commit hooks for typecheck, lint, and format checks
 - Bundle analysis scripts (`bundle:android`, `bundle:ios`)
-- MIT LICENSE file
+- GPL-3.0 LICENSE file with dual-license option
 - Maestro E2E smoke test
 - ADR documentation (secure storage, store slices, secure IDs, migration pipeline, CI consolidation, error boundaries)
 - Per-screen error boundaries via `ScreenErrorBoundary` and tracker `_layout.tsx`

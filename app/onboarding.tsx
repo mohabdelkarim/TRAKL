@@ -231,6 +231,8 @@ function IllustratedStep({
             feedback="chip"
             hitSlop={10}
             onPress={onSkip}
+            accessibilityRole="button"
+            accessibilityLabel={t('onboarding.skip')}
             className="h-11 justify-center px-2"
           >
             <InterText weight="medium" color={colors.muted} style={{ fontSize: 15 }}>
@@ -282,6 +284,9 @@ function LanguageStep({
                 feedback="card"
                 key={l.code}
                 onPress={() => onSelect(l.code)}
+                accessibilityRole="button"
+                accessibilityLabel={l.name}
+                accessibilityState={{ selected: active }}
                 style={{
                   width: '48.5%',
                   backgroundColor: colors.surface,
@@ -359,6 +364,9 @@ function TrackerStep({
                   setError(false);
                   onToggle(tr.key);
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={t(`trackerNames.${tr.key}`)}
+                accessibilityState={{ selected: active }}
                 style={{
                   width: '48.5%',
                   backgroundColor: colors.surface,
@@ -575,6 +583,9 @@ function ProfileStep({
               feedback="card"
               key={o.key}
               onPress={() => onFocus(o.key)}
+              accessibilityRole="button"
+              accessibilityLabel={t(o.labelKey)}
+              accessibilityState={{ selected: active }}
               style={{
                 width: '48.5%',
                 backgroundColor: active ? colors.text : colors.surface,
@@ -667,6 +678,7 @@ function InputLine({
       onChangeText={onChange}
       placeholder={placeholder}
       placeholderTextColor={colors.faint}
+      accessibilityLabel={placeholder}
       style={{ fontSize: 16, color: colors.text }}
       className={cn('p-0')}
     />

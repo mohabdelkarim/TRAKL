@@ -8,7 +8,7 @@
   ![Expo SDK 54](https://img.shields.io/badge/Expo-SDK%2054-000020?logo=expo&logoColor=white)
   ![React Native 0.81](https://img.shields.io/badge/React%20Native-0.81-61DAFB?logo=react&logoColor=white)
   ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
-  ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+  ![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)
 </div>
 
 <p align="center">
@@ -197,7 +197,12 @@ _Coming soon to the App Store and Google Play._
 
 ## License
 
-This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) for details.
+This project is licensed under the **GNU General Public License v3.0** with a dual-license option:
+
+- **GPLv3** for open source use (forks must also be GPLv3 with source published)
+- **Commercial license** available for proprietary use (contact: commercial@trakl.app)
+
+See [LICENSE](./LICENSE) for the full text.
 
 ## Contributing
 

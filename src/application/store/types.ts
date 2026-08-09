@@ -160,7 +160,7 @@ export interface NotificationsSlice {
   markAllNotificationsRead: () => void;
 }
 
-export interface SettingsSlice {
+export interface OnboardingSlice {
   hydrated: boolean;
   rehydrateFailed: boolean;
   onboarded: boolean;
@@ -168,6 +168,26 @@ export interface SettingsSlice {
   pinnedTrackers: TrackerKey[];
   profile: Profile;
   achievements: Achievement[];
+  completeOnboarding: (data: {
+    profile: Partial<Profile>;
+    trackers: TrackerKey[];
+    sampleData?: boolean;
+  }) => void;
+  setEnabledTrackers: (keys: TrackerKey[]) => void;
+  toggleTracker: (key: TrackerKey) => void;
+  togglePinTracker: (key: TrackerKey) => void;
+  updateProfile: (patch: Partial<Profile>) => void;
+  resetApp: () => void;
+}
+
+export interface BackupSlice {
+  loadSampleData: () => void;
+  clearAllData: () => void;
+  exportAppData: () => string;
+  importAppData: (json: string) => { success: boolean; message: string };
+}
+
+export interface PreferencesSlice {
   notificationsEnabled: boolean;
   retentionNotificationsEnabled: boolean;
   quietHoursEnabled: boolean;
@@ -176,26 +196,12 @@ export interface SettingsSlice {
   retentionNotifiedAchievementIds: string[];
   retentionLastInactivityNotificationAt?: string;
   waterGoal: number;
-  completeOnboarding: (data: {
-    profile: Partial<Profile>;
-    trackers: TrackerKey[];
-    sampleData?: boolean;
-  }) => void;
-  loadSampleData: () => void;
-  clearAllData: () => void;
-  exportAppData: () => string;
-  importAppData: (json: string) => { success: boolean; message: string };
-  setEnabledTrackers: (keys: TrackerKey[]) => void;
-  toggleTracker: (key: TrackerKey) => void;
-  togglePinTracker: (key: TrackerKey) => void;
-  updateProfile: (patch: Partial<Profile>) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   setRetentionNotificationsEnabled: (enabled: boolean) => void;
   setQuietHoursEnabled: (enabled: boolean) => void;
   setQuietHours: (start: string, end: string) => void;
   markRetentionAchievementsNotified: (ids: string[]) => void;
   markRetentionInactivityScheduled: (at: string) => void;
-  resetApp: () => void;
 }
 
 // Combined state
@@ -208,4 +214,6 @@ export type TraklState = FinanceSlice &
   HealthSlice &
   CustomSlice &
   NotificationsSlice &
-  SettingsSlice;
+  OnboardingSlice &
+  BackupSlice &
+  PreferencesSlice;

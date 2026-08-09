@@ -13,7 +13,9 @@ import { createPlannerSlice } from './store/slices/plannerSlice';
 import { createHealthSlice } from './store/slices/healthSlice';
 import { createCustomSlice } from './store/slices/customSlice';
 import { createNotificationsSlice } from './store/slices/notificationsSlice';
-import { createSettingsSlice } from './store/slices/settingsSlice';
+import { createOnboardingSlice } from './store/slices/settingsSlice';
+import { createBackupSlice } from './store/slices/backupSlice';
+import { createPreferencesSlice } from './store/slices/preferencesSlice';
 
 export const useTrakl = create<TraklState>()(
   persist(
@@ -26,7 +28,9 @@ export const useTrakl = create<TraklState>()(
       ...createHealthSlice(...a),
       ...createCustomSlice(...a),
       ...createNotificationsSlice(...a),
-      ...createSettingsSlice(...a),
+      ...createOnboardingSlice(...a),
+      ...createBackupSlice(...a),
+      ...createPreferencesSlice(...a),
     }),
     {
       name: 'trakl-store-v1',

@@ -1,6 +1,7 @@
 {
   "name": "trakl",
   "version": "1.0.0",
+  "license": "GPL-3.0",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",

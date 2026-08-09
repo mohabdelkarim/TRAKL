@@ -203,7 +203,12 @@ export default function AnalyticsScreen() {
           </View>
 
           {/* Weekly review entry */}
-          <PressableScale feedback="card" onPress={() => router.push('/weekly-review')}>
+          <PressableScale
+            feedback="card"
+            onPress={() => router.push('/weekly-review')}
+            accessibilityRole="button"
+            accessibilityLabel="Weekly review"
+          >
             <Card
               padded={false}
               className="flex-row items-center gap-3 p-4"

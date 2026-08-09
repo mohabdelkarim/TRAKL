@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
 import type { ParseKeys } from 'i18next';
 
-import type { TraklState, SettingsSlice } from '../types';
+import type { TraklState, OnboardingSlice } from '../types';
 import {
   ALL_TRACKERS,
   EMPTY_DATA,
@@ -14,7 +14,6 @@ import {
   saveTransactionsSecure,
   deleteTransactionsSecure,
 } from '@/src/infrastructure/storage/secureStorage';
-import { createBackup, parseBackup } from '@/src/application/backup';
 import i18n from '@/src/infrastructure/services/i18n';
 import {
   buildCustom,
@@ -61,7 +60,9 @@ function buildSampleData() {
   };
 }
 
-export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice> = (set, get) => ({
+export { buildSampleData };
+
+export const createOnboardingSlice: StateCreator<TraklState, [], [], OnboardingSlice> = (set, get) => ({
   hydrated: false,
   rehydrateFailed: false,
   onboarded: false,
@@ -69,11 +70,6 @@ export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice
   pinnedTrackers: [],
   profile: defaultProfile,
   achievements: [],
-  notificationsEnabled: true,
-  ...RETENTION_DEFAULTS,
-  retentionNotifiedAchievementIds: [],
-  retentionLastInactivityNotificationAt: undefined,
-  waterGoal: WATER_GOAL,
 
   completeOnboarding: ({ profile, trackers, sampleData }) =>
     set((s) => ({
@@ -89,69 +85,6 @@ export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice
         ? seedAchievements.filter((achievement) => achievement.unlocked).map((achievement) => achievement.id)
         : [],
     })),
-
-  loadSampleData: () => {
-    const data = buildSampleData();
-    void saveTransactionsSecure(data.transactions);
-    set({
-      ...data,
-      retentionNotifiedAchievementIds: data.achievements
-        .filter((achievement) => achievement.unlocked)
-        .map((achievement) => achievement.id),
-    });
-  },
-
-  clearAllData: () => {
-    void deleteTransactionsSecure();
-    set({ ...EMPTY_DATA, pinnedTrackers: [], monthlyBudget: 0 });
-  },
-
-  exportAppData: () => createBackup(get()),
-
-  importAppData: (json) => {
-    const result = parseBackup(json);
-    if (!result.ok) {
-      return { success: false, message: result.error };
-    }
-    const data = result.data;
-    try {
-      saveTransactionsSecure(data.transactions);
-    } catch {
-      return { success: false, message: 'Failed to save transactions securely.' };
-    }
-    set({
-      onboarded: true,
-      hydrated: true,
-      rehydrateFailed: false,
-      enabledTrackers: data.enabledTrackers,
-      pinnedTrackers: data.pinnedTrackers,
-      profile: data.profile,
-      transactions: data.transactions,
-      habits: data.habits,
-      tasks: data.tasks,
-      goals: data.goals,
-      planner: data.planner,
-      sleep: data.sleep,
-      workouts: data.workouts,
-      mood: data.mood,
-      water: data.water,
-      weight: data.weight,
-      meditation: data.meditation,
-      customTrackers: data.customTrackers,
-      notifications: data.notifications,
-      achievements: data.achievements,
-      monthlyBudget: data.monthlyBudget,
-      notificationsEnabled: data.notificationsEnabled,
-      retentionNotificationsEnabled: data.retentionNotificationsEnabled,
-      quietHoursEnabled: data.quietHoursEnabled,
-      quietHoursStart: data.quietHoursStart,
-      quietHoursEnd: data.quietHoursEnd,
-      retentionNotifiedAchievementIds: data.retentionNotifiedAchievementIds,
-      retentionLastInactivityNotificationAt: data.retentionLastInactivityNotificationAt,
-      waterGoal: data.waterGoal,
-    });
-    return { success: true, message: 'Backup restored successfully.' };
-  },
 
   setEnabledTrackers: (keys) => set({ enabledTrackers: keys }),
 
@@ -170,19 +103,6 @@ export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice
     })),
 
   updateProfile: (patch) => set((s) => ({ profile: { ...s.profile, ...patch } })),
-
-  setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
-  setRetentionNotificationsEnabled: (enabled) =>
-    set({ retentionNotificationsEnabled: enabled }),
-  setQuietHoursEnabled: (enabled) => set({ quietHoursEnabled: enabled }),
-  setQuietHours: (start, end) => set({ quietHoursStart: start, quietHoursEnd: end }),
-  markRetentionAchievementsNotified: (ids) =>
-    set((s) => ({
-      retentionNotifiedAchievementIds: Array.from(
-        new Set([...s.retentionNotifiedAchievementIds, ...ids]),
-      ),
-    })),
-  markRetentionInactivityScheduled: (at) => set({ retentionLastInactivityNotificationAt: at }),
 
   resetApp: () => {
     void deleteTransactionsSecure();
