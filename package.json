@@ -23,7 +23,7 @@
     "semgrep": "semgrep scan --config .semgrep.yml",
     "osv-scanner": "osv-scanner --recursive ./",
     "retirejs": "retire --path . --severity medium",
-    "prepare": "lefthook install",
+    "prepare": "lefthook install || true",
     "bundle:android": "expo export --platform android",
     "bundle:ios": "expo export --platform ios"
   },
