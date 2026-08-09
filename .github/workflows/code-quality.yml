@@ -47,7 +47,8 @@ jobs:
         run: npm ci
 
       - name: Run Knip
-        run: npx knip --no-exit-code --reporter json > knip-results.json
+        run: npx knip --reporter json > knip-results.json
+        continue-on-error: true
 
       - name: Upload Knip results
         uses: actions/upload-artifact@v4

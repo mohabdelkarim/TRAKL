@@ -7,6 +7,7 @@ on:
     branches: [main]
   schedule:
     - cron: '0 2 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,9 +17,25 @@ permissions:
 jobs:
   osv-scan:
     name: OSV Dependency Scan
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.8
-    with:
-      scan-args: |-
-        --recursive
-        ./
-      fail-on-vuln: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install OSV-Scanner
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/google/osv-scanner/main/scripts/install.sh | sh -s -- -b /usr/local/bin v2.3.8
+
+      - name: Run OSV-Scanner
+        run: osv-scanner --recursive --format=json --output=osv-results.json ./ || true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: osv-results
+          path: osv-results.json
+          if-no-files-found: warn
+          retention-days: 30
