@@ -17,7 +17,7 @@ import type {
   Workout,
 } from '@/src/domain/types';
 
-// ---------- Constants ----------
+// Constants
 
 const MONTHLY_BUDGET = 0;
 
@@ -46,7 +46,7 @@ const ALL_TRACKERS: TrackerKey[] = [
 /** Daily water goal in glasses. */
 export const WATER_GOAL = 8;
 
-// ---------- Shared helpers ----------
+// Shared helpers
 
 /** Recompute goal progress from completed milestones (0-100). */
 export function progressFromMilestones(milestones: Goal['milestones']): number {
@@ -56,11 +56,11 @@ export function progressFromMilestones(milestones: Goal['milestones']): number {
 }
 
 export const defaultProfile: Profile = {
-  name: 'Alex',
+  name: '',
   avatarEmoji: '🦊',
-  language: 'English',
+  language: '',
   focus: 'all',
-  memberSince: new Date(new Date().getFullYear(), 0, 12).toISOString(),
+  memberSince: new Date().toISOString(),
 };
 
 /** A brand-new user starts with everything empty (no demo numbers). */
@@ -83,7 +83,7 @@ export const EMPTY_DATA = {
 
 export { ALL_TRACKERS, MONTHLY_BUDGET };
 
-// ---------- Slice interfaces ----------
+// Slice interfaces
 
 export interface FinanceSlice {
   transactions: Transaction[];
@@ -198,7 +198,7 @@ export interface SettingsSlice {
   resetApp: () => void;
 }
 
-// ---------- Combined state ----------
+// Combined state
 
 export type TraklState = FinanceSlice &
   HabitsSlice &

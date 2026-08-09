@@ -20,7 +20,7 @@ interface MigrationStep {
   fn: (record: MigrationRecord) => MigrationRecord;
 }
 
-// ---------- Individual migration steps ----------
+// Individual migration steps
 
 const backfillCustomTrackerLogs: MigrationStep = {
   name: 'customTrackerLogs',
@@ -232,7 +232,7 @@ const backfillAllTrackerArrays: MigrationStep = {
   },
 };
 
-// ---------- Ordered migration pipeline ----------
+// Ordered migration pipeline
 
 const MIGRATION_STEPS: MigrationStep[] = [
   backfillCustomTrackerLogs,

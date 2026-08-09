@@ -2,7 +2,8 @@ import { ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { Avatar } from '@/components/Avatar';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
@@ -158,25 +159,49 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const fmt = useFormatters();
 
-  const hydrated = useTrakl((s) => s.hydrated);
-  const profile = useTrakl((s) => s.profile);
-  const transactions = useTrakl((s) => s.transactions);
-  const habits = useTrakl((s) => s.habits);
-  const tasks = useTrakl((s) => s.tasks);
-  const sleep = useTrakl((s) => s.sleep);
-  const goals = useTrakl((s) => s.goals);
-  const monthlyBudget = useTrakl((s) => s.monthlyBudget);
-  const enabledTrackers = useTrakl((s) => s.enabledTrackers);
-  const notifications = useTrakl((s) => s.notifications);
-  const toggleTask = useTrakl((s) => s.toggleTask);
-  const mood = useTrakl((s) => s.mood);
-  const water = useTrakl((s) => s.water);
-  const weight = useTrakl((s) => s.weight);
-  const meditation = useTrakl((s) => s.meditation);
-  const waterGoal = useTrakl((s) => s.waterGoal);
-  const customTrackers = useTrakl((s) => s.customTrackers);
-  const workouts = useTrakl((s) => s.workouts);
-  const planner = useTrakl((s) => s.planner);
+  const {
+    hydrated,
+    profile,
+    transactions,
+    habits,
+    tasks,
+    sleep,
+    goals,
+    monthlyBudget,
+    enabledTrackers,
+    notifications,
+    toggleTask,
+    mood,
+    water,
+    weight,
+    meditation,
+    waterGoal,
+    customTrackers,
+    workouts,
+    planner,
+  } = useTrakl(
+    useShallow((s) => ({
+      hydrated: s.hydrated,
+      profile: s.profile,
+      transactions: s.transactions,
+      habits: s.habits,
+      tasks: s.tasks,
+      sleep: s.sleep,
+      goals: s.goals,
+      monthlyBudget: s.monthlyBudget,
+      enabledTrackers: s.enabledTrackers,
+      notifications: s.notifications,
+      toggleTask: s.toggleTask,
+      mood: s.mood,
+      water: s.water,
+      weight: s.weight,
+      meditation: s.meditation,
+      waterGoal: s.waterGoal,
+      customTrackers: s.customTrackers,
+      workouts: s.workouts,
+      planner: s.planner,
+    })),
+  );
 
   const priorityBar: Record<string, string> = {
     high: colors.destructive,
@@ -184,30 +209,37 @@ export default function HomeScreen() {
     low: colors.faint,
   };
 
-  const scoreValue = lifeScore({
-    habits,
-    tasks,
-    sleep,
-    goals,
-    transactions,
-    monthlyBudget,
-    enabledTrackers,
-  });
-  // null = brand-new account with no data yet. Treat as 0 for ring sizing but
-  // show a neutral "—" instead of a number.
-  const hasScore = scoreValue !== null;
-  const score = scoreValue ?? 0;
+  const stats = useMemo(
+    () => ({
+      scoreValue: lifeScore({
+        habits,
+        tasks,
+        sleep,
+        goals,
+        transactions,
+        monthlyBudget,
+        enabledTrackers,
+      }),
+      streak: bestStreak(habits),
+      net: Math.round(monthNet(transactions)),
+      avgSleep: avgSleepHours(sleep),
+      tasksDoneCount: tasks.filter((t2) => t2.done).length,
+      habitsStatus: habitsToday(habits),
+    }),
+    [habits, tasks, sleep, goals, transactions, monthlyBudget, enabledTrackers],
+  );
+
+  const hasScore = stats.scoreValue !== null;
+  const score = stats.scoreValue ?? 0;
   const unread = notifications.some((n) => !n.read);
+  const streak = stats.streak;
+  const net = stats.net;
+  const avgSleep = stats.avgSleep;
+  const tasksDoneCount = stats.tasksDoneCount;
 
-  const streak = bestStreak(habits);
-  const net = Math.round(monthNet(transactions));
-  const avgSleep = avgSleepHours(sleep);
-  const tasksDoneCount = tasks.filter((t2) => t2.done).length;
-
-  // Celebrate the moment every habit for today is complete — fire once per
+  // Celebrate the moment every habit for today is complete; fire once per
   // transition into the "all done" state, not on every render.
-  const habitsStatus = habitsToday(habits);
-  const allHabitsDone = habitsStatus.total > 0 && habitsStatus.done === habitsStatus.total;
+  const allHabitsDone = stats.habitsStatus.total > 0 && stats.habitsStatus.done === stats.habitsStatus.total;
   const [celebrate, setCelebrate] = useState(false);
   const prevAllDone = useRef(allHabitsDone);
   useEffect(() => {
@@ -215,13 +247,17 @@ export default function HomeScreen() {
     prevAllDone.current = allHabitsDone;
   }, [allHabitsDone]);
 
-  const todayFocus = [...tasks]
-    .filter((t2) => !t2.done)
-    .sort((a, b) => {
-      const order = { high: 0, medium: 1, low: 2 } as const;
-      return order[a.priority] - order[b.priority];
-    })
-    .slice(0, 3);
+  const todayFocus = useMemo(
+    () =>
+      [...tasks]
+        .filter((t2) => !t2.done)
+        .sort((a, b) => {
+          const order = { high: 0, medium: 1, low: 2 } as const;
+          return order[a.priority] - order[b.priority];
+        })
+        .slice(0, 3),
+    [tasks],
+  );
 
   const dateLabel = fmt.date(new Date(), {
     weekday: 'long',
@@ -246,6 +282,7 @@ export default function HomeScreen() {
     <Screen>
       <View className="flex-1">
         <ScrollView
+          testID="home-screen"
           contentContainerStyle={{ paddingBottom: 24 }}
           showsVerticalScrollIndicator={false}
         >

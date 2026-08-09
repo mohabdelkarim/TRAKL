@@ -33,7 +33,7 @@ export const useTrakl = create<TraklState>()(
       storage: createJSONStorage(() => AsyncStorage),
       version: 11,
       migrate,
-      // Transactions are intentionally excluded from partialize — they are
+      // Transactions are intentionally excluded from partialize; they are
       // stored in encrypted secure storage (expo-secure-store) instead.
       partialize: (s) => ({
         onboarded: s.onboarded,

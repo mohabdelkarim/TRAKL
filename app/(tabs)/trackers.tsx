@@ -4,6 +4,7 @@ import { type Href, useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AlertCircle, Layers, Search, SlidersHorizontal } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 
 import { Card } from '@/components/Card';
 import { OptionSheet, type SheetOption } from '@/components/OptionSheet';
@@ -55,10 +56,29 @@ export default function TrackersScreen() {
   const accents = useTrackerAccents();
   const { t } = useTranslation();
   const fmt = useFormatters();
-  const enabled = useTrakl((s) => s.enabledTrackers);
-  const pinned = useTrakl((s) => s.pinnedTrackers);
-  const togglePin = useTrakl((s) => s.togglePinTracker);
-  const store = useTrakl();
+  const { enabled, pinned, togglePin, store } = useTrakl(
+    useShallow((s) => ({
+      enabled: s.enabledTrackers,
+      pinned: s.pinnedTrackers,
+      togglePin: s.togglePinTracker,
+      store: {
+        transactions: s.transactions,
+        habits: s.habits,
+        tasks: s.tasks,
+        goals: s.goals,
+        planner: s.planner,
+        sleep: s.sleep,
+        workouts: s.workouts,
+        mood: s.mood,
+        water: s.water,
+        weight: s.weight,
+        meditation: s.meditation,
+        customTrackers: s.customTrackers,
+        monthlyBudget: s.monthlyBudget,
+        waterGoal: s.waterGoal,
+      },
+    })),
+  );
   const [sortOpen, setSortOpen] = useState(false);
   const [sort, setSort] = useState<'default' | 'name'>('default');
   const [actionKey, setActionKey] = useState<TrackerKey | null>(null);
@@ -200,6 +220,7 @@ export default function TrackersScreen() {
         </View>
 
         <ScrollView
+          testID="trackers-screen"
           contentContainerStyle={{ padding: 20, gap: 12, paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
         >

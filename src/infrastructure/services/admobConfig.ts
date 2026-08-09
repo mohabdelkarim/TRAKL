@@ -1,15 +1,13 @@
 import { Platform } from 'react-native';
 
-// ---------------------------------------------------------------------------
-// AdMob configuration — separate IDs for Android and iOS.
+// AdMob configuration: separate IDs for Android and iOS.
 //
 // Two distinct AdMob apps are configured (one per platform). Never mix Android
-// and iOS ad IDs — Google rejects requests where the App ID and Ad Unit ID
+// and iOS ad IDs; Google rejects requests where the App ID and Ad Unit ID
 // belong to different apps/platforms. Platform.select() below guarantees the
 // correct pairing at runtime.
 //
 // WHERE EACH ID GOES
-// ------------------
 //   App IDs (androidAppId / iosAppId)
 //     -> ALSO paste into app.config.ts under the
 //        'react-native-google-mobile-ads' plugin (androidAppId / iosAppId).
@@ -20,14 +18,13 @@ import { Platform } from 'react-native';
 //     -> used directly by components/AdBanner.tsx via `bannerUnitId` below.
 //
 // TEST vs PRODUCTION
-// ------------------
 //   USE_TEST_ADS = __DEV__  -> serve Google's official test units in dev,
 //   your real production units in release builds. Switching is automatic.
 //   To force real ads in dev for a quick check, set FORCE_TEST_ADS = false
 //   AND remove __DEV__ from USE_TEST_ADS (or temporarily set USE_TEST_ADS=false).
 // ---------------------------------------------------------------------------
 
-// ---- Production IDs (real AdMob apps) --------------------------------------
+// Production IDs (real AdMob apps)
 // Portfolio build: production IDs are supplied via env vars, falling back to
 // Google's official test App IDs so this repo never ships real ad identifiers.
 const androidAppId = process.env.TRAKL_ADMOB_ANDROID_APP_ID ?? 'ca-app-pub-3940256099942544~3347511713';
@@ -36,7 +33,7 @@ const iosAppId = process.env.TRAKL_ADMOB_IOS_APP_ID ?? 'ca-app-pub-3940256099942
 const androidBannerUnitId = process.env.TRAKL_ADMOB_ANDROID_BANNER_UNIT_ID ?? 'ca-app-pub-3940256099942544/6300978111';
 const iosBannerUnitId = process.env.TRAKL_ADMOB_IOS_BANNER_UNIT_ID ?? 'ca-app-pub-3940256099942544/2934735716';
 
-// ---- Google official test IDs (safe, never bill, always fill) -------------
+// Google official test IDs (safe, never bill, always fill)
 const testAndroidBannerUnitId = 'ca-app-pub-3940256099942544/6300978111';
 const testIosBannerUnitId = 'ca-app-pub-3940256099942544/2934735716';
 

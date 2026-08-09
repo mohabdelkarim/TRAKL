@@ -85,7 +85,7 @@ function completedGoals(goals: Goal[]): number {
 }
 
 export const ACHIEVEMENT_DEFS: AchievementDef[] = [
-  // First Step — log any activity at all.
+  // First Step: log any activity at all.
   {
     id: 'a1',
     goal: 1,
@@ -105,25 +105,25 @@ export const ACHIEVEMENT_DEFS: AchievementDef[] = [
       i.meditation.length +
       customLogCount(i.customTrackers),
   },
-  // 7-Day Streak — keep a habit going 7 days.
+  // 7-Day Streak: keep a habit going 7 days.
   { id: 'a2', goal: 7, value: (i) => bestStreak(i.habits) },
-  // Early Bird — log 3 sleeps (waking habit baseline).
+  // Early Bird: log 3 sleeps (waking habit baseline).
   { id: 'a3', goal: 3, value: (i) => i.sleep.length },
-  // Budget Boss — log 10 transactions.
+  // Budget Boss: log 10 transactions.
   { id: 'a4', goal: 10, value: (i) => i.transactions.length },
-  // Goal Getter — complete 1 goal.
+  // Goal Getter: complete 1 goal.
   { id: 'a5', goal: 1, value: (i) => completedGoals(i.goals) },
-  // Night Owl — record 5 nights of sleep.
+  // Night Owl: record 5 nights of sleep.
   { id: 'a6', goal: 5, value: (i) => i.sleep.length },
-  // Iron Will — finish 3 tasks.
+  // Iron Will: finish 3 tasks.
   { id: 'a7', goal: 3, value: (i) => i.tasks.filter((t) => t.done).length },
-  // Bookworm — 20 custom-tracker logs.
+  // Bookworm: 20 custom-tracker logs.
   { id: 'a8', goal: 20, value: (i) => customLogCount(i.customTrackers) },
-  // Marathoner — 3 workouts logged.
+  // Marathoner: 3 workouts logged.
   { id: 'a9', goal: 3, value: (i) => i.workouts.length },
-  // Centurion — finish 10 tasks.
+  // Centurion: finish 10 tasks.
   { id: 'a10', goal: 10, value: (i) => i.tasks.filter((t) => t.done).length },
-  // Perfect Week — 5 habits completed today.
+  // Perfect Week: 5 habits completed today.
   {
     id: 'a11',
     goal: 5,
@@ -132,19 +132,19 @@ export const ACHIEVEMENT_DEFS: AchievementDef[] = [
       return i.habits.filter((h) => hasHabitCompletionOnDate(h, today)).length;
     },
   },
-  // Consistency King — 14-day habit streak.
+  // Consistency King: 14-day habit streak.
   { id: 'a12', goal: 14, value: (i) => bestStreak(i.habits) },
   // 30-Day Streak.
   { id: 'a13', goal: 30, value: (i) => bestStreak(i.habits) },
-  // Millionaire Mindset — complete 3 goals.
+  // Millionaire Mindset: complete 3 goals.
   { id: 'a14', goal: 3, value: (i) => completedGoals(i.goals) },
-  // Zen Master — 10 good-quality sleep nights.
+  // Zen Master: 10 good-quality sleep nights.
   { id: 'a15', goal: 10, value: (i) => goodSleepNights(i.sleep) },
-  // Power Lifter — 10 workouts.
+  // Power Lifter: 10 workouts.
   { id: 'a16', goal: 10, value: (i) => i.workouts.length },
-  // Sleep Champion — 50 total hours of sleep tracked.
+  // Sleep Champion: 50 total hours of sleep tracked.
   { id: 'a17', goal: 50, value: (i) => totalSleepHours(i.sleep) },
-  // Task Terminator — finish 25 tasks.
+  // Task Terminator: finish 25 tasks.
   { id: 'a18', goal: 25, value: (i) => i.tasks.filter((t) => t.done).length },
 ];
 

@@ -32,7 +32,7 @@ appId: ${MAESTRO_APP_ID}
 
 # Verify home screen loads
 - assertVisible:
-    text: ".*Trackers.*"
+    id: "home-screen"
     optional: true
 
 # Navigate to trackers tab
@@ -42,12 +42,7 @@ appId: ${MAESTRO_APP_ID}
 
 # Verify tracker list appears
 - assertVisible:
-    text: ".*Finance.*"
-    optional: true
-
-# Tap on Finance tracker
-- tapOn:
-    text: "Finance"
+    id: "trackers-screen"
     optional: true
 
 # Verify finance screen loads

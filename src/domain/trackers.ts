@@ -137,7 +137,7 @@ export const TRACKERS: TrackerMeta[] = [
   },
 ];
 
-// Plain object literal — TypeScript validates all keys are present; no assertion needed.
+// Plain object literal; TypeScript validates all keys are present, no assertion needed.
 export const TRACKER_MAP: Record<TrackerKey, TrackerMeta> = {
   finance: TRACKERS[0],
   habits: TRACKERS[1],

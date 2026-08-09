@@ -8,7 +8,7 @@
   ![Expo SDK 54](https://img.shields.io/badge/Expo-SDK%2054-000020?logo=expo&logoColor=white)
   ![React Native 0.81](https://img.shields.io/badge/React%20Native-0.81-61DAFB?logo=react&logoColor=white)
   ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
-  ![License](https://img.shields.io/badge/license-Private-lightgrey)
+  ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 </div>
 
 <p align="center">
@@ -43,17 +43,18 @@ TRAKL is a cross-platform (iOS / Android / Web) life-tracking app built with Exp
 | Layer | Choice |
 | --- | --- |
 | Framework | Expo SDK 54, React Native 0.81, React 19 |
-| Language | TypeScript (strict mode) |
-| Navigation | Expo Router (file-based) |
-| State | Zustand, persisted to AsyncStorage with versioned migrations |
+| Language | TypeScript 5.7 (strict mode) |
+| Navigation | Expo Router (file-based, typed routes) |
+| State | Zustand (sliced store with persist + versioned migrations) |
 | Secure storage | `expo-secure-store` (Keychain / Keystore) for financial data |
-| Styling | Uniwind / Tailwind CSS |
-| i18n | i18next + react-i18next (20 languages, RTL) |
+| Styling | Uniwind / Tailwind CSS (NativeWind) |
+| i18n | i18next + react-i18next (20 languages, RTL support) |
 | Ads | `react-native-google-mobile-ads` with Google UMP consent + iOS ATT |
 | Notifications | `expo-notifications` (local scheduling only) |
-| Testing | Jest + `@testing-library/react-native` |
+| Testing | Jest + `@testing-library/react-native` (73 tests) |
+| E2E | Maestro smoke tests |
 | Code quality | oxlint, oxfmt, Knip, jscpd, ast-grep |
-| Security scanning | Semgrep, OSV-Scanner, Retire.js (see `package.json` scripts) |
+| Security scanning | Semgrep, OSV-Scanner, Trivy, Grype, TruffleHog, Checkov, KICS |
 
 ## Architecture
 
@@ -132,7 +133,13 @@ npm run retirejs                 # Known-vulnerable JS library scan
 
 ## Configuration
 
-Production identifiers (Expo project, AdMob App IDs, bundle/package names) are **not hardcoded** — they're read from environment variables with safe, non-functional placeholders as fallbacks (see `app.config.ts`):
+Production identifiers (Expo project, AdMob App IDs, bundle/package names) are **not hardcoded** — they're read from environment variables with safe, non-functional placeholders as fallbacks (see `app.config.ts`).
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
 
 | Variable | Purpose |
 | --- | --- |
@@ -147,8 +154,55 @@ See [Architecture](#architecture) above for the full breakdown of `app/`, `compo
 
 ## Testing
 
-The Jest suite (`__tests__/`) covers the Zustand store, stats/aggregation logic, backup/restore round-trips, data retention rules, startup behavior, and storage security guarantees. Run `npm test` or `npm run test:coverage` for a coverage report.
+| Type | Tool | Coverage |
+| --- | --- | --- |
+| Unit tests | Jest + React Native Testing Library | 73 tests across 8 suites |
+| E2E | Maestro smoke tests | Onboarding + home + trackers flow |
+| Migration tests | Jest | Idempotent store version migrations |
+| Security tests | Jest | Partialize exclusion + secure storage calls |
+
+```bash
+npm test                  # Run all 73 tests
+npm run test:coverage     # With coverage report
+```
+
+## CI/CD
+
+5 consolidated GitHub Actions workflows run on every PR and push to `main`:
+
+| Workflow | Purpose |
+| --- | --- |
+| `ci.yml` | Typecheck + Jest tests |
+| `code-quality.yml` | oxlint, oxfmt, Knip, jscpd, ast-grep |
+| `sast-scan.yml` | Semgrep (SAST) + TruffleHog (secret scanning) + Checkov + KICS (IaC) |
+| `dependency-scan.yml` | OSV-Scanner + Dependabot |
+| `vuln-scan.yml` | Trivy + Grype (container & filesystem vulnerability scanning) |
+
+## Architecture Decision Records
+
+6 ADRs document key architectural decisions in `docs/adr/`:
+
+1. **Secure storage for transactions** — Keychain/Keystore via `expo-secure-store`
+2. **Store split into slices** — Domain-based Zustand slice architecture
+3. **Secure ID generation** — UUID v4 for all entity IDs
+4. **Versioned migration pipeline** — Idempotent store migrations with test coverage
+5. **CI workflow consolidation** — 5 focused workflows instead of 15+ scattered ones
+6. **Per-screen error boundaries** — Graceful degradation with `ScreenErrorBoundary`
+
+## Download
+
+<!-- Add store links when published -->
+
+_Coming soon to the App Store and Google Play._
 
 ## License
 
-Private project. All rights reserved.
+This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) for details.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, code style, and PR guidelines.
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for the responsible disclosure policy.

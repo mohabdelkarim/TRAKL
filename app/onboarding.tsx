@@ -51,7 +51,7 @@ export default function Onboarding() {
   const { t, i18n } = useTranslation();
   const completeOnboarding = useTrakl((s) => s.completeOnboarding);
 
-  const [step, setStep] = useState(0); // 0..4 → S-01..S-05
+  const [step, setStep] = useState(0); // 0..4 maps to S-01..S-05
   const [langCode, setLangCode] = useState(i18n.language || 'en');
   const [selected, setSelected] = useState<TrackerKey[]>(TRACKERS.map((tr) => tr.key));
   const [name, setName] = useState('');
@@ -643,6 +643,7 @@ function ProfileStep({
           icon={ArrowRight}
           iconRight
           onPress={tryFinish}
+          testID="onboarding-finish"
         />
       </View>
     </ScrollView>

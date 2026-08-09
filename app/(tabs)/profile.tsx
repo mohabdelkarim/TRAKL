@@ -3,6 +3,7 @@ import { Image, Linking, Platform, ScrollView, Share, View } from 'react-native'
 import { useRouter } from 'expo-router';
 import { Switch } from 'heroui-native';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import {
   Award,
   BarChart2,
@@ -170,36 +171,71 @@ export default function ProfileScreen() {
   const themeMode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
 
-  const profile = useTrakl((s) => s.profile);
-  const enabled = useTrakl((s) => s.enabledTrackers);
-  const toggleTracker = useTrakl((s) => s.toggleTracker);
-  const updateProfile = useTrakl((s) => s.updateProfile);
-  const notifOn = useTrakl((s) => s.notificationsEnabled);
-  const setNotifOn = useTrakl((s) => s.setNotificationsEnabled);
-  const retentionOn = useTrakl((s) => s.retentionNotificationsEnabled);
-  const setRetentionOn = useTrakl((s) => s.setRetentionNotificationsEnabled);
-  const quietOn = useTrakl((s) => s.quietHoursEnabled);
-  const setQuietOn = useTrakl((s) => s.setQuietHoursEnabled);
-  const quietStart = useTrakl((s) => s.quietHoursStart);
-  const quietEnd = useTrakl((s) => s.quietHoursEnd);
-  const setQuietHours = useTrakl((s) => s.setQuietHours);
-  const resetApp = useTrakl((s) => s.resetApp);
-  const loadSampleData = useTrakl((s) => s.loadSampleData);
-  const exportAppData = useTrakl((s) => s.exportAppData);
-  const importAppData = useTrakl((s) => s.importAppData);
-  const transactions = useTrakl((s) => s.transactions);
-  const habits = useTrakl((s) => s.habits);
-  const tasks = useTrakl((s) => s.tasks);
-  const goals = useTrakl((s) => s.goals);
-  const planner = useTrakl((s) => s.planner);
-  const sleep = useTrakl((s) => s.sleep);
-  const workouts = useTrakl((s) => s.workouts);
-  const mood = useTrakl((s) => s.mood);
-  const water = useTrakl((s) => s.water);
-  const weight = useTrakl((s) => s.weight);
-  const meditation = useTrakl((s) => s.meditation);
-  const customTrackers = useTrakl((s) => s.customTrackers);
-  const monthlyBudget = useTrakl((s) => s.monthlyBudget);
+  const {
+    profile,
+    enabled,
+    toggleTracker,
+    updateProfile,
+    notifOn,
+    setNotifOn,
+    retentionOn,
+    setRetentionOn,
+    quietOn,
+    setQuietOn,
+    quietStart,
+    quietEnd,
+    setQuietHours,
+    resetApp,
+    loadSampleData,
+    exportAppData,
+    importAppData,
+    transactions,
+    habits,
+    tasks,
+    goals,
+    planner,
+    sleep,
+    workouts,
+    mood,
+    water,
+    weight,
+    meditation,
+    customTrackers,
+    monthlyBudget,
+  } = useTrakl(
+    useShallow((s) => ({
+      profile: s.profile,
+      enabled: s.enabledTrackers,
+      toggleTracker: s.toggleTracker,
+      updateProfile: s.updateProfile,
+      notifOn: s.notificationsEnabled,
+      setNotifOn: s.setNotificationsEnabled,
+      retentionOn: s.retentionNotificationsEnabled,
+      setRetentionOn: s.setRetentionNotificationsEnabled,
+      quietOn: s.quietHoursEnabled,
+      setQuietOn: s.setQuietHoursEnabled,
+      quietStart: s.quietHoursStart,
+      quietEnd: s.quietHoursEnd,
+      setQuietHours: s.setQuietHours,
+      resetApp: s.resetApp,
+      loadSampleData: s.loadSampleData,
+      exportAppData: s.exportAppData,
+      importAppData: s.importAppData,
+      transactions: s.transactions,
+      habits: s.habits,
+      tasks: s.tasks,
+      goals: s.goals,
+      planner: s.planner,
+      sleep: s.sleep,
+      workouts: s.workouts,
+      mood: s.mood,
+      water: s.water,
+      weight: s.weight,
+      meditation: s.meditation,
+      customTrackers: s.customTrackers,
+      monthlyBudget: s.monthlyBudget,
+    })),
+  );
 
   const [themeOpen, setThemeOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);

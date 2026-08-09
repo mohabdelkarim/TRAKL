@@ -19,6 +19,7 @@ type PrimaryButtonProps = {
   iconRight?: boolean;
   fullWidth?: boolean;
   className?: string;
+  testID?: string;
 };
 
 export function PrimaryButton({
@@ -31,6 +32,7 @@ export function PrimaryButton({
   iconRight,
   fullWidth = true,
   className,
+  testID,
 }: PrimaryButtonProps) {
   const colors = useColors();
 
@@ -65,6 +67,7 @@ export function PrimaryButton({
       disabled={disabled || loading}
       accessibilityRole="button"
       accessibilityLabel={label}
+      testID={testID}
       style={{
         backgroundColor: bg,
         borderColor: border,

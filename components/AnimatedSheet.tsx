@@ -29,7 +29,7 @@ const AnimatedPressable = createAnimatedComponent(Pressable);
 //
 // We use the imperative `Keyboard` event listeners (not `useAnimatedKeyboard`)
 // because `useAnimatedKeyboard` attaches to the host window's inset listener,
-// which is unreliable inside a separate Modal window on Android — the keyboard
+// which is unreliable inside a separate Modal window on Android; the keyboard
 // show/hide events were not being picked up consistently. `Keyboard.addListener`
 // fires reliably from any window on both platforms.
 const RN_KEYBOARD = Platform.OS !== 'web';

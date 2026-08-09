@@ -17,7 +17,7 @@ export default function TabLayout() {
   const rehydrateFailed = useTrakl((s) => s.rehydrateFailed);
 
   // First-launch gate: send users to onboarding until completed. Skip the
-  // redirect when rehydration failed — the in-memory state is empty defaults
+  // redirect when rehydration failed; the in-memory state is empty defaults
   // and bouncing into onboarding would overwrite the user's real saved data.
   useEffect(() => {
     if (hydrated && !onboarded && !rehydrateFailed) {

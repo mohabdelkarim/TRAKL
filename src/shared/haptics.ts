@@ -35,7 +35,7 @@ function run(fn: (m: HapticsModule) => void): void {
   try {
     fn(m);
   } catch {
-    // ignore — haptics are non-critical
+    // ignore; haptics are non-critical
   }
 }
 

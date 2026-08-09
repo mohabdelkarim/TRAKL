@@ -22,7 +22,7 @@ type GoogleMobileAds = typeof import('react-native-google-mobile-ads');
 // touching the module throws "RNGoogleMobileAdsModule could not be found".
 const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
-// ── Module-level shared state ──────────────────────────────────────────────
+// Module-level shared state
 // The SDK is imported and initialized only ONCE for the entire app lifetime.
 // All AdBanner instances share the same module reference, so navigating
 // between pages doesn't re-initialize the SDK (which caused ads to only
@@ -144,7 +144,7 @@ export function AdBanner() {
 
   const { BannerAd, BannerAdSize } = sharedAds;
 
-  // Only render the BannerAd — no placeholder, no wrapper bar.
+  // Only render the BannerAd; no placeholder, no wrapper bar.
   // When the ad loads it appears; until then nothing is shown.
   return (
     <BannerAd

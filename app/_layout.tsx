@@ -152,6 +152,9 @@ export default function RootLayout() {
     if (Platform.OS === 'web') {
       initPostHog();
     }
+    // TODO: Add Sentry crash reporting for native (iOS/Android).
+    // Install @sentry/react-native and call Sentry.init({ dsn: process.env.SENTRY_DSN })
+    // in this effect when Platform.OS !== 'web'.
   }, []);
 
   if (!i18nReady) {

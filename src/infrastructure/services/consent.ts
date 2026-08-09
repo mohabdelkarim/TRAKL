@@ -87,11 +87,11 @@ export async function requestAndShowConsent(): Promise<ConsentStatus> {
       return 'granted';
     }
 
-    // Unknown status — default to denied to be safe.
+    // Unknown status; default to denied to be safe.
     await setConsentStatus('denied');
     return 'denied';
   } catch {
-    // SDK not available (Expo Go) or error — allow ads to proceed
+    // SDK not available (Expo Go) or error; allow ads to proceed
     // since no consent form could be shown. The AdBanner will still
     // fall back to placeholder if the native module is missing.
     return 'granted';

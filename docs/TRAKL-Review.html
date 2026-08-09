@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRAKL — Πλήρης Ανασκόπηση & Senior Engineer Review</title>
+<style>
+  @page { margin: 2cm; size: A4; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  h1 {
+    font-size: 2.2em;
+    color: #0f3460;
+    border-bottom: 3px solid #f0c061;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 1.6em;
+    color: #16213e;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    border-left: 4px solid #f0c061;
+    padding-left: 12px;
+  }
+  h3 {
+    font-size: 1.25em;
+    color: #0f3460;
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    font-size: 1.1em;
+    color: #16213e;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  p { margin-bottom: 12px; }
+  ul, ol { margin-bottom: 16px; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  code {
+    font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+    background: #f4f4f8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #d6336c;
+  }
+  pre {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+  }
+  th {
+    background: #0f3460;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  tr:nth-child(even) { background: #f8f8fc; }
+  .callout {
+    background: #fff8e1;
+    border-left: 4px solid #f0c061;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout-critical {
+    background: #ffe0e0;
+    border-left: 4px solid #e74c3c;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout-positive {
+    background: #e8f5e9;
+    border-left: 4px solid #27ae60;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .badge-done { background: #27ae60; color: #fff; }
+  .badge-critical { background: #e74c3c; color: #fff; }
+  .badge-medium { background: #f39c12; color: #fff; }
+  .badge-low { background: #95a5a6; color: #fff; }
+  .badge-info { background: #3498db; color: #fff; }
+  .toc {
+    background: #f8f8fc;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .toc h3 { margin-top: 0; color: #0f3460; }
+  .toc ol { margin-bottom: 0; }
+  .toc a { text-decoration: none; color: #0f3460; }
+  .toc a:hover { text-decoration: underline; }
+  .section-divider {
+    border: none;
+    border-top: 2px dashed #f0c061;
+    margin: 40px 0;
+  }
+  .summary-box {
+    background: #0f3460;
+    color: #fff;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  .summary-box h3 { color: #f0c061; margin-top: 0; }
+  .summary-box table th { background: #16213e; }
+  .summary-box table td { border-color: #2a3f5f; color: #e0e0e0; }
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 2px solid #f0c061;
+    color: #666;
+    font-size: 0.85em;
+  }
+  @media print {
+    body { padding: 0; max-width: none; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+    .callout, .callout-critical, .callout-positive { break-inside: avoid; }
+    h2, h3 { break-after: avoid; }
+    table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>TRAKL — Πλήρης Ανασκόπηση & Senior Engineer Review</h1>
+<p><strong>Ημερομηνία:</strong> 9 Αυγούστου 2026</p>
+<p><strong>Αντικείμενο:</strong> Αρχιτεκτονική, κώδικας, CI/CD, security, και roadmap για ένα production mobile app</p>
+
+<div class="callout-positive">
+  <strong>Αρχική Εκτίμηση:</strong> Το TRAKL είναι ένα καλά δομημένο local-first mobile app με layered architecture (domain → application → infrastructure → shared), Zustand state management με persistence και migrations, secure storage για financial data, i18n με 20+ γλώσσες και RTL, και εκτεταμένο CI/CD pipeline. Η αρχιτεκτονική δείχνει senior-level thinking. Ωστόσο, υπήρχαν 10 τομείς που ένας senior engineer θα βελτίωνε — 9 από αυτούς υλοποιήθηκαν.
+</div>
+
+<div class="toc">
+  <h3>Πίνακας Περιεχομένων</h3>
+  <ol>
+    <li><a href="#part1">Μέρος 1: CI/CD Workflows — Επεξήγηση όλων των tools</a></li>
+    <li><a href="#part2">Μέρος 2: Τι θα έκανε ένα Senior Engineer</a></li>
+    <li><a href="#part3">Μέρος 3: Επαλήθευση — Τι έγινε από τις προτάσεις</a></li>
+    <li><a href="#part4">Μέρος 4: Τι λείπει ακόμα για Senior-Level</a></li>
+    <li><a href="#part5">Μέρος 5: Τι πρέπει να ξέρεις για να φτιάξεις ένα app σαν το TRAKL</a></li>
+    <li><a href="#part6">Μέρος 6: Public GitHub + Production App Security</a></li>
+    <li><a href="#part7">Μέρος 7: Προστασία από Cloning</a></li>
+    <li><a href="#part8">Μέρος 8: Τελικό Checklist</a></li>
+  </ol>
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 1 ==================== -->
+<h2 id="part1">Μέρος 1: CI/CD Workflows — Επεξήγηση όλων των tools</h2>
+
+<p>Το project έχει <strong>13 CI workflows</strong> που καλύπτουν code quality, security scanning, secret detection, dependency review, και SBOM. Για ένα solo private project, αυτό είναι περισσότερο από όσο χρειάζεται, αλλά δείχνει ωριμότητα.</p>
+
+<h3>Code Quality (3 workflows)</h3>
+
+<h4>1. Knip — Dead Code Detection</h4>
+<p>Βρίσκει άχρηστο κώδικα: exports που δεν τα χρησιμοποιεί κανένα αρχείο, dependencies στο <code>package.json</code> που δεν τα χρειάζεται, αρχεία που δεν importάρονται. Τρέχει <code>npx knip --reporter json</code> και ανεβάζει τα αποτελέσματα ως artifact.</p>
+<p><strong>Γιατί υπάρχει:</strong> Σε ένα project που εξελίσσεται, μένουν "ορφανά" κομμάτια κώδικα. Το Knip τα εντοπίζει πριν γίνουν tech debt.</p>
+
+<h4>2. jscpd — Duplicate Code</h4>
+<p>Σκανάρει τον κώδικα για copy-paste duplication — blocks κώδικα που είναι πανομοιότυπα ή σχεδόν πανομοιότυπα. Παράγει HTML και JSON report.</p>
+<p><strong>Γιατί υπάρχει:</strong> Αν το ίδιο 50-line block εμφανίζεται σε 3 αρχεία, είναι signal ότι χρειάζεται extraction σε κοινή συνάρτηση.</p>
+
+<h4>3. ast-grep — Structural Lint</h4>
+<p>Linting σε επίπεδο AST (Abstract Syntax Tree) — όχι γραμμή-γραμμή όπως το ESLint, αλλά δομικά. Μπορεί να βρει π.χ. "κάθε <code>useEffect</code> που δεν έχει cleanup function".</p>
+<p><strong>Γιατί υπάρχει:</strong> Πιάνει patterns που το ESLint/oxlint δεν μπορεί γιατί λειτουργεί σε δομικό επίπεδο, όχι textual.</p>
+
+<h3>Security (7 workflows)</h3>
+
+<h4>4. Semgrep SAST</h4>
+<p>Static Application Security Testing — σκανάρει τον κώδικα για ευπάθειες χωρίς να τον εκτελεί. Τρέχει με 4 rule packs: <code>p/react-native</code>, <code>p/typescript</code>, <code>p/owasp-top-ten</code>, <code>p/security-audit</code>, και custom rules στο <code>.semgrep.yml</code>. Ανεβάζει αποτελέσματα ως SARIF στο GitHub Security tab.</p>
+<p><strong>Τι ψάχνει:</strong> <code>eval()</code> με user input, hardcoded secrets, SQL injection patterns, unsafe regex, κλπ.</p>
+
+<h4>5. Trivy</h4>
+<p>All-in-one scanner που ψάχνει για τρία πράγματα ταυτόχρονα: CVEs σε npm dependencies (μέσω <code>package-lock.json</code>), secrets (API keys, tokens), και misconfigurations (Dockerfile, Kubernetes, IaC). Φιλτράρει σε CRITICAL/HIGH/MEDIUM severity, αγνοεί unfixed vulnerabilities. Το <code>exit-code: '0'</code> σημαίνει ότι δεν σπάει το build — μόνο αναφέρει.</p>
+
+<h4>6. OSV-Scanner</h4>
+<p>Open Source Vulnerability scanner από το Google. Εξειδικεύεται σε dependency vulnerabilities — ελέγχει κάθε package στο <code>package.json</code>/<code>package-lock.json</code> ενάντια στην OSV database.</p>
+
+<h4>7. Retire.js</h4>
+<p>Βρίσκει γνωστά vulnerable JS libraries. Παρόμοιο με το OSV-Scanner αλλά εστιάζει σε JS-specific vulnerabilities.</p>
+
+<h4>8. Grype</h4>
+<p>Container/dependency vulnerability scanner από το Anchore. Σκανάρει το filesystem για packages με γνωστά CVEs. Συμπληρώνει το Trivy και OSV-Scanner με διαφορετική database.</p>
+
+<h4>9. KICS</h4>
+<p>Infrastructure as Code security scanner — ψάχνει misconfigurations σε Dockerfile, Kubernetes manifests, Terraform. Στο TRAKL κυρίως για το <code>Dockerfile</code> και τα CI workflows.</p>
+
+<h4>10. Checkov</h4>
+<p>Παρόμοιο με το KICS — IaC security scanning. Διπλή κάλυψη με KICS για misconfigurations σε infrastructure files.</p>
+
+<h4>11. TruffleHog</h4>
+<p>Secret scanner — σκανάρει όλο το git history (με <code>fetch-depth: 0</code>) για leaked API keys, tokens, passwords. Χρησιμοποιεί verification — δεν βρίσκει μόνο patterns, αλλά επιβεβαιώνει αν ένα secret είναι ενεργό.</p>
+
+<h3>Supply Chain (2 workflows)</h3>
+
+<h4>12. Dependency Review</h4>
+<p>Τρέχει μόνο σε PRs. Ελέγχει τα νέα dependencies που προστίθενται σε ένα PR ενάντια στο GitHub Advisory Database. Αν ένα νέο package έχει vulnerability severity ≥ moderate, σπάζει το build και γράφει comment στο PR.</p>
+
+<h4>13. SBOM (Syft)</h4>
+<p>Software Bill of Materials — παράγει μια πλήρη λίστα όλων των dependencies (direct + transitive) με τις εκδόσεις τους. Για compliance — αν βγει ένα νέο CVE, ξέρεις ακριβώς αν το project το χρησιμοποιεί.</p>
+
+<h3>Γιατί "overkill για private project"</h3>
+<table>
+  <tr><th>Παρατήρηση</th><th>Εξήγηση</th></tr>
+  <tr><td>7 security scanners</td><td>Trivy, Grype, OSV-Scanner, Retire.js κάνουν σχεδόν το ίδιο πράγμα (dependency vulnerabilities). Υπάρχει overlap ~70%</td></tr>
+  <tr><td>2 IaC scanners</td><td>KICS + Checkov για ένα project με έναν Dockerfile — υπερβολή</td></tr>
+  <tr><td>2 secret scanners</td><td>TruffleHog + Trivy (built-in secret scan) + Semgrep (secret rules) — τριπλή κάλυψη</td></tr>
+  <tr><td>SARIF uploads</td><td>Απαιτούν GitHub Advanced Security license για private repos</td></tr>
+  <tr><td>Weekly cron schedules</td><td>5 workflows τρέχουν κάθε Δευτέρα — περιττό για solo project</td></tr>
+  <tr><td><code>continue-on-error: true</code></td><td>Τα περισσότερα workflows δεν σπάζουν το build ούτε αν βρουν CRITICAL findings</td></tr>
+</table>
+
+<h3>Γιατί "δείχνει ωριμότητα"</h3>
+<table>
+  <tr><th>Σημείο</th><th>Εξήγηση</th></tr>
+  <tr><td><code>permissions: contents: read</code></td><td>Κάθε workflow δηλώνει least-privilege permissions. Δεν ζητάει write access αν δεν χρειάζεται</td></tr>
+  <tr><td><code>concurrency: cancel-in-progress: true</code></td><td>Αν νέος push έρθει ενώ τρέχει το workflow, το παλιό ακυρώνεται</td></tr>
+  <tr><td><code>paths-ignore: '**.md'</code></td><td>Δεν τρέχει CI για αλλαγές σε documentation</td></tr>
+  <tr><td>SARIF integration</td><td>Τα αποτελέσματα πάνε στο GitHub Security tab, όχι απλά σε logs</td></tr>
+  <tr><td>SBOM generation</td><td>Supply chain awareness</td></tr>
+  <tr><td>Dependency Review σε PRs</td><td>Προλαμβάνει την εισαγωγή vulnerable packages πριν merge</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 2 ==================== -->
+<h2 id="part2">Μέρος 2: Τι θα έκανε ένα Senior Engineer</h2>
+
+<h3>1. Fix το Transactions Plaintext Leak <span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></h3>
+<p>Τα transactions γράφονταν δύο φορές: στο <code>expo-secure-store</code> (encrypted) και στο plaintext AsyncStorage via το <code>partialize</code> του Zustand persist.</p>
+<p><strong>Τι θα έκανε ένα senior:</strong> Θα αφαιρούσε τα <code>transactions</code> από το <code>partialize</code> εντελώς. Τα transactions πρέπει να ζουν μόνο στο SecureStore. Θα πρόσθετε και ένα test που επιβεβαιώνει ότι το persisted blob δεν περιέχει transactions.</p>
+
+<h3>2. Split το Store σε Slices</h3>
+<p>Το <code>store.ts</code> ήταν 818 γραμμές με ~60 actions. Ένας senior θα το έσπαζε με το Zustand slice pattern: finance, habits, tasks, goals, planner, health, custom, notifications, settings. Κάθε slice έχει τα δικά του state + actions.</p>
+<p><strong>Οφέλη:</strong> Κάθε slice &lt; 100 γραμμές, πιο εύκολο να βρεις τι ψάχνεις, πιο εύκολο να τεστάρεις isolated.</p>
+
+<h3>3. Αλλαγή ID Generation</h3>
+<p>Το <code>Math.random().toString(36).slice(2, 10)</code> δεν είναι collision-safe ούτε crypto-secure.</p>
+<p><strong>Τι θα έκανε ένα senior:</strong> <code>crypto.randomUUID()</code> με fallback σε <code>crypto.getRandomValues</code> (UUID v4 manual formatting).</p>
+
+<h3>4. Restructure τα Tests — Προσθήκη Missing Coverage</h3>
+<p>Τα τωρινά tests ήταν επιφανειακά σε κρίσιμα σημεία. Ένας senior θα πρόσθετε: real persistence test, migration tests, SecureStorage integration test, stats edge cases, achievement computation για κάθε achievement.</p>
+
+<h3>5. Σταματήσει το Migration Tech Debt</h3>
+<p>135 γραμμές hand-written migration που χειρίζεται 11 versions. Κάθε νέο field σημαίνει άλλο ένα <code>if (!Array.isArray(record.X))</code> block.</p>
+<p><strong>Τι θα έκανε ένα senior:</strong> Δομημένο migration με versioned steps — κάθε migration είναι isolated, testable, idempotent.</p>
+
+<h3>6. Μειώσει τα CI Workflows στα Απαραίτητα</h3>
+<p>13 workflows για solo private project. Ένας senior θα κρατούσε 5: Typecheck+Lint+Test, Semgrep SAST, OSV-Scanner, TruffleHog, Dependency Review.</p>
+
+<h3>7. Προσθήκη Error Boundaries στα Tracker Screens</h3>
+<p>Υπήρχε root ErrorBoundary αλλά κανένα tracker screen δεν είχε το δικό του. Αν το Finance screen crashάρει, ο χρήστης χάνει πρόσβαση σε όλα τα tabs.</p>
+
+<h3>8. Typed Safe Navigation</h3>
+<p>Τα routes είναι hardcoded strings. Αν αλλάξει η δομή των routes, το TypeScript δεν θα πιάσει το mismatch.</p>
+
+<h3>9. Προσθήκη E2E Tests</h3>
+<p>Κανένα E2E test δεν υπάρχει. Ένας senior θα πρόσθετε ένα smoke test με Maestro.</p>
+
+<h3>10. Documentation — ADRs</h3>
+<p>Καμία αρχιτεκτονική απόφαση δεν είναι τεκμηριωμένη. Ένας senior θα πρόσθετε <code>docs/adr/</code> με ADRs για κάθε σημαντική απόφαση.</p>
+
+<h3>Σύνοψη — Σειρά Εκτέλεσης</h3>
+<table>
+  <tr><th>#</th><th>Task</th><th>Προτεραιότητα</th><th>Κόπος</th></tr>
+  <tr><td>1</td><td>Fix transactions plaintext leak</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td><td>30 min</td></tr>
+  <tr><td>2</td><td>Split store σε slices</td><td><span class="badge badge-medium">High</span></td><td>2-3 ώρες</td></tr>
+  <tr><td>3</td><td>Αλλαγή ID generation</td><td><span class="badge badge-medium">Medium</span></td><td>15 min</td></tr>
+  <tr><td>4</td><td>Migration tests + missing coverage</td><td><span class="badge badge-medium">High</span></td><td>2 ώρες</td></tr>
+  <tr><td>5</td><td>Μείωση CI workflows</td><td><span class="badge badge-low">Low</span></td><td>30 min</td></tr>
+  <tr><td>6</td><td>Restructure migrations</td><td><span class="badge badge-medium">Medium</span></td><td>1 ώρα</td></tr>
+  <tr><td>7</td><td>Per-screen error boundaries</td><td><span class="badge badge-medium">Medium</span></td><td>1 ώρα</td></tr>
+  <tr><td>8</td><td>Typed Safe Navigation</td><td><span class="badge badge-low">Low</span></td><td>30 min</td></tr>
+  <tr><td>9</td><td>E2E smoke test</td><td><span class="badge badge-low">Low</span></td><td>30 min</td></tr>
+  <tr><td>10</td><td>ADRs</td><td><span class="badge badge-low">Low</span></td><td>1 ώρα</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 3 ==================== -->
+<h2 id="part3">Μέρος 3: Επαλήθευση — Τι έγινε από τις προτάσεις</h2>
+
+<div class="callout-positive">
+  <strong>9 από τα 10 σημεία υλοποιήθηκαν.</strong> Το #8 (Typed Safe Navigation) δεν υλοποιήθηκε — τα routes παραμένουν hardcoded strings. Ας δούμε ένα-ένα:
+</div>
+
+<table>
+  <tr><th>#</th><th>Πρόταση</th><th>Κατάσταση</th><th>Απόδειξη</th></tr>
+  <tr>
+    <td>1</td>
+    <td>Fix transactions plaintext leak</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>store.ts:36-37</code> — σχόλιο "Transactions are intentionally excluded", <code>partialize</code> δεν περιέχει <code>transactions</code>. Νέο <code>persistence.test.ts</code> επιβεβαιώνει <code>expect(partialized).not.toHaveProperty('transactions')</code></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Split store σε slices</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>store.ts</code> από 818 → 79 γραμμές. 9 slices: finance, habits, tasks, goals, planner, health, custom, notifications, settings. ADR-002</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Αλλαγή ID generation</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>src/shared/utils/id.ts</code> — <code>crypto.randomUUID()</code> με fallback. ADR-003. Test με 1000 unique IDs</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Migration tests + coverage</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>migration.test.ts</code> — 171 γραμμές, 16 test cases + idempotency + error handling. <code>persistence.test.ts</code> — 125 γραμμές, 5 tests</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Μείωση CI workflows</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td>11 → 5 workflows. ADR-005 εξηγεί τη consolidation</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>Restructure migrations</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>migrations.ts</code> — 271 γραμμές με δομημένο pipeline: 14 <code>MigrationStep</code> objects με <code>name</code> + <code>fn</code>, idempotent, try/catch</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>Per-screen error boundaries</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>ScreenErrorBoundary.tsx</code> + <code>withErrorBoundary</code> HOC. <code>tracker/_layout.tsx</code> τυλίγει όλα τα tracker screens. ADR-006</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>E2E smoke test</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td><code>.maestro/smoke-test.yaml</code> — 82 γραμμές, launch → onboarding → trackers → finance → analytics → profile</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td>ADRs</td>
+    <td><span class="badge badge-done">DONE</span></td>
+    <td>6 ADRs: 001-secure-storage, 002-store-split, 003-secure-id, 004-versioned-migration, 005-ci-consolidation, 006-error-boundaries</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>Typed Safe Navigation</td>
+    <td><span class="badge badge-medium">PENDING</span></td>
+    <td>Τα routes παραμένουν hardcoded strings. Αν αλλάξει η δομή των routes, το TypeScript δεν θα πιάσει το mismatch</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 4 ==================== -->
+<h2 id="part4">Μέρος 4: Τι λείπει ακόμα για Senior-Level</h2>
+
+<h3>Α. Performance & Architecture</h3>
+
+<h4>1. Fix το <code>useTrakl()</code> χωρίς selector <span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></h4>
+<p>Στο <code>trackers.tsx:61</code>: <code>const store = useTrakl();</code> — εγγράφει σε όλο το store. Το component re-renderάρει σε κάθε single state change. Και στο <code>profile.tsx:173-202</code> υπάρχουν 30 ξεχωριστά <code>useTrakl((s) => s.X)</code> calls.</p>
+<p><strong>Λύση:</strong> Χρησιμοποίησε <code>useShallow</code> από <code>zustand/react/shallow</code> για ένα call με shallow comparison.</p>
+
+<h4>2. <code>stats.ts</code> είναι 983 γραμμές — God module</h4>
+<p>~40 exported functions: finance stats, habit streaks, task grouping, sleep, mood, water, weight, meditation, life score, task sorting.</p>
+<p><strong>Λύση:</strong> Split σε domain-specific modules: <code>finance.ts</code>, <code>habits.ts</code>, <code>tasks.ts</code>, <code>sleep.ts</code>, <code>health.ts</code>, <code>lifeScore.ts</code>, <code>dates.ts</code>, <code>index.ts</code>.</p>
+
+<h4>3. Κανένα <code>useMemo</code>/<code>useCallback</code> στα screens</h4>
+<p>Μηδέν <code>useMemo</code> ή <code>useCallback</code> σε ολόκληρο το <code>app/</code> directory. Κάθε render υπολογίζει πάντα τα stats από την αρχή.</p>
+
+<h4>4. <code>bestStreak</code> — O(n×60) loop σε κάθε render</h4>
+<p>Για κάθε habit, 60 iterations × <code>Object.entries()</code>. Με 10 habits = 600 iterations ανά render. Και <code>habitStreak</code> κάνει 365 iterations per habit.</p>
+<p><strong>Λύση:</strong> Cache το streak στο store ή memoize το αποτέλεσμα.</p>
+
+<h4>5. <code>monthExpenses</code> / <code>monthIncome</code> — duplicate iteration</h4>
+<p><code>monthNet</code> κάνει δύο full iterations. <code>budgetLeft</code> καλεί <code>monthExpenses</code> ξεχωριστά. Σε ένα screen = 4 iterations του ίδιου array.</p>
+<p><strong>Λύση:</strong> Single-pass <code>monthSummary</code> function.</p>
+
+<h4>6. Split το <code>settingsSlice</code> further</h4>
+<p>200 γραμμές — το μεγαλύτερο slice. Χειρίζεται onboarding, sample data, backup/restore, tracker toggles, profile, notifications, retention, reset.</p>
+<p><strong>Λύση:</strong> Split σε <code>onboardingSlice.ts</code>, <code>backupSlice.ts</code>, <code>preferencesSlice.ts</code>.</p>
+
+<h3>Β. Security & Data Integrity</h3>
+
+<h4>7. <code>importAppData</code> rollback αν αποτύχει το secure storage <span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></h4>
+<p>Αν το <code>saveTransactionsSecure</code> αποτύχει μετά το <code>set()</code>, το in-memory state έχει τα transactions αλλά το secure storage όχι. Στο επόμενο app launch, τα transactions θα χαθούν.</p>
+<p><strong>Λύση:</strong> <code>await saveTransactionsSecure()</code> πριν το <code>set()</code>, με try/catch και rollback.</p>
+
+<h4>8. <code>as unknown as</code> casts — 3 σημεία</h4>
+<p>Βρέθηκαν 3 <code>as unknown as</code> casts στον κώδικα:</p>
+<ul>
+  <li><code>backup.ts:173</code> — <code>parsed as unknown as BackupData</code> (documented, has oxlint disable). Ελέγχει ότι τα keys υπάρχουν αλλά όχι ότι τα <strong>values</strong> έχουν το σωστό type</li>
+  <li><code>i18n.ts:19</code> — i18n module type bridge (justified, require() returns any)</li>
+  <li><code>haptics.ts:25</code> — <code>require('expo-haptics') as unknown as HapticsModule</code> (justified, require() returns any)</li>
+</ul>
+<p><strong>Λύση:</strong> Για το <code>backup.ts</code>, πρόσθεσε runtime validation με zod ή type guards για τα critical fields. Τα άλλα 2 είναι justified.</p>
+
+<h3>Γ. UI & UX</h3>
+
+<h4>9. <code>testID</code> props για E2E tests</h4>
+<p>Το Maestro smoke test χρησιμοποιεί <code>text: ".*Trackers.*"</code> — brittle. Αν αλλάξει το i18n string, το test σπάει.</p>
+<p><strong>Λύση:</strong> Πρόσθεσε <code>testID</code> στα κρίσιμα στοιχεία.</p>
+
+<h4>10. <code>ScreenErrorBoundary</code> — hardcoded colors</h4>
+<p><code>backgroundColor: '#007AFF'</code> — δεν ακολουθεί το theme. Το app έχει <code>useColors()</code> theme system.</p>
+
+<h4>11. Accessibility labels</h4>
+<p>Κανένα <code>accessibilityRole</code>, <code>accessibilityLabel</code>, <code>accessibilityHint</code>. Η Apple μπορεί να απορρίψει το app για inadequate accessibility.</p>
+
+<h3>Δ. DevOps & Process</h3>
+
+<h4>12. Pre-commit hooks</h4>
+<p>Δεν υπάρχει husky/lefthook. Τα CI workflows πιάνουν lint/typecheck αλλά μετά το commit.</p>
+
+<h4>13. Native crash reporting</h4>
+<p>PostHog τρέχει μόνο σε web. Σε native δεν υπάρχει κανένα crash reporting. Αν το app crashάρει σε production, δεν το μαθαίνεις ποτέ.</p>
+<p><strong>Λύση:</strong> Sentry (ή PostHog native) για iOS/Android.</p>
+
+<h4>14. Bundle size analysis</h4>
+<p>Κανένα tool για να μετράς το bundle size.</p>
+
+<h3>Ε. Bugs & Cleanup</h3>
+
+<h4>15. <code>defaultProfile</code> — hardcoded values</h4>
+<ul>
+  <li><code>name: 'Alex'</code> — hardcoded demo name. Ένας νέος user βλέπει "Alex" πριν κάνει onboarding</li>
+  <li><code>memberSince: new Date(new Date().getFullYear(), 0, 12).toISOString()</code> — 12 Ιανουαρίου χωρίς εξήγηση. Ένας νέος user βλέπει μέλος από 12 Ιανουαρίου αντί για σήμερα</li>
+  <li><code>language: 'English'</code> — hardcoded αντί για device locale detection</li>
+</ul>
+<p><strong>Λύση:</strong> <code>memberSince: new Date().toISOString()</code> ή <code>undefined</code> (set στο <code>completeOnboarding</code>). <code>name: ''</code> ή <code>undefined</code>. <code>language</code> από <code>expo-localization</code>.</p>
+
+<h4>16. LICENSE + CHANGELOG</h4>
+<p>Δεν υπάρχει LICENSE ούτε CHANGELOG.md στο root.</p>
+
+<h3>Σύνοψη</h3>
+<table>
+  <tr><th>#</th><th>Task</th><th>Προτεραιότητα</th><th>Κόπος</th></tr>
+  <tr><td>1</td><td>Fix <code>useTrakl()</code> χωρίς selector</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td><td>30 min</td></tr>
+  <tr><td>2</td><td><code>importAppData</code> rollback</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td><td>30 min</td></tr>
+  <tr><td>3</td><td>Split <code>stats.ts</code> (983 lines)</td><td><span class="badge badge-medium">High</span></td><td>2 ώρες</td></tr>
+  <tr><td>4</td><td><code>useMemo</code>/<code>useCallback</code> στα screens</td><td><span class="badge badge-medium">High</span></td><td>1-2 ώρες</td></tr>
+  <tr><td>5</td><td><code>testID</code> props + Maestro update</td><td><span class="badge badge-medium">High</span></td><td>1 ώρα</td></tr>
+  <tr><td>6</td><td>Cache/optimize streak calculations</td><td><span class="badge badge-medium">Medium</span></td><td>1 ώρα</td></tr>
+  <tr><td>7</td><td>Single-pass <code>monthSummary</code></td><td><span class="badge badge-medium">Medium</span></td><td>30 min</td></tr>
+  <tr><td>8</td><td>Split <code>settingsSlice</code></td><td><span class="badge badge-medium">Medium</span></td><td>1 ώρα</td></tr>
+  <tr><td>9</td><td><code>defaultProfile.memberSince</code> fix</td><td><span class="badge badge-medium">Medium</span></td><td>5 min</td></tr>
+  <tr><td>10</td><td>Runtime validation στο <code>parseBackup</code></td><td><span class="badge badge-low">Low</span></td><td>1 ώρα</td></tr>
+  <tr><td>11</td><td><code>ScreenErrorBoundary</code> theme-aware</td><td><span class="badge badge-medium">Medium</span></td><td>30 min</td></tr>
+  <tr><td>12</td><td>Pre-commit hooks (lefthook)</td><td><span class="badge badge-medium">Medium</span></td><td>30 min</td></tr>
+  <tr><td>13</td><td>Accessibility labels</td><td><span class="badge badge-medium">Medium</span></td><td>2-3 ώρες</td></tr>
+  <tr><td>14</td><td>Native crash reporting (Sentry)</td><td><span class="badge badge-low">Low</span></td><td>1 ώρα</td></tr>
+  <tr><td>15</td><td>Bundle size analysis</td><td><span class="badge badge-low">Low</span></td><td>30 min</td></tr>
+  <tr><td>16</td><td>LICENSE + CHANGELOG</td><td><span class="badge badge-medium">Medium</span></td><td>30 min</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 5 ==================== -->
+<h2 id="part5">Μέρος 5: Τι πρέπει να ξέρεις για να φτιάξεις ένα app σαν το TRAKL</h2>
+
+<h3>1. Θεμέλια — Programming & TypeScript</h3>
+
+<h4>TypeScript</h4>
+<ul>
+  <li><strong>Types vs Interfaces</strong>: Πότε χρησιμοποιείς τι</li>
+  <li><strong>Generics</strong>: <code>StateCreator&lt;TraklState, [], [], FinanceSlice&gt;</code></li>
+  <li><strong>Utility types</strong>: <code>Omit</code>, <code>Partial</code>, <code>Record</code></li>
+  <li><strong>Discriminated unions</strong>: <code>type ParseResult = { ok: true; data } | { ok: false; error }</code></li>
+  <li><strong>Type narrowing</strong>: <code>if (typeof value === 'object' &amp;&amp; value !== null)</code></li>
+  <li><strong>Strict mode</strong>: <code>noUncheckedIndexedAccess</code>, <code>strictNullChecks</code></li>
+</ul>
+
+<h4>JavaScript Fundamentals</h4>
+<ul>
+  <li><strong>Immutability</strong>: <code>[...s.habits, newHabit]</code> — ποτέ <code>push</code></li>
+  <li><strong>Array methods</strong>: <code>filter</code>, <code>map</code>, <code>reduce</code>, <code>flatMap</code>, <code>some</code>, <code>every</code></li>
+  <li><strong>Optional chaining</strong>: <code>state?.transactions?.[0]?.amount</code></li>
+  <li><strong>Nullish coalescing</strong>: <code>i18n.resolvedLanguage ?? i18n.language ?? 'en'</code></li>
+  <li><strong>Date handling</strong>: Timezone issues, ISO strings, <code>toLocaleDateString()</code></li>
+</ul>
+
+<h4>Functional Programming</h4>
+<ul>
+  <li><strong>Pure functions</strong>: Ίδια input → ίδια output, no side effects</li>
+  <li><strong>Higher-order functions</strong>: <code>useTrakl((s) => s.habits)</code></li>
+  <li><strong>Currying</strong>: <code>i18n.getFixedT(lng)(key)</code></li>
+</ul>
+
+<h3>2. React & React Native</h3>
+
+<h4>React Core</h4>
+<ul>
+  <li>Component lifecycle: mount → update → unmount</li>
+  <li>Hooks rules: Ποτέ hooks μέσα σε conditions/loops</li>
+  <li><code>useState</code>, <code>useEffect</code>, <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code></li>
+  <li>Reconciliation: Πώς αποφασίζει React ποια components να re-renderάρει</li>
+  <li>Error boundaries: Class components, <code>getDerivedStateFromError</code></li>
+  <li>Context API: Μοιρασία state χωρίς prop drilling</li>
+</ul>
+
+<h4>React Native Specifics</h4>
+<ul>
+  <li>Core components: <code>View</code>, <code>Text</code>, <code>ScrollView</code>, <code>FlatList</code>, <code>TouchableOpacity</code></li>
+  <li><code>StyleSheet</code>: Δεν έχει cascade/inheritance (εκτός <code>Text</code>)</li>
+  <li>Platform differences: iOS vs Android — SafeArea, shadows, fonts</li>
+  <li>Native modules: <code>expo-haptics</code>, <code>expo-secure-store</code>, <code>expo-notifications</code></li>
+  <li>Performance: <code>FlatList</code> vs <code>ScrollView</code>, <code>removeClippedSubviews</code></li>
+  <li>Bundle size: Hermes engine, tree shaking</li>
+</ul>
+
+<h4>Expo Ecosystem</h4>
+<ul>
+  <li>Expo SDK: Versioning, upgrade process</li>
+  <li><code>expo-router</code>: File-based routing, <code>_layout.tsx</code>, <code>(tabs)</code> groups, <code>[id]</code></li>
+  <li><code>expo-secure-store</code>: Keychain/Keystore, size limits (~2KB)</li>
+  <li><code>expo-linear-gradient</code>, <code>expo-haptics</code>, <code>expo-notifications</code></li>
+  <li>EAS Build: <code>eas.json</code>, build profiles, cloud builds</li>
+  <li><code>app.config.ts</code>: Dynamic config με plugins, permissions</li>
+  <li>Expo Go vs Dev Client: Πότε χρειάζεσαι custom native code</li>
+</ul>
+
+<h3>3. State Management — Zustand</h3>
+<ul>
+  <li><code>create&lt;T&gt;()</code>: Δημιουργία store</li>
+  <li>Selectors: <code>useTrakl((s) => s.habits)</code> — subscribes μόνο στο <code>habits</code></li>
+  <li><code>persist</code> middleware: <code>createJSONStorage</code>, <code>partialize</code>, <code>onRehydrateStorage</code>, <code>version</code>, <code>migrate</code></li>
+  <li>Slice pattern: <code>createFinanceSlice</code>, composition με <code>...createXSlice(...a)</code></li>
+  <li><code>useShallow</code>: Shallow comparison για multiple selectors</li>
+  <li>Outside React: <code>useTrakl.getState()</code> και <code>useTrakl.setState()</code></li>
+</ul>
+
+<h3>4. Architecture & Design Patterns</h3>
+
+<h4>Layered Architecture</h4>
+<pre><code>src/
+  domain/          — Pure types, no dependencies
+  application/     — Business logic, state, hooks
+  infrastructure/  — Native integrations, storage, services
+  shared/          — Utils, theme, fonts</code></pre>
+<p><strong>Rule:</strong> Dependencies πάντα προς τα μέσα. Το domain δεν importάρει τίποτα.</p>
+
+<h4>Patterns</h4>
+<ul>
+  <li><strong>Repository</strong>: <code>secureStorage.ts</code> abstracts Keychain/Keystore</li>
+  <li><strong>Factory</strong>: <code>createFinanceSlice(...a)</code></li>
+  <li><strong>Strategy</strong>: <code>shareBackup</code — διαφορετική υλοποίηση per platform</li>
+  <li><strong>Observer</strong>: Zustand subscriptions</li>
+  <li><strong>HOC</strong>: <code>withErrorBoundary(Component, screenName)</code></li>
+  <li><strong>Adapter</strong>: <code>AdBanner.tsx</code> vs <code>AdBanner.web.tsx</code></li>
+</ul>
+
+<h3>5. Security</h3>
+<ul>
+  <li><code>expo-secure-store</code>: Keychain (iOS) / Keystore (Android) — encrypted at rest</li>
+  <li>AsyncStorage: Plaintext — ποτέ sensitive data</li>
+  <li><code>partialize</code> exclusion: Τι μπαίνει σε plaintext vs encrypted</li>
+  <li>Input clamping: <code>Math.min(10_000_000, Math.max(0.01, tx.amount))</code></li>
+  <li>GDPR consent management: UMP SDK</li>
+  <li>Security scanning: SAST, dependency scanning, secret scanning, IaC scanning</li>
+</ul>
+
+<h3>6. Persistence & Data Management</h3>
+<ul>
+  <li>AsyncStorage: Plaintext, ~6MB, JSON serialization</li>
+  <li>Secure Storage: ~2KB per key, sync vs async per platform</li>
+  <li>Migrations: Versioned schema, idempotent steps, backfilling, error handling</li>
+  <li>Backup/Restore: Versioning, validation, secure restore, cross-platform sharing</li>
+</ul>
+
+<h3>7. Internationalization (i18n)</h3>
+<ul>
+  <li>i18next: Namespace organization, RTL support, language detection</li>
+  <li>20+ γλώσσες: Κάθε string πρέπει να μεταφραστεί</li>
+  <li>Date/number formatting: Διαφορετικό per locale</li>
+  <li>Text length: Γερμανικά είναι 30% πιο μακριά από Αγγλικά</li>
+</ul>
+
+<h3>8. Navigation — Expo Router</h3>
+<ul>
+  <li>File-based routing: <code>_layout.tsx</code>, <code>(tabs)</code>, <code>[id]</code>, <code>+not-found.tsx</code></li>
+  <li>Auth gate: <code>if (!onboarded) redirect('/onboarding')</code></li>
+  <li>Modal presentation: <code>presentation: 'modal'</code></li>
+</ul>
+
+<h3>9. Styling & UI</h3>
+<ul>
+  <li>Tailwind/Uniwind (NativeWind): <code>className="flex-1 bg-white dark:bg-black"</code></li>
+  <li>Dark mode: <code>dark:</code> prefix, theme store, system preference</li>
+  <li>Design system: <code>useColors()</code>, <code>InterText</code>, <code>Card</code>, <code>ProgressRing</code></li>
+  <li>Animations: <code>react-native-reanimated</code>, <code>PressableScale</code>, <code>AnimatedSheet</code></li>
+</ul>
+
+<h3>10. Testing</h3>
+<ul>
+  <li>Jest + React Native Testing Library: Unit tests, store tests, security tests</li>
+  <li>Mocking: <code>jest.mock('expo-secure-store')</code></li>
+  <li>E2E (Maestro): YAML-based, selectors, flows</li>
+  <li>Test pyramid: Πολλά unit, λιγότερα integration, ελάχιστα E2E</li>
+  <li>AAA pattern: Arrange → Act → Assert</li>
+  <li>Edge cases: Empty arrays, null, negative values, timezone boundaries</li>
+</ul>
+
+<h3>11. CI/CD & DevOps</h3>
+<ul>
+  <li>GitHub Actions: Triggers, jobs vs steps, matrix builds, caching, artifacts</li>
+  <li>Permissions: <code>contents: read</code> — least privilege</li>
+  <li>Code quality: oxlint, oxfmt, Knip, jscpd, ast-grep</li>
+  <li>EAS Build & Submit: Cloud builds, App Store / Play Store submission</li>
+  <li>Keystore management: Base64 encoding για CI</li>
+</ul>
+
+<h3>12. Performance</h3>
+<ul>
+  <li>Re-render avoidance: Selectors, <code>memo()</code>, <code>useMemo</code>, <code>useCallback</code></li>
+  <li>FlatList optimization: <code>keyExtractor</code>, <code>getItemLayout</code></li>
+  <li>Startup time: Splash screen, lazy initialization, non-blocking fonts</li>
+  <li>Memory: Cleanup in useEffect, unsubscribe, clear timers</li>
+</ul>
+
+<h3>13. Platform Knowledge</h3>
+<ul>
+  <li>iOS: Keychain, App Store requirements, Info.plist, provisioning</li>
+  <li>Android: Keystore, Play Store requirements, Gradle, Manifest</li>
+  <li>Cross-platform: Platform-specific code, SafeArea, gestures, haptics</li>
+</ul>
+
+<h3>14. Soft Skills & Process</h3>
+<ul>
+  <li>Documentation: README, ADRs, code comments (γιατί όχι τι)</li>
+  <li>Git workflow: Feature branches, PR reviews, conventional commits</li>
+  <li>Code review: Security, performance, maintainability, tests</li>
+</ul>
+
+<h3>Roadmap</h3>
+<table>
+  <tr><th>Φάση</th><th>Τι μαθαίνεις</th><th>Χρόνος</th></tr>
+  <tr><td>1</td><td>JavaScript fundamentals, TypeScript</td><td>2-3 μήνες</td></tr>
+  <tr><td>2</td><td>React basics (hooks, components, state)</td><td>1-2 μήνες</td></tr>
+  <tr><td>3</td><td>React Native + Expo</td><td>1-2 μήνες</td></tr>
+  <tr><td>4</td><td>State management (Zustand)</td><td>2 εβδομάδες</td></tr>
+  <tr><td>5</td><td>Styling (Tailwind/NativeWind)</td><td>1 εβδομάδα</td></tr>
+  <tr><td>6</td><td>Persistence (AsyncStorage, SecureStore)</td><td>1 εβδομάδα</td></tr>
+  <tr><td>7</td><td>Architecture (layered, patterns)</td><td>1 μήνας</td></tr>
+  <tr><td>8</td><td>Testing (Jest, RNTL)</td><td>2 εβδομάδες</td></tr>
+  <tr><td>9</td><td>i18n, accessibility, performance</td><td>2 εβδομάδες</td></tr>
+  <tr><td>10</td><td>CI/CD, security scanning</td><td>2 εβδομάδες</td></tr>
+  <tr><td>11</td><td>Build & deploy (EAS, App Store, Play Store)</td><td>1 εβδομάδα</td></tr>
+</table>
+<p><strong>Σύνολο:</strong> ~6-12 μήνες για να φτάσεις στο level του TRAKL.</p>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 6 ==================== -->
+<h2 id="part6">Μέρος 6: Public GitHub + Production App Security</h2>
+
+<div class="callout-positive">
+  <strong>Είναι ασφαλές να το κάνεις public.</strong> Το codebase είναι ήδη καθαρό — δεν βρήκα hardcoded secrets.
+</div>
+
+<h3>Εικόνα ασφαλείας</h3>
+<ul>
+  <li><strong>Μηδέν hardcoded secrets</strong> — δεν βρήκα API keys, passwords, ή tokens</li>
+  <li><strong>AdMob IDs</strong>: Τα πραγματικά IDs έρχονται από env vars, τα fallbacks είναι Google's official test IDs</li>
+  <li><strong>PostHog</strong>: Δεν υπάρχει hardcoded key. Το web version διαβάζει από URL params</li>
+  <li><strong>.gitignore</strong>: Καλύπτει <code>.env</code>, <code>*.jks</code>, <code>*.p12</code>, <code>*.key</code>, <code>*.mobileprovision</code>, <code>*.pem</code>, <code>android/</code>, <code>ios/</code></li>
+  <li><strong>app.config.ts</strong>: Χρησιμοποιεί <code>requireEnv()</code> με safe fallbacks</li>
+</ul>
+
+<h3>Τι πρέπει να κάνεις πριν το κάνεις public</h3>
+
+<h4>1. Git History Audit <span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></h4>
+<p>Το <code>.gitignore</code> προστατεύει μελλοντικά commits. Αλλά αν κάποτε είχες κάνει commit ένα <code>.env</code>, υπάρχει ακόμα στο git history.</p>
+<pre><code># Ελέγξε όλο το history για secrets
+git log --all --diff-filter=D --name-only | grep -E "\.(env|jks|p12|key|pem|mobileprovision)$"
+
+# Ή χρησιμοποίησε το TruffleHog
+trufflehog git file://. --since-commit HEAD --results=warnings</code></pre>
+<p>Αν βρεις κάτι, καθάρισε με <code>BFG Repo-Cleaner</code> και <strong>rotate</strong> τα secrets.</p>
+
+<h4>2. EAS Credentials Check <span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></h4>
+<pre><code>eas credentials --platform android
+eas credentials --platform ios</code></pre>
+<p>Επιβεβαίωσε ότι keystore και provisioning profiles δεν είναι στο repo.</p>
+
+<h4>3. LICENSE File</h4>
+<p>Χωρίς LICENSE, κανείς δεν έχει νομικό δικαίωμα να χρησιμοποιήσει τον κώδικα.</p>
+
+<h4>4. SECURITY.md</h4>
+<p>Responsible disclosure policy για vulnerability reporting.</p>
+
+<h4>5. README Enhancement</h4>
+<ul>
+  <li>Download links (App Store, Play Store)</li>
+  <li>Architecture diagram</li>
+  <li>Security section</li>
+  <li>Testing section</li>
+  <li>CI/CD section</li>
+  <li>Tech stack</li>
+  <li>Screenshots (3-5)</li>
+</ul>
+
+<h4>6. GitHub Repository Settings</h4>
+<ul>
+  <li><strong>Branch protection</strong>: Require PR, require status checks, no bypass</li>
+  <li><strong>Security</strong>: Dependabot alerts, secret scanning, push protection</li>
+  <li><strong>Topics</strong>: react-native, expo, typescript, zustand, mobile-app, local-first, privacy, portfolio</li>
+</ul>
+
+<h4>7. CONTRIBUTING.md</h4>
+<p>Development setup, code style, PR process, architecture reference.</p>
+
+<h3>"Μπορεί να χακάρουν το app;"</h3>
+<p>Το app είναι <strong>ήδη</strong> public — αν είναι στο Play Store/App Store, οποιοσδήποτε μπορεί να download το APK/IPA και να το decompile. Το να κάνεις τον κώδικα public δεν αυξάνει το attack surface.</p>
+
+<table>
+  <tr><th>Ανησυχία</th><th>Πραγματικότητα</th></tr>
+  <tr><td>Να κλέψει user data</td><td><strong>Όχι</strong> — τα δεδομένα είναι on-device, δεν υπάρχει backend</td></tr>
+  <tr><td>Να κλέψει API keys</td><td><strong>Όχι</strong> — δεν υπάρχουν hardcoded secrets</td></tr>
+  <tr><td>Να impersonate το app</td><td><strong>Όχι</strong> — χρειάζεται το signing key (στο EAS)</td></tr>
+  <tr><td>Να κλέψει AdMob revenue</td><td><strong>Όχι</strong> — τα production IDs έρχονται από env vars</td></tr>
+  <tr><td>Να forkάρει και να δημοσιεύσει κακό app</td><td><strong>Ναι</strong> — αλλά με διαφορετικό package ID</td></tr>
+</table>
+
+<h3>Τι ΔΕΝ βάζεις στο repo</h3>
+<table>
+  <tr><th>File</th><th>Γιατί</th><th>Στο .gitignore;</th></tr>
+  <tr><td><code>.env</code></td><td>Production values</td><td>✅ Ναι</td></tr>
+  <tr><td><code>*.jks</code>, <code>*.p12</code></td><td>Android signing keys</td><td>✅ Ναι</td></tr>
+  <tr><td><code>*.mobileprovision</code></td><td>iOS provisioning</td><td>✅ Ναι</td></tr>
+  <tr><td><code>google-services.json</code></td><td>Firebase config</td><td>⚠️ Πρέπει να προσθέσεις</td></tr>
+  <tr><td><code>GoogleService-Info.plist</code></td><td>iOS Firebase config</td><td>⚠️ Πρέπει να προσθέσεις</td></tr>
+  <tr><td><code>android/</code>, <code>ios/</code></td><td>Native generated code</td><td>✅ Ναι</td></tr>
+</table>
+
+<h3>Να κρύψεις κομμάτια κώδικα;</h3>
+<div class="callout-critical">
+  <strong>Όχι.</strong> Κρύβοντας κώδικα κάνεις περισσότερο κακό παρά καλό. Δεν υπάρχει τίποτα να κρύψεις. Ένας senior reviewer θα προσέξει ότι λείπουν κομμάτια — είναι πιο επαγγελματικό να δείξεις τα πάντα.
+</div>
+<p>Αντί για hiding:</p>
+<ul>
+  <li>Σχόλια στα sensitive σημεία (ήδη το κάνεις σωστά)</li>
+  <li><code>.env.example</code> με test values</li>
+  <li>TODOs — δείχνουν ότι ξέρεις τα gaps</li>
+  <li>ADRs για αμφιλεγόμενες αποφάσεις</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 7 ==================== -->
+<h2 id="part7">Μέρος 7: Προστασία από Cloning</h2>
+
+<h3>Πραγματικότητα</h3>
+<p>Αν το app είναι ήδη στο Play Store/App Store, κάποιος μπορεί ήδη να το κλωνοποιήσει από το binary. Το να κάνεις τον κώδικα public δεν αλλάζει αυτό το risk.</p>
+
+<h3>1. License — Το πιο σημαντικό</h3>
+<table>
+  <tr><th>License</th><th>Fork</th><th>Πουλάει</th><th>Open source</th><th>Σύσταση</th></tr>
+  <tr><td>MIT</td><td>✅</td><td>✅</td><td>❌ Όχι</td><td>❌ Πολύ επιτρεπτικό</td></tr>
+  <tr><td>Apache 2.0</td><td>✅</td><td>✅</td><td>❌ Όχι</td><td>⚠️ Επιτρεπτικό + patent</td></tr>
+  <tr><td>GPL-3.0</td><td>✅</td><td>✅</td><td>✅ Ίδιο license</td><td>✅ Copyleft</td></tr>
+  <tr><td>AGPL-3.0</td><td>✅</td><td>✅</td><td>✅ Ακόμα και SaaS</td><td>✅ Ισχυρό copyleft</td></tr>
+  <tr><td>No license</td><td>❌</td><td>❌</td><td>❌</td><td>❌ Κακή ιδέα</td></tr>
+</table>
+
+<div class="callout">
+  <strong>Σύσταση: GPL-3.0 ή AGPL-3.0</strong><br>
+  Αν κάποιος forkάρει και το δημοσιεύσει: Πρέπει να χρησιμοποιήσει ίδιο license, να δημοσιεύσει τον κώδικά του, να συμπεριλάβει το copyright notice σου, και δεν μπορεί να το κλείσει σε proprietary app.
+</div>
+
+<p><strong>Dual license</strong> (μέγιστη προστασία): GPLv3 για open source + commercial license για proprietary use (πληρωμένο).</p>
+
+<h3>2. Trademark — Προστάτευσε το όνομα</h3>
+<p>Το όνομα "TRAKL" δεν προστατεύεται από license. Πρέπει να καταχώρησεις trademark. Χωρίς trademark, κάποιος μπορεί να το ονομάσει "TRAKL Pro" και να το πουλάει.</p>
+
+<h3>3. Technical Deterrents</h3>
+<h4>App signature verification</h4>
+<pre><code>import * as Application from 'expo-application';
+
+if (Platform.OS === 'android' &amp;&amp; Application.androidId !== EXPECTED_ANDROID_PACKAGE) {
+  // Someone repackaged the app — disable ads or show watermark
+}</code></pre>
+<p>Δεν είναι真正的 protection — αλλά δυσκολεύει lazy cloners.</p>
+
+<h4>AdMob package ID check</h4>
+<p>Αν κάποιος αλλάξει το package ID και χρησιμοποιήσει τα δικά σου AdMob IDs, η Google θα απορρίψει τα ad requests.</p>
+
+<h3>4. GitHub Settings</h3>
+<ul>
+  <li><strong>Disable forks</strong> (optional): Settings → General → Features → ❌ Allow forking</li>
+  <li>Αν αφήσεις forks, το GPL-3.0 εξασφαλίζει ότι κάθε fork πρέπει να είναι επίσης GPL-3.0</li>
+</ul>
+
+<h3>5. Τι ΔΕΝ μπορείς να προστατεύσεις</h3>
+<table>
+  <tr><th>Σενάριο</th><th>Μπορείς να το σταματήσεις;</th></tr>
+  <tr><td>Κλωνοποίηση και πώληση στο Play Store</td><td>✅ Ναι — DMCA takedown + trademark</td></tr>
+  <tr><td>Κλωνοποίηση και πώληση εκτός stores (APK sideload)</td><td>❌ Όχι practically</td></tr>
+  <tr><td>Παίρνει 1-2 functions</td><td>⚠️ Δύσκολο να το αποδείξεις</td></tr>
+  <tr><td>Μαθαίνει από την αρχιτεκτονική</td><td>❌ Δεν μπορείς (ούτε θέλεις)</td></tr>
+</table>
+
+<h3>Η πραγματική απάντηση</h3>
+<div class="callout-positive">
+  <strong>Οι cloners είναι lazy.</strong> Αν κάποιος είναι αρκετά ικανός να καταλάβει την αρχιτεκτονική, να αλλάξει το branding, να βγάλει το license, και να το δημοσιεύσει στα stores — ττε είναι αρκετά ικανός να γράψει το δικό του app από την αρχή.
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== PART 8 ==================== -->
+<h2 id="part8">Μέρος 8: Τελικό Checklist</h2>
+
+<h3>Α. Υλοποιήθηκε (9/10)</h3>
+<table>
+  <tr><th>#</th><th>Task</th><th>Κατάσταση</th></tr>
+  <tr><td>1</td><td>Fix transactions plaintext leak</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>2</td><td>Split store σε slices (818 → 79 γραμμές)</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>3</td><td>Crypto-secure ID generation</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>4</td><td>Migration tests (16 cases) + persistence tests</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>5</td><td>CI consolidation (11 → 5 workflows)</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>6</td><td>Structured migration pipeline (14 steps)</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>7</td><td>Per-screen error boundaries + HOC</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>8</td><td>Maestro E2E smoke test</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>9</td><td>6 ADRs documenting decisions</td><td><span class="badge badge-done">DONE</span></td></tr>
+  <tr><td>10</td><td>Typed Safe Navigation</td><td><span class="badge badge-medium">PENDING</span></td></tr>
+</table>
+
+<h3>Β. Pending — Code Improvements</h3>
+<table>
+  <tr><th>#</th><th>Task</th><th>Προτεραιότητα</th></tr>
+  <tr><td>1</td><td>Fix <code>useTrakl()</code> χωρίς selector</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td></tr>
+  <tr><td>2</td><td><code>importAppData</code> rollback αν αποτύχει secure storage</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td></tr>
+  <tr><td>3</td><td>Split <code>stats.ts</code> (983 lines)</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>4</td><td><code>useMemo</code>/<code>useCallback</code> στα screens</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>5</td><td><code>testID</code> props για E2E</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>6</td><td>Optimize streak calculations</td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>7</td><td>Single-pass <code>monthSummary</code></td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>8</td><td>Split <code>settingsSlice</code></td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>9</td><td><code>defaultProfile.memberSince</code> fix</td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>10</td><td>Runtime validation στο <code>parseBackup</code></td><td><span class="badge badge-low">Low</span></td></tr>
+  <tr><td>11</td><td><code>ScreenErrorBoundary</code> theme-aware</td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>12</td><td>Pre-commit hooks (lefthook)</td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>13</td><td>Accessibility labels</td><td><span class="badge badge-medium">Medium</span></td></tr>
+  <tr><td>14</td><td>Native crash reporting (Sentry)</td><td><span class="badge badge-low">Low</span></td></tr>
+  <tr><td>15</td><td>Bundle size analysis</td><td><span class="badge badge-low">Low</span></td></tr>
+</table>
+
+<h3>Γ. Pending — Public GitHub</h3>
+<table>
+  <tr><th>#</th><th>Task</th><th>Προτεραιότητα</th></tr>
+  <tr><td>1</td><td>Git history audit (TruffleHog)</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td></tr>
+  <tr><td>2</td><td>EAS credentials check</td><td><span class="badge badge-critical">ΚΡΙΣΙΜΟ</span></td></tr>
+  <tr><td>3</td><td>LICENSE file (GPL-3.0)</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>4</td><td>SECURITY.md</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>5</td><td>README enhancement + screenshots</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>6</td><td>GitHub settings (branch protection, security)</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>7</td><td>CONTRIBUTING.md</td><td><span class="badge badge-low">Medium</span></td></tr>
+  <tr><td>8</td><td>GitHub topics &amp; description</td><td><span class="badge badge-low">Medium</span></td></tr>
+  <tr><td>9</td><td>Trademark "TRAKL"</td><td><span class="badge badge-low">Medium</span></td></tr>
+  <tr><td>10</td><td><code>.env.example</code> file</td><td><span class="badge badge-medium">High</span></td></tr>
+  <tr><td>11</td><td>CHANGELOG.md</td><td><span class="badge badge-low">Medium</span></td></tr>
+</table>
+
+<div class="summary-box">
+  <h3>Τελική Εκτίμηση</h3>
+  <p>Το TRAKL είναι ένα <strong>καλά δομημένο, security-conscious, production-ready mobile app</strong>. Η αρχιτεκτονική είναι senior-level: layered design, sliced store, structured migrations, 6 ADRs, comprehensive CI/CD, και security-first mindset.</p>
+  <p>Τα 9 από τα 10 σημεία που προτάθηκαν υλοποιήθηκαν (το #10 Typed Safe Navigation παραμένει pending). Απομένουν ~16 code improvements (2 κρίσιμα) και ~11 βήματα για public GitHub release.</p>
+  <p><strong>Μην κρύβεις κώδικα. Βάλε GPL-3.0 και trademark. Δείξε τα πάντα.</strong> Το ότι δεν χρειάζεται να κρύψεις τίποτα είναι το ισχυρότερο signal ότι ξέρεις τι κάνεις.</p>
+</div>
+
+<div class="footer">
+  <p>TRAKL — Πλήρης Ανασκόπηση &amp; Senior Engineer Review | 9 Αυγούστου 2026</p>
+  <p>Generated from conversation analysis — all findings verified against source code</p>
+</div>
+
+</body>
+</html>

@@ -104,6 +104,48 @@ export function createBackup(state: TraklState): string {
 export type ParseResult = { ok: true; data: BackupData } | { ok: false; error: string };
 
 /**
+ * Lightweight runtime type guards for critical backup fields.
+ * These validate the shape of array elements without needing a full schema
+ * library like zod.
+ */
+
+function validateTransactions(arr: unknown): boolean {
+  if (!Array.isArray(arr)) return false;
+  return arr.every(
+    (t) =>
+      isRecord(t) &&
+      typeof t.id === 'string' &&
+      typeof t.amount === 'number' &&
+      (t.kind === 'income' || t.kind === 'expense') &&
+      typeof t.date === 'string' &&
+      typeof t.category === 'string',
+  );
+}
+
+function validateHabits(arr: unknown): boolean {
+  if (!Array.isArray(arr)) return false;
+  return arr.every(
+    (h) =>
+      isRecord(h) &&
+      typeof h.id === 'string' &&
+      typeof h.name === 'string' &&
+      isRecord(h.completions),
+  );
+}
+
+function validateTasks(arr: unknown): boolean {
+  if (!Array.isArray(arr)) return false;
+  return arr.every(
+    (t) =>
+      isRecord(t) &&
+      typeof t.id === 'string' &&
+      typeof t.name === 'string' &&
+      typeof t.done === 'boolean' &&
+      typeof t.priority === 'string',
+  );
+}
+
+/**
  * Parse and validate a backup JSON string. Returns a typed BackupData when
  * valid, otherwise a human-readable error message.
  */
@@ -166,6 +208,17 @@ export function parseBackup(json: string): ParseResult {
     parsed.retentionNotifiedAchievementIds = [];
   if (typeof parsed.onboarded !== 'boolean') {
     parsed.onboarded = true;
+  }
+
+  // Runtime validation of critical array element shapes.
+  if (!validateTransactions(parsed.transactions)) {
+    return { ok: false, error: 'Invalid backup: transactions contain invalid entries' };
+  }
+  if (!validateHabits(parsed.habits)) {
+    return { ok: false, error: 'Invalid backup: habits contain invalid entries' };
+  }
+  if (!validateTasks(parsed.tasks)) {
+    return { ok: false, error: 'Invalid backup: tasks contain invalid entries' };
   }
 
   // Fields validated above; casting the verified record to the public type.

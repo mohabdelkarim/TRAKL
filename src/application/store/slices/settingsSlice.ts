@@ -114,6 +114,11 @@ export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice
       return { success: false, message: result.error };
     }
     const data = result.data;
+    try {
+      saveTransactionsSecure(data.transactions);
+    } catch {
+      return { success: false, message: 'Failed to save transactions securely.' };
+    }
     set({
       onboarded: true,
       hydrated: true,
@@ -145,7 +150,6 @@ export const createSettingsSlice: StateCreator<TraklState, [], [], SettingsSlice
       retentionLastInactivityNotificationAt: data.retentionLastInactivityNotificationAt,
       waterGoal: data.waterGoal,
     });
-    void saveTransactionsSecure(data.transactions);
     return { success: true, message: 'Backup restored successfully.' };
   },
 

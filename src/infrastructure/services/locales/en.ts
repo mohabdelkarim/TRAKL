@@ -656,7 +656,7 @@ export const en = {
     cancel: 'Cancel',
   },
   sample: {
-    // Finance — generic merchants (brand names like Netflix/Uber/Zara stay as-is)
+    // Finance: generic merchants (brand names like Netflix/Uber/Zara stay as-is)
     txSalary: 'Monthly Salary',
     txGroceries: 'Whole Foods',
     txRent: 'Rent',

@@ -1,6 +1,6 @@
 import type { TrackerKey } from './trackers';
 
-// ---------- Onboarding / profile ----------
+// Onboarding / profile
 export type FocusKey = 'save' | 'habits' | 'productive' | 'all';
 
 export interface Profile {
@@ -12,7 +12,7 @@ export interface Profile {
   memberSince: string; // ISO date
 }
 
-// ---------- Finance ----------
+// Finance
 export type TxKind = 'income' | 'expense';
 export interface Transaction {
   id: string;
@@ -23,7 +23,7 @@ export interface Transaction {
   date: string; // ISO
 }
 
-// ---------- Habits ----------
+// Habits
 export interface Habit {
   id: string;
   name: string;
@@ -35,7 +35,7 @@ export interface Habit {
   reminderTime?: string;
 }
 
-// ---------- Tasks ----------
+// Tasks
 export type Priority = 'high' | 'medium' | 'low';
 export type TaskStatus = 'todo' | 'inprogress' | 'done';
 export interface Task {
@@ -50,7 +50,7 @@ export interface Task {
   completedAt?: string;
 }
 
-// ---------- Goals ----------
+// Goals
 export interface Milestone {
   id: string;
   label: string;
@@ -64,7 +64,7 @@ export interface Goal {
   milestones: Milestone[];
 }
 
-// ---------- Planner ----------
+// Planner
 export interface PlannerEvent {
   id: string;
   title: string;
@@ -75,7 +75,7 @@ export interface PlannerEvent {
   color: string;
 }
 
-// ---------- Sleep ----------
+// Sleep
 export interface SleepEntry {
   id: string;
   date: string; // ISO
@@ -85,7 +85,7 @@ export interface SleepEntry {
   wake: string; // "06:33"
 }
 
-// ---------- Fitness ----------
+// Fitness
 export interface Workout {
   id: string;
   name: string;
@@ -94,7 +94,7 @@ export interface Workout {
   kcal: number;
 }
 
-// ---------- Mood ----------
+// Mood
 export interface MoodEntry {
   id: string;
   date: string; // ISO
@@ -103,7 +103,7 @@ export interface MoodEntry {
   note: string;
 }
 
-// ---------- Water ----------
+// Water
 export interface WaterEntry {
   id: string;
   date: string; // ISO
@@ -111,7 +111,7 @@ export interface WaterEntry {
   glasses: number;
 }
 
-// ---------- Weight ----------
+// Weight
 export interface WeightEntry {
   id: string;
   date: string; // ISO
@@ -119,7 +119,7 @@ export interface WeightEntry {
   kg: number;
 }
 
-// ---------- Meditation ----------
+// Meditation
 export interface MeditationSession {
   id: string;
   date: string; // ISO
@@ -127,7 +127,7 @@ export interface MeditationSession {
   kind: string; // e.g. "Mindfulness"
 }
 
-// ---------- Custom trackers ----------
+// Custom trackers
 export type CustomType = 'number' | 'yesno' | 'scale' | 'duration' | 'counter';
 export interface CustomLog {
   id: string;
@@ -146,7 +146,7 @@ export interface CustomTracker {
   logs: CustomLog[];
 }
 
-// ---------- Notifications ----------
+// Notifications
 export interface AppNotification {
   id: string;
   tracker: TrackerKey;
@@ -156,7 +156,7 @@ export interface AppNotification {
   read: boolean;
 }
 
-// ---------- Achievements ----------
+// Achievements
 export interface Achievement {
   id: string;
   name: string;

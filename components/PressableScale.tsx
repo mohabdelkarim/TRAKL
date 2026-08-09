@@ -24,15 +24,15 @@ type FeedbackSpec = {
 };
 
 const SPECS: Record<PressFeedback, FeedbackSpec> = {
-  // Solid CTA — a firm, confident dip.
+  // Solid CTA: a firm, confident dip.
   button: { scale: 0.96, opacity: 0.96 },
-  // Large surface — gentle, slow settle so big areas don't feel jumpy.
+  // Large surface: gentle, slow settle so big areas don't feel jumpy.
   card: { scale: 0.975, opacity: 0.94 },
-  // Pill filter — quick, snappy pop.
+  // Pill filter: quick, snappy pop.
   chip: { scale: 0.92, opacity: 0.9 },
-  // Bottom-nav item — subtle, restrained.
+  // Bottom-nav item: subtle, restrained.
   tab: { scale: 0.9, opacity: 1 },
-  // Standalone icon / FAB — lively bounce.
+  // Standalone icon / FAB: lively bounce.
   icon: { scale: 0.88, opacity: 1 },
 };
 

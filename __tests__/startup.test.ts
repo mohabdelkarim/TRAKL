@@ -88,7 +88,7 @@ describe('Startup gate: fonts do not block render', () => {
   it('ClashDisplayFonts is a plain object, not a blocking promise', () => {
     // This verifies the pattern: fonts are a static object passed to useFonts,
     // which loads them in the background. The _layout.tsx gate condition
-    // is `if (!i18nReady)` — it does NOT check `loaded` or `error` from
+    // is `if (!i18nReady)`; it does NOT check `loaded` or `error` from
     // useFonts, so font loading failures cannot freeze the app.
     const { ClashDisplayFonts } = require('@/src/shared/fonts');
     expect(ClashDisplayFonts).toBeDefined();

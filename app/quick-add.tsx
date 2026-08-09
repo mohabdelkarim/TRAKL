@@ -36,7 +36,7 @@ const OPEN_SPRING = { damping: 26, stiffness: 340, mass: 0.85 };
 // dispatches immediately so taps feel instant (see close()).
 const CLOSE_DURATION = 220;
 // The dark backdrop fades out FASTER than the slide so it never lingers on
-// screen after the sheet has visually left — this was the "background is slow
+// screen after the sheet has visually left; this was the "background is slow
 // to close" bug.
 const BACKDROP_FADE = 140;
 
@@ -93,7 +93,7 @@ export default function QuickAddScreen() {
 
   const close = useCallback(
     (route: Href | null) => {
-      // Run exactly once — ignore any subsequent taps while dismissing so we
+      // Run exactly once; ignore any subsequent taps while dismissing so we
       // never dispatch a second navigation (the previous "stuck on close" bug
       // came from multiple dismisses racing each other).
       if (closingRef.current) return;
@@ -103,14 +103,14 @@ export default function QuickAddScreen() {
       //
       // - Navigating to a tracker (route != null): the user is going to ANOTHER
       //   screen, so the Quick Add sheet doesn't need to be watched sliding
-      //   away. Dispatch the navigation IMMEDIATELY — waiting ~220ms for an
+      //   away. Dispatch the navigation IMMEDIATELY; waiting ~220ms for an
       //   exit slide before navigating is exactly what made every tap feel
       //   sluggish / "stuck". The destination screen covers the sheet instantly.
       //
       // - Dismissing back to the previous screen (route == null, i.e. cancel /
       //   backdrop tap / hardware back): here the user DOES see the sheet leave,
       //   so we play the slide-down + backdrop fade, then `router.back()` from a
-      //   plain JS-thread timer (reliable — nothing drops it, unlike a
+      //   plain JS-thread timer (reliable; nothing drops it, unlike a
       //   Reanimated completion callback the unmounting route would swallow).
       if (route) {
         router.replace(route);

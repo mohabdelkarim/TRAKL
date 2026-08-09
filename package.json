@@ -21,7 +21,10 @@
     "ast-grep": "ast-grep scan",
     "semgrep": "semgrep scan --config .semgrep.yml",
     "osv-scanner": "osv-scanner --recursive ./",
-    "retirejs": "retire --path . --severity medium"
+    "retirejs": "retire --path . --severity medium",
+    "prepare": "lefthook install",
+    "bundle:android": "expo export --platform android",
+    "bundle:ios": "expo export --platform ios"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "~0.4.2",

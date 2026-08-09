@@ -123,7 +123,7 @@ async function ensureLocaleLoaded(code: string): Promise<void> {
     }
   } catch (error) {
     if (__DEV__) console.warn(`[i18n] Failed to load locale "${code}":`, error);
-    // Fall back to English — i18next will use fallbackLng for missing keys
+    // Fall back to English; i18next will use fallbackLng for missing keys
   }
 }
 
@@ -152,7 +152,7 @@ export async function initI18n() {
     partialBundledLanguages: true,
   });
 
-  // After init(), addResourceBundle is available — load the target locale.
+  // After init(), addResourceBundle is available; load the target locale.
   if (lng !== 'en') {
     await ensureLocaleLoaded(lng);
   }
@@ -181,7 +181,7 @@ export async function changeLanguage(code: string) {
   applyDirection(code);
   // On native, reload the app to apply RTL/LTR layout changes visually.
   // On web, layout changes apply immediately via CSS.
-  // Skip reload in Expo Go — Updates.reloadAsync() throws a native bridge
+  // Skip reload in Expo Go; Updates.reloadAsync() throws a native bridge
   // error there. Users in Expo Go can restart manually if needed.
   if (Platform.OS !== 'web') {
     const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;

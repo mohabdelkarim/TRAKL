@@ -1,9 +1,12 @@
 import { Component, type ComponentType, type ErrorInfo, type ReactNode } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
+import { useColors, type Palette } from '@/src/shared/theme';
+
 interface Props {
   children: ReactNode;
   screenName?: string;
+  colors: Palette;
 }
 
 interface State {
@@ -11,7 +14,7 @@ interface State {
   error: Error | null;
 }
 
-export class ScreenErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryInner extends Component<Props, State> {
   state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
@@ -30,15 +33,19 @@ export class ScreenErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const { colors } = this.props;
       return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.bg }]}>
           <Text style={styles.emoji}>😵</Text>
-          <Text style={styles.title}>Something went wrong</Text>
-          <Text style={styles.message}>
+          <Text style={[styles.title, { color: colors.text }]}>Something went wrong</Text>
+          <Text style={[styles.message, { color: colors.muted }]}>
             {this.state.error?.message ?? 'An unexpected error occurred.'}
           </Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleRetry}>
-            <Text style={styles.buttonText}>Try Again</Text>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: colors.accentText }]}
+            onPress={this.handleRetry}
+          >
+            <Text style={[styles.buttonText, { color: colors.bg }]}>Try Again</Text>
           </TouchableOpacity>
         </View>
       );
@@ -48,18 +55,20 @@ export class ScreenErrorBoundary extends Component<Props, State> {
   }
 }
 
-/** HOC that wraps a component with ScreenErrorBoundary. */
-export function withErrorBoundary<P extends object>(
-  Component: ComponentType<P>,
-  screenName?: string,
-): ComponentType<P> {
-  return function Wrapped(props: P) {
-    return (
-      <ScreenErrorBoundary screenName={screenName}>
-        <Component {...props} />
-      </ScreenErrorBoundary>
-    );
-  };
+/** Wrapper that injects theme colors from useColors() hook. */
+export function ScreenErrorBoundary({
+  children,
+  screenName,
+}: {
+  children: ReactNode;
+  screenName?: string;
+}) {
+  const colors = useColors();
+  return (
+    <ErrorBoundaryInner colors={colors} screenName={screenName}>
+      {children}
+    </ErrorBoundaryInner>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -87,10 +96,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: '#007AFF',
   },
   buttonText: {
-    color: '#fff',
     fontWeight: '600',
   },
 });
+
+/** HOC that wraps a component with ScreenErrorBoundary. */
+export function withErrorBoundary<P extends object>(
+  Component: ComponentType<P>,
+  screenName?: string,
+): ComponentType<P> {
+  return function Wrapped(props: P) {
+    return (
+      <ScreenErrorBoundary screenName={screenName}>
+        <Component {...props} />
+      </ScreenErrorBoundary>
+    );
+  };
+}
