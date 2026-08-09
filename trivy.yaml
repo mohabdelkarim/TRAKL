@@ -25,11 +25,10 @@ scan:
     - android/
     - ios/
     - .git/
-    - .idea/
     - __tests__/
   skip-files:
     - '*.jks'
-    - android-upload-key.p12
+    - '*.p12'
   skip-version-check: true
 
 # --- Vulnerability options ---

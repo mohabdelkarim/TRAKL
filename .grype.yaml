@@ -33,14 +33,11 @@ exclude:
   - './android/**'
   - './ios/**'
   - './.git/**'
-  - './.idea/**'
   - './__tests__/**'
   - '**/*.jks'
   - '**/*.p12'
   - '**/*.pem'
   - '**/*.key'
-  - './scripts/act.exe'
-  - './scripts/*.exe'
 
 # --- DB options ---
 db:
