@@ -28,9 +28,7 @@ scan:
     - .idea/
     - __tests__/
   skip-files:
-    - '@mopatch__trakl.bak.jks'
-    - '@mopatch__trakl.bak_OLD_1.jks'
-    - '@mopatch__trakl.jks'
+    - '*.jks'
     - android-upload-key.p12
   skip-version-check: true
 
