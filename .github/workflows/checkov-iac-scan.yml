@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Checkov scan
         id: checkov
-        uses: bridgecrewio/checkov-action@v12
+        uses: bridgecrewio/checkov-action@v2
         with:
           directory: .
           framework: github_actions,dockerfile,secrets

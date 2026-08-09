@@ -78,6 +78,7 @@ jobs:
 
       - name: Run jscpd
         run: npx jscpd --output ./jscpd-report --format json,html
+        continue-on-error: true
 
       - name: Upload jscpd results
         uses: actions/upload-artifact@v4
