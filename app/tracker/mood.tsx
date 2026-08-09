@@ -20,12 +20,10 @@ import { withAlpha } from '@/src/domain/trackers';
 import { useFormatters } from '@/src/shared/utils/format';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { dayISO } from '@/src/application/seed';
-import { avgMood, todayMood } from '@/src/application/stats';
+import { avgMood, lastSevenCalendarDays, localDateKey, todayMood } from '@/src/application/stats';
 import type { MoodEntry } from '@/src/domain/types';
 
 const MOOD_EMOJI = ['😣', '🙁', '😐', '🙂', '😄'];
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 type MoodLabelKey = 'awful' | 'bad' | 'okay' | 'good' | 'great';
 
@@ -57,12 +55,10 @@ export default function MoodScreen() {
   const today = todayMood(mood);
   const avg = avgMood(mood);
 
-  const chartData = WEEKDAY.map((label, i) => {
-    const iso = dayISO(-(6 - i));
-    const target = new Date(iso).toDateString();
-    const day = mood.filter((m) => new Date(m.date).toDateString() === target);
-    const value = day.length ? day.reduce((s, m) => s + m.mood, 0) / day.length : 0;
-    return { label, value: Math.round(value * 10) / 10 };
+  const chartData = lastSevenCalendarDays().map(({ date, key }) => {
+    const day = mood.filter((entry) => localDateKey(entry.date) === key);
+    const value = day.length ? day.reduce((sum, entry) => sum + entry.mood, 0) / day.length : 0;
+    return { label: fmt.date(date, { weekday: 'short' }), value: Math.round(value * 10) / 10 };
   });
 
   return (

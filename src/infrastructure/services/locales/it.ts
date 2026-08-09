@@ -15,6 +15,7 @@ export const it = {
     ad: 'Annuncio',
     sponsored: 'Sponsorizzato',
     close: 'Chiudi',
+    error: 'Errore',
   },
   home: {
     greetingMorning: 'Buongiorno, {{name}}',
@@ -66,6 +67,11 @@ export const it = {
     language: 'Lingua',
     theme: 'Tema',
     notifications: 'Notifiche',
+    engagementNotifications: 'Notifiche di coinvolgimento',
+    quietHours: 'Ore di silenzio',
+    quietHoursSchedule: 'Programma delle ore di silenzio',
+    quietHoursOptions: 'Opzioni delle ore di silenzio',
+    chooseQuietHours: 'Scegli le ore di silenzio',
     textSize: 'Dimensione Testo',
     more: 'Altro',
     rate: 'Valuta TRAKL',
@@ -128,7 +134,7 @@ export const it = {
     trackerBody: 'Aggiungi o rimuovi tracker in qualsiasi momento.',
     trackerContinue: 'Continua ({{count}} selezionati)',
     profileTitle: 'Configura il tuo profilo',
-    chooseEmoji: 'Oppure scegli un emoji',
+    chooseEmoji: "Oppure scegli un'emoji",
     namePlaceholder: 'Il tuo nome',
     focusQuestion: 'Qual è il tuo obiettivo principale?',
     focusSave: 'Risparmiare',
@@ -380,7 +386,7 @@ export const it = {
     defs: {
       a1: { name: 'Primo Passo', desc: 'Registra la tua prima attività' },
       a2: { name: 'Serie di 7 Giorni', desc: 'Mantieni un’abitudine per 7 giorni' },
-      a3: { name: 'Mattiniero', desc: 'Registra 3 notti di sonno' },
+      a3: { name: 'Routine del sonno', desc: 'Registra 3 notti di sonno' },
       a4: { name: 'Re del Budget', desc: 'Registra 10 transazioni' },
       a5: { name: 'Conquista-Obiettivi', desc: 'Completa il tuo primo obiettivo' },
       a6: { name: 'Nottambulo', desc: 'Registra 5 notti di sonno' },
@@ -388,7 +394,7 @@ export const it = {
       a8: { name: 'Topo di Biblioteca', desc: 'Aggiungi 20 registrazioni personalizzate' },
       a9: { name: 'Maratoneta', desc: 'Registra 3 allenamenti' },
       a10: { name: 'Centurione', desc: 'Completa 10 attività' },
-      a11: { name: 'Settimana Perfetta', desc: 'Completa 5 abitudini in un giorno' },
+      a11: { name: 'Giornata della Forza delle Abitudini', desc: 'Completa 5 abitudini in un giorno' },
       a12: { name: 'Re della Costanza', desc: 'Raggiungi una serie di 14 giorni' },
       a13: { name: 'Serie di 30 Giorni', desc: 'Raggiungi una serie di 30 giorni' },
       a14: { name: 'Mentalità da Milionario', desc: 'Completa 3 obiettivi' },
@@ -417,7 +423,7 @@ export const it = {
     daysAgo_other: '{{count}} g',
   },
   notifReminders: {
-    habitTitle: 'Promemoria abitudine',
+    habitTitle: "Promemoria dell'abitudine",
     habitBody: 'È ora della tua abitudine {{name}}',
     customBody: 'È ora di registrare {{name}}',
     taskTitle: 'Attività in scadenza',
@@ -425,6 +431,14 @@ export const it = {
     permissionDeniedTitle: 'Le notifiche sono disattivate',
     permissionDeniedBody:
       'Attiva le notifiche per questa app nelle Impostazioni del dispositivo per ricevere i promemoria.',
+    weeklyReviewTitle: 'Revisione settimanale',
+    weeklyReviewBody: 'Prenditi un momento per rivedere la tua settimana.',
+    streakTitle: 'Proteggi la tua serie',
+    streakBody: 'Un rapido check-in mantiene attiva la tua serie di abitudini.',
+    milestoneTitle: 'Nuovo traguardo',
+    milestoneBody: 'Hai sbloccato un nuovo obiettivo.',
+    inactivityTitle: 'Mantieni lo slancio',
+    inactivityBody: 'Un breve check-in può aiutarti a tornare sulla buona strada.',
   },
   analyticsScreen: {
     excellent: 'Eccellente',
@@ -677,4 +691,11 @@ export const it = {
     notifGoalTitle: 'Traguardo raggiunto',
     notifGoalMsg: 'Hai raggiunto un traguardo in Risparmiare 5.000 €',
   },
+  consent: {
+    title: 'Pubblicità e analisi personalizzate', description: 'TRAKL usa Google Mobile Ads per mostrarti pubblicità personalizzate e misurarne le prestazioni. I tuoi dati vengono trattati in conformità con la nostra Informativa sulla privacy.', personalized: 'Pubblicità personalizzata in base ai tuoi interessi', measurement: 'Misurazione dell’efficacia degli annunci', noTracking: 'Non vendiamo né condividiamo i tuoi dati personali', privacyNote: 'Puoi modificare il consenso in qualsiasi momento nelle Impostazioni.', accept: 'Accetta e continua', reject: 'Rifiuta',
+  },
+  backup: {
+    exportBackup: 'Esporta backup', importBackup: 'Importa backup', exportTitle: 'Esporta backup', importTitle: 'Importa backup', export: 'Esporta', import: 'Ripristina', pasteJson: 'JSON del backup', pasteJsonPlaceholder: 'Incolla qui il JSON del tuo backup TRAKL...', orChooseFile: 'Oppure scegli un file .json', exportSuccess: 'Backup esportato.', importSuccess: 'Backup ripristinato con successo.', confirmTitle: 'Ripristinare il backup?', confirmBody: 'Tutti i dati TRAKL attuali verranno sostituiti dal backup. Questa operazione non può essere annullata.', confirm: 'Ripristina',
+  },
+  legal: { privacyPolicy: 'Informativa sulla privacy', termsOfService: 'Termini di servizio', privacyUrl: 'https://www.pimora.tech/privacy', termsUrl: 'https://www.pimora.tech/terms' },
 };

@@ -71,6 +71,10 @@ export default function AchievementsScreen() {
   const goals = useTrakl((s) => s.goals);
   const sleep = useTrakl((s) => s.sleep);
   const workouts = useTrakl((s) => s.workouts);
+  const mood = useTrakl((s) => s.mood);
+  const water = useTrakl((s) => s.water);
+  const weight = useTrakl((s) => s.weight);
+  const meditation = useTrakl((s) => s.meditation);
   const customTrackers = useTrakl((s) => s.customTrackers);
   const [tab, setTab] = useState<Tab>('unlocked');
 
@@ -83,9 +87,13 @@ export default function AchievementsScreen() {
         goals,
         sleep,
         workouts,
+        mood,
+        water,
+        weight,
+        meditation,
         customTrackers,
       }),
-    [transactions, habits, tasks, goals, sleep, workouts, customTrackers],
+    [transactions, habits, tasks, goals, sleep, workouts, mood, water, weight, meditation, customTrackers],
   );
 
   const nameOf = (a: ComputedAchievement) => t(`achievements.defs.${a.id}.name` as ParseKeys);

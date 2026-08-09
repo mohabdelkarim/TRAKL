@@ -5,8 +5,82 @@ import {
   tasksDueToday,
   lastSleepHours,
   lifeScore,
+  lastSevenCalendarDays,
+  localDateKey,
 } from '@/src/application/stats';
 import type { Transaction, Habit, Task, SleepEntry, Goal } from '@/src/domain/types';
+import { dayISO } from '@/src/application/seed';
+import { computeAchievements } from '@/src/application/achievements';
+
+describe('Stats: Calendar helpers', () => {
+  it('builds seven consecutive local dates ending today', () => {
+    const days = lastSevenCalendarDays();
+    expect(days).toHaveLength(7);
+    expect(days[6].key).toBe(localDateKey(new Date()));
+    for (let i = 1; i < days.length; i++) {
+      const expectedNext = new Date(days[i - 1].date);
+      expectedNext.setDate(expectedNext.getDate() + 1);
+      expect(localDateKey(days[i].date)).toBe(localDateKey(expectedNext));
+    }
+  });
+
+  it('normalizes date-only and full ISO values to the same local day', () => {
+    expect(localDateKey('2024-05-06')).toBe('2024-05-06');
+    expect(localDateKey('2024-05-06T18:30:00')).toBe('2024-05-06');
+  });
+});
+
+describe('Achievements: live computation', () => {
+  const emptyInput = {
+    transactions: [],
+    habits: [] as Habit[],
+    tasks: [],
+    goals: [],
+    sleep: [],
+    workouts: [],
+    mood: [],
+    water: [],
+    weight: [],
+    meditation: [],
+    customTrackers: [],
+  };
+
+  it('returns all achievement definitions with bounded progress', () => {
+    const result = computeAchievements(emptyInput);
+    expect(result).toHaveLength(18);
+    expect(new Set(result.map((achievement) => achievement.id)).size).toBe(18);
+    expect(result.every((achievement) => achievement.progress >= 0 && achievement.progress <= 1)).toBe(
+      true,
+    );
+  });
+
+  it('unlocks First Step from a water entry alone', () => {
+    const result = computeAchievements({
+      ...emptyInput,
+      water: [{ id: 'water-1', date: new Date().toISOString(), glasses: 1 }],
+    });
+    expect(result.find((achievement) => achievement.id === 'a1')).toMatchObject({
+      unlocked: true,
+      value: 1,
+    });
+  });
+
+  it('unlocks the five-habits daily achievement from five completed habits today', () => {
+    const today = localDateKey(new Date());
+    const habits: Habit[] = Array.from({ length: 5 }, (_, index) => ({
+      id: `habit-${index}`,
+      name: `Habit ${index}`,
+      cadence: 'Daily',
+      color: '#000000',
+      completions: { [today]: true },
+    }));
+    const result = computeAchievements({ ...emptyInput, habits });
+    expect(result.find((achievement) => achievement.id === 'a11')).toMatchObject({
+      unlocked: true,
+      value: 5,
+    });
+  });
+});
 
 describe('Stats: Budget', () => {
   it('should calculate budget left correctly', () => {
@@ -78,6 +152,20 @@ describe('Stats: Habits', () => {
     const result = habitsToday(habits);
     expect(result.done).toBe(1);
     expect(result.total).toBe(2);
+  });
+
+  it('should handle legacy full ISO completion keys', () => {
+    const habits: Habit[] = [
+      {
+        id: '1',
+        name: 'Morning Run',
+        cadence: 'Daily',
+        color: '#f0c061',
+        completions: { [dayISO(0)]: true },
+      },
+    ];
+
+    expect(habitsToday(habits)).toEqual({ done: 1, total: 1 });
   });
 
   it('should handle empty habits', () => {

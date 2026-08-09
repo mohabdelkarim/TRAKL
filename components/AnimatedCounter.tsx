@@ -1,3 +1,4 @@
+import { Text as RNText } from 'react-native';
 import { useEffect, useState } from 'react';
 import {
   runOnJS,
@@ -20,6 +21,7 @@ type Props = {
   prefix?: string;
   /** Text suffix, e.g. a unit. */
   suffix?: string;
+  suffixStyle?: object;
   /** Font weight for ClashText. */
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
   color?: string;
@@ -40,6 +42,7 @@ export function AnimatedCounter({
   duration = 900,
   prefix = '',
   suffix = '',
+  suffixStyle,
   weight = 'bold',
   color,
   style,
@@ -76,7 +79,7 @@ export function AnimatedCounter({
     <ClashText weight={weight} color={color} style={style} numberOfLines={numberOfLines}>
       {prefix}
       {text}
-      {suffix}
+      {suffix ? <RNText style={suffixStyle}>{suffix}</RNText> : null}
     </ClashText>
   );
 }

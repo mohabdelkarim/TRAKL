@@ -13,6 +13,7 @@ const LOG = '[AdMob]';
 // Track whether we've already logged the unit info this session
 // to avoid spamming the console on every AdBanner mount.
 let loggedUnit = false;
+let loggedExpoGoWarning = false;
 
 type GoogleMobileAds = typeof import('react-native-google-mobile-ads');
 
@@ -64,15 +65,11 @@ function ensureSdkReady(): Promise<void> {
       const mod = await import('react-native-google-mobile-ads');
       if (mod?.default && mod?.BannerAd) {
         if (__DEV__) console.log(`${LOG} module loaded, initializing SDK...`);
-        mod
-          .default()
-          .initialize()
-          .then((statuses) => {
-            if (__DEV__) console.log(`${LOG} SDK initialized:`, statuses);
-          })
-          .catch((e) => {
-            if (__DEV__) console.warn(`${LOG} SDK init error:`, e);
-          });
+        const statuses = await mod.default().initialize();
+        if (__DEV__) console.log(`${LOG} SDK initialized:`, statuses);
+        // Do not render BannerAd until initialize() has completed. Rendering
+        // before the native SDK is ready can leave the banner permanently
+        // invisible on a cold native start.
         sharedAds = mod;
       } else {
         if (__DEV__) console.warn(`${LOG} module loaded but BannerAd/default missing.`);
@@ -102,6 +99,12 @@ export function AdBanner() {
 
   useEffect(() => {
     if (isExpoGo) {
+      if (__DEV__ && !loggedExpoGoWarning) {
+        loggedExpoGoWarning = true;
+        console.warn(
+          `${LOG} disabled in Expo Go. Use a development build or a release build to load AdMob.`,
+        );
+      }
       setFailed(true);
       return;
     }

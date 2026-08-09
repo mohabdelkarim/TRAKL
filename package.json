@@ -17,7 +17,11 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "knip": "knip",
-    "ast-grep": "ast-grep scan"
+    "jscpd": "jscpd",
+    "ast-grep": "ast-grep scan",
+    "semgrep": "semgrep scan --config .semgrep.yml",
+    "osv-scanner": "osv-scanner --recursive ./",
+    "retirejs": "retire --path . --severity medium"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "~0.4.2",
@@ -81,6 +85,7 @@
     "eslint-plugin-security": "^4.0.1",
     "jest": "^29.7.0",
     "jest-expo": "~54.0.0",
+    "jscpd": "^5.0.12",
     "knip": "^6.26.0",
     "lightningcss": "^1.29.2",
     "oxfmt": "^0.46.0",

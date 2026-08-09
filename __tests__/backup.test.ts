@@ -25,6 +25,11 @@ const baseState: Pick<
   | 'achievements'
   | 'monthlyBudget'
   | 'notificationsEnabled'
+  | 'retentionNotificationsEnabled'
+  | 'quietHoursEnabled'
+  | 'quietHoursStart'
+  | 'quietHoursEnd'
+  | 'retentionNotifiedAchievementIds'
   | 'waterGoal'
 > = {
   onboarded: true,
@@ -62,6 +67,11 @@ const baseState: Pick<
   achievements: [],
   monthlyBudget: 1500,
   notificationsEnabled: false,
+  retentionNotificationsEnabled: true,
+  quietHoursEnabled: true,
+  quietHoursStart: '22:00',
+  quietHoursEnd: '08:00',
+  retentionNotifiedAchievementIds: [],
   waterGoal: 10,
 };
 
@@ -103,6 +113,22 @@ describe('parseBackup', () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.error).toMatch(/Unsupported backup version/);
+  });
+
+  it('backfills retention settings for older backups', () => {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    const legacy = JSON.parse(createBackup(baseState as unknown as TraklState)) as Record<string, unknown>;
+    delete legacy.retentionNotificationsEnabled;
+    delete legacy.quietHoursEnabled;
+    delete legacy.quietHoursStart;
+    delete legacy.quietHoursEnd;
+    delete legacy.retentionNotifiedAchievementIds;
+    const result = parseBackup(JSON.stringify(legacy));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data.retentionNotificationsEnabled).toBe(true);
+    expect(result.data.quietHoursStart).toBe('22:00');
+    expect(result.data.retentionNotifiedAchievementIds).toEqual([]);
   });
 
   it('rejects backups missing required arrays', () => {

@@ -21,11 +21,10 @@ import { withAlpha } from '@/src/domain/trackers';
 import { useFormatters } from '@/src/shared/utils/format';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { dayISO } from '@/src/application/seed';
+import { lastSevenCalendarDays, localDateKey } from '@/src/application/stats';
 import type { Workout } from '@/src/domain/types';
 import type { Palette } from '@/src/shared/theme';
 
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 function isThisWeek(iso: string): boolean {
   const d = new Date(iso);
@@ -121,14 +120,12 @@ export default function FitnessScreen() {
   const week = workouts.filter((w) => isThisWeek(w.date));
   const weekKcal = week.reduce((s, w) => s + w.kcal, 0);
 
-  const chartData = WEEKDAY.map((label, i) => {
-    const iso = dayISO(-(6 - i));
-    const target = new Date(iso).toDateString();
-    const total = workouts
-      .filter((w) => new Date(w.date).toDateString() === target)
-      .reduce((s, w) => s + w.durationMinutes, 0);
-    return { label, value: total };
-  });
+  const chartData = lastSevenCalendarDays().map(({ date, key }) => ({
+    label: fmt.date(date, { weekday: 'short' }),
+    value: workouts
+      .filter((workout) => localDateKey(workout.date) === key)
+      .reduce((sum, workout) => sum + workout.durationMinutes, 0),
+  }));
 
   return (
     <Screen>

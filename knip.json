@@ -7,6 +7,6 @@
     "__tests__/**/*.{ts,tsx}",
     "scripts/**/*.{mjs,ts,js}"
   ],
-  "ignoreBinaries": ["ast-grep"],
+  "ignoreBinaries": ["semgrep", "osv-scanner", "retire"],
   "ignoreDependencies": ["eslint-plugin-security"]
 }

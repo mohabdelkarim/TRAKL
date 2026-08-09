@@ -17,14 +17,14 @@ import { Caption, ClashText, InterText } from '@/components/Typography';
 import { Clock } from '@/components/icons';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { avgSleepHours, fmtSleep } from '@/src/application/stats';
-
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+import { avgSleepHours, fmtSleep, lastSevenCalendarDays, localDateKey } from '@/src/application/stats';
+import { useFormatters } from '@/src/shared/utils/format';
 
 export default function SleepScreen() {
   const colors = useColors();
   const accents = useTrackerAccents();
   const { t } = useTranslation();
+  const fmt = useFormatters();
   const sleep = useTrakl((s) => s.sleep);
   const addSleep = useTrakl((s) => s.addSleep);
   const [formOpen, setFormOpen] = useState(false);
@@ -40,13 +40,16 @@ export default function SleepScreen() {
   const avg = avgSleepHours(sleep);
   const best = sorted.reduce((m, e) => Math.max(m, e.durationMinutes), 0);
 
-  const chartData = [...sorted]
-    .slice(0, 7)
-    .toReversed()
-    .map((e) => ({
-      label: WEEKDAY[new Date(e.date).getDay() === 0 ? 6 : new Date(e.date).getDay() - 1],
-      value: Math.round((e.durationMinutes / 60) * 10) / 10,
-    }));
+  const chartData = lastSevenCalendarDays().map(({ date, key }) => {
+    const entries = sleep.filter((entry) => localDateKey(entry.date) === key);
+    const minutes = entries.length
+      ? entries.reduce((sum, entry) => sum + entry.durationMinutes, 0) / entries.length
+      : 0;
+    return {
+      label: fmt.date(date, { weekday: 'short' }),
+      value: Math.round((minutes / 60) * 10) / 10,
+    };
+  });
 
   return (
     <Screen>

@@ -24,9 +24,9 @@ import { formatLogValue } from '@/src/shared/utils/customFormat';
 import { haptics } from '@/src/shared/haptics';
 import { useColors } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { dayISO } from '@/src/application/seed';
+import { lastSevenCalendarDays, localDateKey } from '@/src/application/stats';
 
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
 
 export default function CustomDetailScreen() {
   const router = useRouter();
@@ -55,18 +55,16 @@ export default function CustomDetailScreen() {
 
   const chartData = useMemo(
     () =>
-      WEEKDAY.map((label, i) => {
-        const iso = dayISO(-(6 - i));
-        const target = new Date(iso).toDateString();
-        const dayLogs = logs.filter((l) => new Date(l.date).toDateString() === target);
+      lastSevenCalendarDays().map(({ date, key }) => {
+        const dayLogs = logs.filter((log) => localDateKey(log.date) === key);
         let value = 0;
         if (tracker?.type === 'yesno') value = dayLogs.length > 0 ? 1 : 0;
         else if (tracker?.type === 'counter') value = dayLogs.reduce((s, l) => s + l.value, 0);
         else if (dayLogs.length > 0)
           value = dayLogs.reduce((s, l) => s + l.value, 0) / dayLogs.length;
-        return { label, value: Math.round(value * 10) / 10 };
+        return { label: fmt.date(date, { weekday: 'short' }), value: Math.round(value * 10) / 10 };
       }),
-    [logs, tracker?.type],
+    [logs, tracker?.type, fmt],
   );
 
   if (!tracker) {

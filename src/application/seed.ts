@@ -100,7 +100,7 @@ function habitCompletions(pattern: number[]): Record<string, boolean> {
   // pattern: offsets (negative) that are completed within the last 30 days
   const map: Record<string, boolean> = {};
   pattern.forEach((o) => {
-    map[dayISO(o)] = true;
+    map[dayISO(o).slice(0, 10)] = true;
   });
   return map;
 }

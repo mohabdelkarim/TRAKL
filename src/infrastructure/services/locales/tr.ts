@@ -1,5 +1,5 @@
 export const tr = {
-  tabs: { home: 'Ana Sayfa', trackers: 'Takipçiler', analytics: 'Analiz', profile: 'Profil' },
+  tabs: { home: 'Ana Sayfa', trackers: 'Takipler', analytics: 'Analiz', profile: 'Profil' },
   common: {
     seeAll: 'Tümünü gör',
     cancel: 'İptal',
@@ -15,6 +15,7 @@ export const tr = {
     ad: 'Reklam',
     sponsored: 'Sponsorlu',
     close: 'Kapat',
+    error: 'Hata',
   },
   home: {
     greetingMorning: 'Günaydın, {{name}}',
@@ -66,6 +67,11 @@ export const tr = {
     language: 'Dil',
     theme: 'Tema',
     notifications: 'Bildirimler',
+    engagementNotifications: 'Etkileşim bildirimleri',
+    quietHours: 'Sessiz saatler',
+    quietHoursSchedule: 'Sessiz saatler programı',
+    quietHoursOptions: 'Sessiz saat seçenekleri',
+    chooseQuietHours: 'Sessiz saatleri seç',
     textSize: 'Yazı Boyutu',
     more: 'Daha fazla',
     rate: "TRAKL'i Değerlendir",
@@ -380,7 +386,7 @@ export const tr = {
     defs: {
       a1: { name: 'İlk Adım', desc: 'İlk etkinliğinizi kaydedin' },
       a2: { name: '7 Günlük Seri', desc: 'Bir alışkanlığı 7 gün sürdürün' },
-      a3: { name: 'Erkenci', desc: '3 gece uyku kaydedin' },
+      a3: { name: 'Uyku Rutini', desc: '3 gece uyku kaydedin' },
       a4: { name: 'Bütçe Patronu', desc: '10 işlem kaydedin' },
       a5: { name: 'Hedef Avcısı', desc: 'İlk hedefinizi tamamlayın' },
       a6: { name: 'Gece Kuşu', desc: '5 gece uyku kaydedin' },
@@ -388,7 +394,7 @@ export const tr = {
       a8: { name: 'Kitap Kurdu', desc: '20 özel kayıt ekleyin' },
       a9: { name: 'Maratoncu', desc: '3 antrenman kaydedin' },
       a10: { name: 'Centurion', desc: '10 görev bitirin' },
-      a11: { name: 'Mükemmel Hafta', desc: 'Bir günde 5 alışkanlık tamamlayın' },
+      a11: { name: 'Alışkanlık Gücü Günü', desc: 'Bir günde 5 alışkanlık tamamlayın' },
       a12: { name: 'İstikrar Kralı', desc: '14 günlük seriye ulaşın' },
       a13: { name: '30 Günlük Seri', desc: '30 günlük seriye ulaşın' },
       a14: { name: 'Milyoner Zihniyeti', desc: '3 hedef tamamlayın' },
@@ -425,6 +431,14 @@ export const tr = {
     permissionDeniedTitle: 'Bildirimler kapalı',
     permissionDeniedBody:
       'Hatırlatıcı almak için cihaz Ayarlarından bu uygulamanın bildirimlerini açın.',
+    weeklyReviewTitle: 'Haftalık değerlendirme',
+    weeklyReviewBody: 'Haftanı gözden geçirmek için biraz zaman ayır.',
+    streakTitle: 'Serini koru',
+    streakBody: 'Kısa bir kontrol, alışkanlık serini sürdürmene yardımcı olur.',
+    milestoneTitle: 'Yeni dönüm noktası',
+    milestoneBody: 'Yeni bir başarı kilidini açtın.',
+    inactivityTitle: 'İvmeni koru',
+    inactivityBody: 'Kısa bir kontrol, yeniden yola dönmene yardımcı olabilir.',
   },
   analyticsScreen: {
     excellent: 'Mükemmel',
@@ -679,4 +693,7 @@ export const tr = {
     notifGoalTitle: 'Kilometre taşına ulaşıldı',
     notifGoalMsg: '5.000 € biriktir hedefinde bir kilometre taşına ulaştın',
   },
+  consent: { title: 'Kişiselleştirilmiş Reklamlar ve Analiz', description: 'TRAKL, size kişiselleştirilmiş reklamlar göstermek ve reklam performansını ölçmek için Google Mobile Ads kullanır. Verileriniz Gizlilik Politikamıza uygun olarak işlenir.', personalized: 'İlgi alanlarınıza göre kişiselleştirilmiş reklamlar', measurement: 'Reklam etkinliğinin ölçümü', noTracking: 'Kişisel verilerinizi satmıyor veya paylaşmıyoruz', privacyNote: 'Onayınızı istediğiniz zaman Ayarlar bölümünden değiştirebilirsiniz.', accept: 'Kabul et ve devam et', reject: 'Reddet' },
+  backup: { exportBackup: 'Yedeği dışa aktar', importBackup: 'Yedeği içe aktar', exportTitle: 'Yedeği Dışa Aktar', importTitle: 'Yedeği İçe Aktar', export: 'Dışa aktar', import: 'Geri yükle', pasteJson: 'Yedek JSON’u', pasteJsonPlaceholder: 'TRAKL yedeğinizin JSON’unu buraya yapıştırın...', orChooseFile: 'Veya bir .json dosyası seçin', exportSuccess: 'Yedek dışa aktarıldı.', importSuccess: 'Yedek başarıyla geri yüklendi.', confirmTitle: 'Yedek geri yüklensin mi?', confirmBody: 'Bu işlem mevcut tüm TRAKL verilerinizi yedekle değiştirir. Geri alınamaz.', confirm: 'Geri yükle' },
+  legal: { privacyPolicy: 'Gizlilik Politikası', termsOfService: 'Hizmet Şartları', privacyUrl: 'https://www.pimora.tech/privacy', termsUrl: 'https://www.pimora.tech/terms' },
 };

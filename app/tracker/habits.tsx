@@ -27,6 +27,7 @@ import {
   habitStreak,
   habitsToday,
   weekCount,
+  hasHabitCompletionOnDate,
 } from '@/src/application/stats';
 import { dayISO } from '@/src/application/seed';
 import type { Habit } from '@/src/domain/types';
@@ -42,7 +43,7 @@ function HabitRow({
 }) {
   const colors = useColors();
   const { t } = useTranslation();
-  const done = habit.completions[dayISO(0)];
+  const done = hasHabitCompletionOnDate(habit, new Date());
   const week = weekCount(habit);
   const streak = habitStreak(habit);
   const targetHit = week >= WEEKLY_TARGET;
@@ -163,7 +164,7 @@ function Heatmap({ habits }: { habits: Habit[] }) {
     for (let d = 0; d < 7; d++) {
       const offset = -(w * 7 + (todayDow - d));
       const iso = dayISO(offset);
-      const completed = habits.filter((h) => h.completions[iso]).length;
+      const completed = habits.filter((h) => hasHabitCompletionOnDate(h, iso)).length;
       const level = habits.length ? completed / habits.length : 0;
       row.push({ iso, level, isToday: offset === 0 });
     }

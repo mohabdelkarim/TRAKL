@@ -15,6 +15,7 @@ export const es = {
     ad: 'Anuncio',
     sponsored: 'Patrocinado',
     close: 'Cerrar',
+    error: 'Error',
   },
   home: {
     greetingMorning: 'Buenos días, {{name}}',
@@ -66,6 +67,11 @@ export const es = {
     language: 'Idioma',
     theme: 'Tema',
     notifications: 'Notificaciones',
+    engagementNotifications: 'Notificaciones de motivación',
+    quietHours: 'Horas de silencio',
+    quietHoursSchedule: 'Horario de horas de silencio',
+    quietHoursOptions: 'Opciones de horas de silencio',
+    chooseQuietHours: 'Elegir horas de silencio',
     textSize: 'Tamaño del Texto',
     more: 'Más',
     rate: 'Valorar TRAKL',
@@ -380,7 +386,7 @@ export const es = {
     defs: {
       a1: { name: 'Primer Paso', desc: 'Registra tu primera actividad' },
       a2: { name: 'Racha de 7 Días', desc: 'Mantén un hábito durante 7 días' },
-      a3: { name: 'Madrugador', desc: 'Registra 3 noches de sueño' },
+      a3: { name: 'Rutina de sueño', desc: 'Registra 3 noches de sueño' },
       a4: { name: 'Jefe del Presupuesto', desc: 'Registra 10 transacciones' },
       a5: { name: 'Cazametas', desc: 'Completa tu primera meta' },
       a6: { name: 'Ave Nocturna', desc: 'Registra 5 noches de sueño' },
@@ -388,7 +394,7 @@ export const es = {
       a8: { name: 'Ratón de Biblioteca', desc: 'Añade 20 registros personalizados' },
       a9: { name: 'Maratonista', desc: 'Registra 3 entrenamientos' },
       a10: { name: 'Centurión', desc: 'Termina 10 tareas' },
-      a11: { name: 'Semana Perfecta', desc: 'Completa 5 hábitos en un día' },
+      a11: { name: 'Día de poder de hábitos', desc: 'Completa 5 hábitos en un día' },
       a12: { name: 'Rey de la Constancia', desc: 'Alcanza una racha de 14 días' },
       a13: { name: 'Racha de 30 Días', desc: 'Alcanza una racha de 30 días' },
       a14: { name: 'Mentalidad Millonaria', desc: 'Completa 3 metas' },
@@ -425,6 +431,14 @@ export const es = {
     permissionDeniedTitle: 'Las notificaciones están desactivadas',
     permissionDeniedBody:
       'Activa las notificaciones de esta app en los Ajustes de tu dispositivo para recibir recordatorios.',
+    weeklyReviewTitle: 'Revisión semanal',
+    weeklyReviewBody: 'Tómate un momento para revisar tu semana.',
+    streakTitle: 'Protege tu racha',
+    streakBody: 'Un breve registro ayuda a mantener tu racha de hábitos.',
+    milestoneTitle: 'Nuevo hito',
+    milestoneBody: 'Has desbloqueado un nuevo logro.',
+    inactivityTitle: 'Mantén el impulso',
+    inactivityBody: 'Un breve registro puede ayudarte a volver al camino.',
   },
   analyticsScreen: {
     excellent: 'Excelente',
@@ -678,4 +692,11 @@ export const es = {
     notifGoalTitle: 'Hito alcanzado',
     notifGoalMsg: 'Alcanzaste un hito en Ahorrar 5.000 €',
   },
+  consent: {
+    title: 'Anuncios y análisis personalizados', description: 'TRAKL utiliza Google Mobile Ads para mostrarte anuncios personalizados y medir su rendimiento. Tus datos se procesan de acuerdo con nuestra Política de privacidad.', personalized: 'Anuncios personalizados según tus intereses', measurement: 'Medición de la eficacia de los anuncios', noTracking: 'No vendemos ni compartimos tus datos personales', privacyNote: 'Puedes cambiar tu consentimiento en cualquier momento desde Ajustes.', accept: 'Aceptar y continuar', reject: 'Rechazar',
+  },
+  backup: {
+    exportBackup: 'Exportar copia de seguridad', importBackup: 'Importar copia de seguridad', exportTitle: 'Exportar copia de seguridad', importTitle: 'Importar copia de seguridad', export: 'Exportar', import: 'Restaurar', pasteJson: 'JSON de la copia de seguridad', pasteJsonPlaceholder: 'Pega aquí el JSON de tu copia de seguridad de TRAKL...', orChooseFile: 'O elige un archivo .json', exportSuccess: 'Copia de seguridad exportada.', importSuccess: 'Copia de seguridad restaurada correctamente.', confirmTitle: '¿Restaurar la copia de seguridad?', confirmBody: 'Esto reemplazará todos tus datos actuales de TRAKL con la copia de seguridad. No se puede deshacer.', confirm: 'Restaurar',
+  },
+  legal: { privacyPolicy: 'Política de privacidad', termsOfService: 'Términos del servicio', privacyUrl: 'https://www.pimora.tech/privacy', termsUrl: 'https://www.pimora.tech/terms' },
 };

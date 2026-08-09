@@ -28,7 +28,6 @@ import {
   Zap,
 } from 'lucide-react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Avatar } from '@/components/Avatar';
 import { BackupSheet } from '@/components/BackupSheet';
 import { Card } from '@/components/Card';
@@ -87,19 +86,34 @@ function PrefRow({
 }) {
   const colors = useColors();
   const body = (
-    <View className="flex-row items-center justify-between py-3.5">
-      <View className="flex-row items-center gap-3">
+    <View className="flex-row items-center justify-between py-3.5" style={{ minWidth: 0 }}>
+      <View className="flex-1 flex-row items-center gap-3" style={{ minWidth: 0 }}>
         <Icon size={20} color={colors.text} strokeWidth={1.5} />
-        <InterText weight="medium" style={{ fontSize: 15 }}>
+        <InterText
+          weight="medium"
+          style={{ fontSize: 15, flexShrink: 1 }}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {label}
         </InterText>
       </View>
       {toggle ? (
-        <Switch isSelected={toggleValue} onSelectedChange={onToggle} />
+        <View style={{ flexShrink: 0, marginLeft: 12 }}>
+          <Switch isSelected={toggleValue} onSelectedChange={onToggle} />
+        </View>
       ) : (
-        <View className="flex-row items-center gap-1">
+        <View
+          className="flex-row items-center gap-1"
+          style={{ flexShrink: 1, maxWidth: '48%', marginLeft: 12 }}
+        >
           {value ? (
-            <InterText color={colors.muted} style={{ fontSize: 14 }}>
+            <InterText
+              color={colors.muted}
+              style={{ fontSize: 14, flexShrink: 1, textAlign: 'right' }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {value}
             </InterText>
           ) : null}
@@ -162,6 +176,13 @@ export default function ProfileScreen() {
   const updateProfile = useTrakl((s) => s.updateProfile);
   const notifOn = useTrakl((s) => s.notificationsEnabled);
   const setNotifOn = useTrakl((s) => s.setNotificationsEnabled);
+  const retentionOn = useTrakl((s) => s.retentionNotificationsEnabled);
+  const setRetentionOn = useTrakl((s) => s.setRetentionNotificationsEnabled);
+  const quietOn = useTrakl((s) => s.quietHoursEnabled);
+  const setQuietOn = useTrakl((s) => s.setQuietHoursEnabled);
+  const quietStart = useTrakl((s) => s.quietHoursStart);
+  const quietEnd = useTrakl((s) => s.quietHoursEnd);
+  const setQuietHours = useTrakl((s) => s.setQuietHours);
   const resetApp = useTrakl((s) => s.resetApp);
   const loadSampleData = useTrakl((s) => s.loadSampleData);
   const exportAppData = useTrakl((s) => s.exportAppData);
@@ -182,6 +203,7 @@ export default function ProfileScreen() {
 
   const [themeOpen, setThemeOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [quietHoursOpen, setQuietHoursOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -198,15 +220,21 @@ export default function ProfileScreen() {
   const [importResultOpen, setImportResultOpen] = useState(false);
 
   const onToggleNotifications = (value: boolean) => {
-    setNotifOn(value);
-    if (!value) return;
-    // Turning on: verify the OS actually grants permission. If denied, revert
-    // the toggle and tell the user how to enable it — otherwise the switch
-    // would read "on" while no reminder could ever fire.
-    void requestNotificationPermission().then((granted) => {
-      if (granted) return;
+    if (!value) {
       setNotifOn(false);
-      setNotifDeniedOpen(true);
+      return;
+    }
+
+    // Request OS permission before enabling the persisted preference. This
+    // prevents the reminder sync from racing the permission request and
+    // cancelling/rescheduling against an unresolved permission state.
+    void requestNotificationPermission().then((granted) => {
+      if (!granted) {
+        setNotifOn(false);
+        setNotifDeniedOpen(true);
+        return;
+      }
+      setNotifOn(true);
     });
   };
 
@@ -290,6 +318,13 @@ export default function ProfileScreen() {
     { value: 'dark', label: t('profile.themeDark') },
     { value: 'system', label: t('profile.themeSystem') },
   ];
+
+  const quietHourOptions: SheetOption[] = [
+    '20:00–07:00',
+    '21:00–07:00',
+    '22:00–08:00',
+    '23:00–08:00',
+  ].map((value) => ({ value, label: value }));
 
   const langOptions: SheetOption[] = LANGUAGES.map((l) => ({
     value: l.code,
@@ -407,6 +442,33 @@ export default function ProfileScreen() {
                 toggleValue={notifOn}
                 onToggle={onToggleNotifications}
               />
+              <View style={{ height: 1, backgroundColor: colors.border }} />
+              <PrefRow
+                icon={Bell}
+                label={t('profile.engagementNotifications')}
+                toggle
+                toggleValue={retentionOn}
+                onToggle={setRetentionOn}
+              />
+              <View style={{ height: 1, backgroundColor: colors.border }} />
+              <PrefRow
+                icon={Moon}
+                label={t('profile.quietHours')}
+                toggle
+                toggleValue={quietOn}
+                onToggle={setQuietOn}
+              />
+              {quietOn ? (
+                <>
+                  <View style={{ height: 1, backgroundColor: colors.border }} />
+                  <PrefRow
+                    icon={Moon}
+                    label={t('profile.quietHoursSchedule')}
+                    value={`${quietStart}–${quietEnd}`}
+                    onPress={() => setQuietHoursOpen(true)}
+                  />
+                </>
+              ) : null}
               <View style={{ height: 1, backgroundColor: colors.border }} />
               <PrefRow
                 icon={UserPen}
@@ -562,7 +624,6 @@ export default function ProfileScreen() {
             </PressableScale>
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
 
       <OptionSheet
@@ -585,6 +646,18 @@ export default function ProfileScreen() {
           updateProfile({ language: codeToName(code) });
         }}
         onClose={() => setLangOpen(false)}
+      />
+      <OptionSheet
+        visible={quietHoursOpen}
+        title={t('profile.chooseQuietHours')}
+        options={quietHourOptions}
+        selected={`${quietStart}–${quietEnd}`}
+        onSelect={(value) => {
+          const [start, end] = value.split('–');
+          if (start && end) setQuietHours(start, end);
+          setQuietHoursOpen(false);
+        }}
+        onClose={() => setQuietHoursOpen(false)}
       />
       <EditProfileSheet
         visible={editOpen}

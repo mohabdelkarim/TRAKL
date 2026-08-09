@@ -49,6 +49,13 @@ import {
 // 0 state gracefully and the user sets their own budget via Edit.
 const MONTHLY_BUDGET = 0;
 
+export const RETENTION_DEFAULTS = {
+  retentionNotificationsEnabled: true,
+  quietHoursEnabled: true,
+  quietHoursStart: '22:00',
+  quietHoursEnd: '08:00',
+} as const;
+
 const ALL_TRACKERS: TrackerKey[] = [
   'finance',
   'habits',
@@ -98,6 +105,12 @@ interface TraklState {
 
   monthlyBudget: number;
   notificationsEnabled: boolean;
+  retentionNotificationsEnabled: boolean;
+  quietHoursEnabled: boolean;
+  quietHoursStart: string;
+  quietHoursEnd: string;
+  retentionNotifiedAchievementIds: string[];
+  retentionLastInactivityNotificationAt?: string;
   waterGoal: number;
 
   // actions
@@ -115,6 +128,12 @@ interface TraklState {
   togglePinTracker: (key: TrackerKey) => void;
   updateProfile: (patch: Partial<Profile>) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
+  setRetentionNotificationsEnabled: (enabled: boolean) => void;
+  setQuietHoursEnabled: (enabled: boolean) => void;
+  setQuietHours: (start: string, end: string) => void;
+  markRetentionAchievementsNotified: (ids: string[]) => void;
+  markRetentionInactivityScheduled: (at: string) => void;
+  addNotification: (notification: Omit<AppNotification, 'read'>) => void;
   setMonthlyBudget: (budget: number) => void;
 
   addTransaction: (tx: Omit<Transaction, 'id'>) => void;
@@ -249,6 +268,9 @@ export const useTrakl = create<TraklState>()(
 
       monthlyBudget: MONTHLY_BUDGET,
       notificationsEnabled: true,
+      ...RETENTION_DEFAULTS,
+      retentionNotifiedAchievementIds: [],
+      retentionLastInactivityNotificationAt: undefined,
       waterGoal: WATER_GOAL,
 
       completeOnboarding: ({ profile, trackers, sampleData }) =>
@@ -264,12 +286,20 @@ export const useTrakl = create<TraklState>()(
           // Optionally pre-fill demo content so the user can explore a populated
           // app. Off by default — a fresh account starts empty.
           ...(sampleData ? buildSampleData() : EMPTY_DATA),
+          retentionNotifiedAchievementIds: sampleData
+            ? seedAchievements.filter((achievement) => achievement.unlocked).map((achievement) => achievement.id)
+            : [],
         })),
 
       loadSampleData: () => {
         const data = buildSampleData();
         void saveTransactionsSecure(data.transactions);
-        set({ ...data });
+        set({
+          ...data,
+          retentionNotifiedAchievementIds: data.achievements
+            .filter((achievement) => achievement.unlocked)
+            .map((achievement) => achievement.id),
+        });
       },
 
       clearAllData: () => {
@@ -308,6 +338,12 @@ export const useTrakl = create<TraklState>()(
           achievements: data.achievements,
           monthlyBudget: data.monthlyBudget,
           notificationsEnabled: data.notificationsEnabled,
+          retentionNotificationsEnabled: data.retentionNotificationsEnabled,
+          quietHoursEnabled: data.quietHoursEnabled,
+          quietHoursStart: data.quietHoursStart,
+          quietHoursEnd: data.quietHoursEnd,
+          retentionNotifiedAchievementIds: data.retentionNotifiedAchievementIds,
+          retentionLastInactivityNotificationAt: data.retentionLastInactivityNotificationAt,
           waterGoal: data.waterGoal,
         });
         void saveTransactionsSecure(data.transactions);
@@ -333,6 +369,26 @@ export const useTrakl = create<TraklState>()(
       updateProfile: (patch) => set((s) => ({ profile: { ...s.profile, ...patch } })),
 
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
+      setRetentionNotificationsEnabled: (enabled) =>
+        set({ retentionNotificationsEnabled: enabled }),
+      setQuietHoursEnabled: (enabled) => set({ quietHoursEnabled: enabled }),
+      setQuietHours: (start, end) => set({ quietHoursStart: start, quietHoursEnd: end }),
+      markRetentionAchievementsNotified: (ids) =>
+        set((s) => ({
+          retentionNotifiedAchievementIds: Array.from(
+            new Set([...s.retentionNotifiedAchievementIds, ...ids]),
+          ),
+        })),
+      markRetentionInactivityScheduled: (at) => set({ retentionLastInactivityNotificationAt: at }),
+
+      addNotification: (notification) =>
+        set((s) => {
+          if (!notification.title.trim() && !notification.message.trim()) return s;
+          if (s.notifications.some((n) => n.id === notification.id)) return s;
+          return {
+            notifications: [{ ...notification, read: false }, ...s.notifications].slice(0, 100),
+          };
+        }),
 
       setMonthlyBudget: (budget) =>
         set({ monthlyBudget: Math.min(10_000_000, Math.max(0, Math.round(budget))) }),
@@ -361,8 +417,14 @@ export const useTrakl = create<TraklState>()(
             if (h.id !== hid) return h;
             const today = dayISO(0).slice(0, 10);
             const completions = { ...h.completions };
-            if (completions[today]) delete completions[today];
-            else completions[today] = true;
+            const alreadyDone = Object.entries(completions).some(
+              ([key, completed]) => completed && key.slice(0, 10) === today,
+            );
+            if (alreadyDone) {
+              Object.keys(completions).forEach((key) => {
+                if (key.slice(0, 10) === today) delete completions[key];
+              });
+            } else completions[today] = true;
             return { ...h, completions };
           }),
         })),
@@ -553,6 +615,9 @@ export const useTrakl = create<TraklState>()(
           ...EMPTY_DATA,
           monthlyBudget: MONTHLY_BUDGET,
           notificationsEnabled: true,
+          ...RETENTION_DEFAULTS,
+          retentionNotifiedAchievementIds: [],
+          retentionLastInactivityNotificationAt: undefined,
           waterGoal: WATER_GOAL,
         });
       },
@@ -560,7 +625,7 @@ export const useTrakl = create<TraklState>()(
     {
       name: 'trakl-store-v1',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 10,
+      version: 11,
       migrate: (persisted, _version) => {
         try {
           // persisted is `unknown` (raw JSON from AsyncStorage). Narrow it safely
@@ -633,6 +698,29 @@ export const useTrakl = create<TraklState>()(
           // Backfill the editable daily water goal for stores persisted before it
           // became user-configurable.
           if (typeof record.waterGoal !== 'number') record.waterGoal = WATER_GOAL;
+          if (typeof record.retentionNotificationsEnabled !== 'boolean')
+            record.retentionNotificationsEnabled = RETENTION_DEFAULTS.retentionNotificationsEnabled;
+          if (typeof record.quietHoursEnabled !== 'boolean')
+            record.quietHoursEnabled = RETENTION_DEFAULTS.quietHoursEnabled;
+          if (typeof record.quietHoursStart !== 'string')
+            record.quietHoursStart = RETENTION_DEFAULTS.quietHoursStart;
+          if (typeof record.quietHoursEnd !== 'string')
+            record.quietHoursEnd = RETENTION_DEFAULTS.quietHoursEnd;
+          if (!Array.isArray(record.retentionNotifiedAchievementIds)) {
+            record.retentionNotifiedAchievementIds = Array.isArray(record.achievements)
+              ? record.achievements
+                  .filter((achievement: unknown) => {
+                    return (
+                      achievement !== null &&
+                      typeof achievement === 'object' &&
+                      (achievement as { unlocked?: unknown }).unlocked === true
+                    );
+                  })
+                  .map((achievement: unknown) => (achievement as { id: string }).id)
+              : [];
+          }
+          if (typeof record.retentionLastInactivityNotificationAt !== 'string')
+            record.retentionLastInactivityNotificationAt = undefined;
           // Backfill a `title` on notifications persisted before titles existed so
           // the redesigned list always has a headline above the message.
           if (Array.isArray(record.notifications)) {
@@ -643,6 +731,13 @@ export const useTrakl = create<TraklState>()(
                 notif.title = typeof notif.message === 'string' ? notif.message : 'Notification';
               }
               return notif;
+            }).filter((n: unknown) => {
+              if (!n || typeof n !== 'object') return false;
+              const notif = n as Record<string, unknown>;
+              return Boolean(
+                (typeof notif.title === 'string' && notif.title.trim()) ||
+                  (typeof notif.message === 'string' && notif.message.trim()),
+              );
             });
           }
           // Reset the stale 1600 default budget to 0 for users who never set a
@@ -694,6 +789,12 @@ export const useTrakl = create<TraklState>()(
         achievements: s.achievements,
         monthlyBudget: s.monthlyBudget,
         notificationsEnabled: s.notificationsEnabled,
+        retentionNotificationsEnabled: s.retentionNotificationsEnabled,
+        quietHoursEnabled: s.quietHoursEnabled,
+        quietHoursStart: s.quietHoursStart,
+        quietHoursEnd: s.quietHoursEnd,
+        retentionNotifiedAchievementIds: s.retentionNotifiedAchievementIds,
+        retentionLastInactivityNotificationAt: s.retentionLastInactivityNotificationAt,
         waterGoal: s.waterGoal,
       }),
       onRehydrateStorage: () => (state, error) => {

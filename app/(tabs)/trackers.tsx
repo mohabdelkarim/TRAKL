@@ -5,7 +5,6 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AlertCircle, Layers, Search, SlidersHorizontal } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { OptionSheet, type SheetOption } from '@/components/OptionSheet';
 import { PressableScale } from '@/components/PressableScale';
@@ -365,7 +364,6 @@ export default function TrackersScreen() {
           </Caption>
         </ScrollView>
 
-        <AdBanner />
       </View>
 
       <OptionSheet

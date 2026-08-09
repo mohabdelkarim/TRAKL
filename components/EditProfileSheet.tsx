@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Camera, Trash2 } from 'lucide-react-native';
 
@@ -26,6 +26,13 @@ type Props = {
 export function EditProfileSheet({ visible, initial, onClose, onSave }: Props) {
   const colors = useColors();
   const { t } = useTranslation();
+  const { width: screenWidth } = useWindowDimensions();
+  const emojiColumns = screenWidth >= 400 ? 6 : 5;
+  const emojiGap = 8;
+  const emojiSize = Math.min(
+    48,
+    (screenWidth - 40 - (emojiColumns - 1) * emojiGap) / emojiColumns,
+  );
 
   const [name, setName] = useState(initial.name);
   const [emoji, setEmoji] = useState(initial.avatarEmoji);
@@ -125,7 +132,10 @@ export function EditProfileSheet({ visible, initial, onClose, onSave }: Props) {
       </Field>
 
       <Field label={t('editProfile.emoji')}>
-        <View className="flex-row flex-wrap gap-2">
+        <View
+          className="flex-row flex-wrap"
+          style={{ justifyContent: 'space-between', rowGap: emojiGap }}
+        >
           {AVATAR_EMOJIS.map((e) => {
             const active = e === emoji && !image;
             return (
@@ -136,8 +146,8 @@ export function EditProfileSheet({ visible, initial, onClose, onSave }: Props) {
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
                 style={{
-                  width: 48,
-                  height: 48,
+                  width: emojiSize,
+                  height: emojiSize,
                   borderRadius: 14,
                   alignItems: 'center',
                   justifyContent: 'center',

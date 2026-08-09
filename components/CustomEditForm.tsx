@@ -9,6 +9,7 @@ import { PressableScale } from '@/components/PressableScale';
 import { InterText } from '@/components/Typography';
 import { ICONS } from '@/components/icons';
 import { useColors } from '@/src/shared/theme';
+import { requestNotificationPermission } from '@/src/infrastructure/services/notifications';
 import type { CustomTracker, CustomType } from '@/src/domain/types';
 
 const COLOR_OPTIONS = [
@@ -61,6 +62,16 @@ export function CustomEditForm({
   const [minute, setMinute] = useState(initTime.m);
 
   const valid = name.trim().length > 0;
+
+  const onReminderChange = (value: boolean) => {
+    if (!value) {
+      setReminder(false);
+      return;
+    }
+    void requestNotificationPermission().then((granted) => {
+      if (granted) setReminder(true);
+    });
+  };
 
   const submit = () => {
     if (!valid) return;
@@ -174,7 +185,7 @@ export function CustomEditForm({
               <Bell size={18} color={colors.muted} strokeWidth={1.5} />
               <InterText style={{ fontSize: 14 }}>{t('custom.dailyReminder')}</InterText>
             </View>
-            <Switch isSelected={reminder} onSelectedChange={setReminder} />
+            <Switch isSelected={reminder} onSelectedChange={onReminderChange} />
           </View>
           {reminder ? (
             <View className="flex-row gap-3">

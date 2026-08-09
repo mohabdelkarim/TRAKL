@@ -15,6 +15,7 @@ export const fr = {
     ad: 'Pub',
     sponsored: 'Sponsorisé',
     close: 'Fermer',
+    error: 'Erreur',
   },
   home: {
     greetingMorning: 'Bonjour, {{name}}',
@@ -66,6 +67,11 @@ export const fr = {
     language: 'Langue',
     theme: 'Thème',
     notifications: 'Notifications',
+    engagementNotifications: 'Notifications d’engagement',
+    quietHours: 'Heures silencieuses',
+    quietHoursSchedule: 'Horaires des heures silencieuses',
+    quietHoursOptions: 'Options des heures silencieuses',
+    chooseQuietHours: 'Choisir les heures silencieuses',
     textSize: 'Taille du Texte',
     more: 'Plus',
     rate: 'Noter TRAKL',
@@ -380,7 +386,7 @@ export const fr = {
     defs: {
       a1: { name: 'Premier Pas', desc: 'Enregistrez votre première activité' },
       a2: { name: 'Série de 7 Jours', desc: 'Tenez une habitude pendant 7 jours' },
-      a3: { name: 'Lève-tôt', desc: 'Enregistrez 3 nuits de sommeil' },
+      a3: { name: 'Routine de sommeil', desc: 'Enregistrez 3 nuits de sommeil' },
       a4: { name: 'Maître du Budget', desc: 'Enregistrez 10 transactions' },
       a5: { name: 'Atteigneur de Buts', desc: 'Terminez votre premier objectif' },
       a6: { name: 'Oiseau de Nuit', desc: 'Enregistrez 5 nuits de sommeil' },
@@ -388,7 +394,7 @@ export const fr = {
       a8: { name: 'Rat de Bibliothèque', desc: 'Ajoutez 20 entrées personnalisées' },
       a9: { name: 'Marathonien', desc: 'Enregistrez 3 entraînements' },
       a10: { name: 'Centurion', desc: 'Terminez 10 tâches' },
-      a11: { name: 'Semaine Parfaite', desc: 'Complétez 5 habitudes en un jour' },
+      a11: { name: 'Journée de puissance des habitudes', desc: 'Complétez 5 habitudes en un jour' },
       a12: { name: 'Roi de la Régularité', desc: 'Atteignez une série de 14 jours' },
       a13: { name: 'Série de 30 Jours', desc: 'Atteignez une série de 30 jours' },
       a14: { name: 'Esprit Millionnaire', desc: 'Terminez 3 objectifs' },
@@ -425,6 +431,14 @@ export const fr = {
     permissionDeniedTitle: 'Les notifications sont désactivées',
     permissionDeniedBody:
       'Activez les notifications de cette app dans les Réglages de votre appareil pour recevoir des rappels.',
+    weeklyReviewTitle: 'Bilan de la semaine',
+    weeklyReviewBody: 'Prenez un moment pour faire le bilan de votre semaine.',
+    streakTitle: 'Préservez votre série',
+    streakBody: 'Un bref point aide à maintenir votre série d’habitudes.',
+    milestoneTitle: 'Nouveau palier',
+    milestoneBody: 'Vous avez débloqué une nouvelle réussite.',
+    inactivityTitle: 'Gardez votre élan',
+    inactivityBody: 'Un bref point peut vous aider à reprendre le bon chemin.',
   },
   analyticsScreen: {
     excellent: 'Excellent',
@@ -679,4 +693,11 @@ export const fr = {
     notifGoalTitle: 'Jalon atteint',
     notifGoalMsg: 'Vous avez atteint un jalon sur Économiser 5 000 €',
   },
+  consent: {
+    title: 'Publicités et analyses personnalisées', description: 'TRAKL utilise Google Mobile Ads pour afficher des publicités personnalisées et mesurer leur performance. Vos données sont traitées conformément à notre Politique de confidentialité.', personalized: 'Publicités personnalisées selon vos centres d’intérêt', measurement: 'Mesure de l’efficacité des publicités', noTracking: 'Nous ne vendons ni ne partageons vos données personnelles', privacyNote: 'Vous pouvez modifier votre consentement à tout moment dans les Réglages.', accept: 'Accepter et continuer', reject: 'Refuser',
+  },
+  backup: {
+    exportBackup: 'Exporter la sauvegarde', importBackup: 'Importer la sauvegarde', exportTitle: 'Exporter la sauvegarde', importTitle: 'Importer la sauvegarde', export: 'Exporter', import: 'Restaurer', pasteJson: 'JSON de sauvegarde', pasteJsonPlaceholder: 'Collez ici votre JSON de sauvegarde TRAKL...', orChooseFile: 'Ou choisir un fichier .json', exportSuccess: 'Sauvegarde exportée.', importSuccess: 'Sauvegarde restaurée avec succès.', confirmTitle: 'Restaurer la sauvegarde ?', confirmBody: 'Toutes vos données TRAKL actuelles seront remplacées par la sauvegarde. Cette action est irréversible.', confirm: 'Restaurer',
+  },
+  legal: { privacyPolicy: 'Politique de confidentialité', termsOfService: 'Conditions d’utilisation', privacyUrl: 'https://www.pimora.tech/privacy', termsUrl: 'https://www.pimora.tech/terms' },
 };

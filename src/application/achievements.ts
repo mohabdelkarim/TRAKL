@@ -1,10 +1,14 @@
-import { bestStreak } from './stats';
+import { bestStreak, hasHabitCompletionOnDate } from './stats';
 import type {
   CustomTracker,
   Goal,
   Habit,
+  MeditationSession,
+  MoodEntry,
   SleepEntry,
   Task,
+  WaterEntry,
+  WeightEntry,
   Transaction,
   Workout,
 } from '@/src/domain/types';
@@ -45,6 +49,10 @@ export interface AchievementInput {
   goals: Goal[];
   sleep: SleepEntry[];
   workouts: Workout[];
+  mood: MoodEntry[];
+  water: WaterEntry[];
+  weight: WeightEntry[];
+  meditation: MeditationSession[];
   customTrackers: CustomTracker[];
 }
 
@@ -83,9 +91,19 @@ export const ACHIEVEMENT_DEFS: AchievementDef[] = [
     goal: 1,
     value: (i) =>
       i.transactions.length +
+      i.habits.reduce(
+        (count, habit) => count + Object.values(habit.completions ?? {}).filter(Boolean).length,
+        0,
+      ) +
       i.tasks.filter((t) => t.done).length +
+      i.goals.length +
+      i.sleep.length +
       i.workouts.length +
-      i.sleep.length,
+      i.mood.length +
+      i.water.length +
+      i.weight.length +
+      i.meditation.length +
+      customLogCount(i.customTrackers),
   },
   // 7-Day Streak — keep a habit going 7 days.
   { id: 'a2', goal: 7, value: (i) => bestStreak(i.habits) },
@@ -109,8 +127,10 @@ export const ACHIEVEMENT_DEFS: AchievementDef[] = [
   {
     id: 'a11',
     goal: 5,
-    value: (i) =>
-      i.habits.filter((h) => h.completions[new Date().toISOString().slice(0, 10)]).length,
+    value: (i) => {
+      const today = new Date();
+      return i.habits.filter((h) => hasHabitCompletionOnDate(h, today)).length;
+    },
   },
   // Consistency King — 14-day habit streak.
   { id: 'a12', goal: 14, value: (i) => bestStreak(i.habits) },

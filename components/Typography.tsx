@@ -4,6 +4,22 @@ import { clashFont, interFont, type ClashWeight } from '@/src/shared/fonts';
 import { useColors } from '@/src/shared/theme';
 import { cn } from '@/src/shared/utils/utils';
 
+const GREEK_TONOS_MAP: Record<string, string> = {
+  Ά: 'Α',
+  Έ: 'Ε',
+  Ή: 'Η',
+  Ί: 'Ι',
+  Ό: 'Ο',
+  Ύ: 'Υ',
+  Ώ: 'Ω',
+};
+
+export function uppercaseForDisplay(value: string): string {
+  return value
+    .toUpperCase()
+    .replace(/[ΆΈΉΊΌΎΏ]/g, (character) => GREEK_TONOS_MAP[character] ?? character);
+}
+
 type ClashProps = RNTextProps & {
   weight?: ClashWeight;
   color?: string;
@@ -69,7 +85,7 @@ export function Caption({ color, style, className, children, fit, ...rest }: Cap
       {...fitProps}
       {...rest}
     >
-      {typeof children === 'string' ? children.toUpperCase() : children}
+      {typeof children === 'string' ? uppercaseForDisplay(children) : children}
     </RNText>
   );
 }

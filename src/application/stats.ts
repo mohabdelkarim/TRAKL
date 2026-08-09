@@ -50,11 +50,45 @@ export function budgetLeft(transactions: Transaction[], monthlyBudget: number): 
   return Math.round(monthlyBudget - monthExpenses(transactions));
 }
 
+/** Return a local calendar date key for date-only and timestamp values. */
+export function localDateKey(value: Date | string): string {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const date = typeof value === 'string' ? new Date(value) : value;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/** A local-midnight date at an offset from today. */
+export function calendarDay(offset = 0): Date {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return date;
+}
+
+/** Seven local calendar days, oldest first, ending today. */
+export function lastSevenCalendarDays(): { date: Date; key: string }[] {
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = calendarDay(index - 6);
+    return { date, key: localDateKey(date) };
+  });
+}
+
+export function hasHabitCompletionOnDate(habit: Habit, date: Date | string): boolean {
+  const dayKey = localDateKey(date);
+  return Object.entries(habit.completions).some(
+    ([key, completed]) => completed && localDateKey(key) === dayKey,
+  );
+}
+
+function hasHabitCompletion(habit: Habit, offset: number): boolean {
+  return hasHabitCompletionOnDate(habit, calendarDay(offset));
+}
+
 /** number of habits completed today / total */
 export function habitsToday(habits: Habit[]): { done: number; total: number } {
   const today = dayISO(0).slice(0, 10);
   return {
-    done: habits.filter((h) => h.completions[today]).length,
+    done: habits.filter((h) => hasHabitCompletion(h, 0)).length,
     total: habits.length,
   };
 }
@@ -65,7 +99,7 @@ export function bestStreak(habits: Habit[]): number {
   for (const h of habits) {
     let streak = 0;
     for (let i = 0; i < 60; i++) {
-      if (h.completions[dayISO(-i)]) streak++;
+      if (hasHabitCompletion(h, -i)) streak++;
       else if (i === 0)
         continue; // today not yet done shouldn't break
       else break;
@@ -78,7 +112,7 @@ export function bestStreak(habits: Habit[]): number {
 /** Completions for one habit in the last 7 days. */
 export function weekCount(habit: Habit): number {
   let c = 0;
-  for (let i = 0; i < 7; i++) if (habit.completions[dayISO(-i)]) c++;
+  for (let i = 0; i < 7; i++) if (hasHabitCompletion(habit, -i)) c++;
   return c;
 }
 
@@ -210,15 +244,13 @@ export function expenseByCategory(
  */
 export function habitDayLevel(habits: Habit[], offset: number): number {
   if (habits.length === 0) return 0;
-  const key = dayISO(offset);
-  const done = habits.filter((h) => h.completions[key]).length;
+  const done = habits.filter((h) => hasHabitCompletion(h, offset)).length;
   return done / habits.length;
 }
 
 /** Number of habit completions across all habits on a given day-offset. */
 export function habitDayCount(habits: Habit[], offset: number): number {
-  const key = dayISO(offset);
-  return habits.reduce((c, h) => c + (h.completions[key] ? 1 : 0), 0);
+  return habits.reduce((c, h) => c + (hasHabitCompletion(h, offset) ? 1 : 0), 0);
 }
 
 /** Sum of completions across all habits over the last `days` days. */
@@ -455,7 +487,7 @@ function expenseSeries(transactions: Transaction[]): number[] {
         return time >= dayStart && time < dayEnd;
       })
       .reduce((s, t) => s + t.amount, 0);
-    out.push(Math.round(sum));
+    out.push(sum);
   }
   return out;
 }
@@ -580,7 +612,7 @@ export function trackerInsight(key: TrackerKey, data: InsightInput): TrackerInsi
       const progress = today.total ? Math.round((today.done / today.total) * 100) : 0;
       const lastDate = data.habits
         .flatMap((h) => Object.keys(h.completions).filter((d) => h.completions[d]))
-        .reduce<string | null>((a, b) => (a && +new Date(a) >= +new Date(b) ? a : b), null);
+        .reduce<string | null>((a, b) => (a && localDateKey(a) >= localDateKey(b) ? a : b), null);
       return {
         series,
         visual: 'progress',
@@ -942,7 +974,7 @@ export const WEEKLY_TARGET = 7;
 export function habitStreak(habit: Habit): number {
   let streak = 0;
   for (let i = 0; i < 365; i++) {
-    if (habit.completions[dayISO(-i)]) streak++;
+    if (hasHabitCompletion(habit, -i)) streak++;
     else if (i === 0) continue;
     else break;
   }

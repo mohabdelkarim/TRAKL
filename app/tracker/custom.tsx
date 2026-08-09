@@ -1,4 +1,11 @@
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +26,7 @@ import { Switch } from 'heroui-native';
 import { withAlpha } from '@/src/domain/trackers';
 import { formatLogValue } from '@/src/shared/utils/customFormat';
 import { useColors } from '@/src/shared/theme';
+import { requestNotificationPermission } from '@/src/infrastructure/services/notifications';
 import { useTrakl } from '@/src/application/store';
 import type { CustomTracker, CustomType } from '@/src/domain/types';
 
@@ -52,6 +60,8 @@ export default function CustomBuilderScreen() {
   const logCustomValue = useTrakl((s) => s.logCustomValue);
   const colors = useColors();
   const { t } = useTranslation();
+  const { width: screenWidth } = useWindowDimensions();
+  const typeCardWidth = Math.max(0, (screenWidth - 40 - 24) / 3);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -66,6 +76,16 @@ export default function CustomBuilderScreen() {
 
   const valid = name.trim().length > 0;
   const PreviewIcon = iconForKey(icon);
+
+  const onReminderChange = (value: boolean) => {
+    if (!value) {
+      setReminder(false);
+      return;
+    }
+    void requestNotificationPermission().then((granted) => {
+      if (granted) setReminder(true);
+    });
+  };
 
   const save = () => {
     if (!valid) return;
@@ -250,7 +270,10 @@ export default function CustomBuilderScreen() {
                 />
               </View>
 
-              <View className="mt-4 flex-row flex-wrap gap-3">
+              <View
+                className="mt-4 flex-row flex-wrap"
+                style={{ justifyContent: 'space-between', rowGap: 12 }}
+              >
                 {COLOR_OPTIONS.map((c) => {
                   const active = color === c;
                   return (
@@ -287,7 +310,7 @@ export default function CustomBuilderScreen() {
                       onPress={() => setType(opt.type)}
                       className="items-center gap-2 rounded-2xl p-4"
                       style={{
-                        width: '31%',
+                        width: typeCardWidth,
                         backgroundColor: colors.surface,
                         borderWidth: active ? 2 : 1,
                         borderColor: active ? colors.text : colors.border,
@@ -312,7 +335,7 @@ export default function CustomBuilderScreen() {
                     <Bell size={18} color={colors.muted} strokeWidth={1.5} />
                     <InterText style={{ fontSize: 14 }}>{t('custom.dailyReminder')}</InterText>
                   </View>
-                  <Switch isSelected={reminder} onSelectedChange={setReminder} />
+                  <Switch isSelected={reminder} onSelectedChange={onReminderChange} />
                 </View>
                 {reminder ? (
                   <>

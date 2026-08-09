@@ -20,11 +20,9 @@ import { withAlpha } from '@/src/domain/trackers';
 import { useFormatters } from '@/src/shared/utils/format';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { dayISO } from '@/src/application/seed';
-import { meditationMinutes, meditationStreak } from '@/src/application/stats';
+import { lastSevenCalendarDays, localDateKey, meditationMinutes, meditationStreak } from '@/src/application/stats';
 import type { MeditationSession } from '@/src/domain/types';
 
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const KIND_KEYS = ['mindfulness', 'breathing', 'bodyScan', 'sleep'] as const;
 type KindKey = (typeof KIND_KEYS)[number];
 const KIND_LABEL: Record<KindKey, string> = {
@@ -58,14 +56,12 @@ export default function MeditationScreen() {
   const streak = meditationStreak(meditation);
   const weekMinutes = meditationMinutes(meditation, 7);
 
-  const chartData = WEEKDAY.map((label, i) => {
-    const iso = dayISO(-(6 - i));
-    const target = new Date(iso).toDateString();
-    const value = meditation
-      .filter((m) => new Date(m.date).toDateString() === target)
-      .reduce((s, m) => s + m.durationMinutes, 0);
-    return { label, value };
-  });
+  const chartData = lastSevenCalendarDays().map(({ date, key }) => ({
+    label: fmt.date(date, { weekday: 'short' }),
+    value: meditation
+      .filter((session) => localDateKey(session.date) === key)
+      .reduce((sum, session) => sum + session.durationMinutes, 0),
+  }));
 
   return (
     <Screen>

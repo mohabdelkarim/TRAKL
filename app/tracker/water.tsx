@@ -18,16 +18,15 @@ import { withAlpha } from '@/src/domain/trackers';
 import { haptics } from '@/src/shared/haptics';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
-import { dayISO } from '@/src/application/seed';
-import { waterToday } from '@/src/application/stats';
-
-const WEEKDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+import { waterToday, lastSevenCalendarDays, localDateKey } from '@/src/application/stats';
+import { useFormatters } from '@/src/shared/utils/format';
 
 export default function WaterScreen() {
   const colors = useColors();
   const accents = useTrackerAccents();
   const accent = accents.water;
   const { t } = useTranslation();
+  const fmt = useFormatters();
   const water = useTrakl((s) => s.water);
   const addWater = useTrakl((s) => s.addWater);
   const resetToday = useTrakl((s) => s.resetWaterToday);
@@ -50,15 +49,13 @@ export default function WaterScreen() {
 
   const chartData = useMemo(
     () =>
-      WEEKDAY.map((label, i) => {
-        const iso = dayISO(-(6 - i));
-        const target = new Date(iso).toDateString();
-        const value = water
-          .filter((w) => new Date(w.date).toDateString() === target)
-          .reduce((s, w) => s + w.glasses, 0);
-        return { label, value };
-      }),
-    [water],
+      lastSevenCalendarDays().map(({ date, key }) => ({
+        label: fmt.date(date, { weekday: 'short' }),
+        value: water
+          .filter((entry) => localDateKey(entry.date) === key)
+          .reduce((sum, entry) => sum + entry.glasses, 0),
+      })),
+    [water, fmt],
   );
 
   const weekAvg = useMemo(() => {

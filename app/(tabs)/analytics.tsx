@@ -5,7 +5,6 @@ import { CalendarRange, CheckSquare, ChevronRight, Zap } from 'lucide-react-nati
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart, HBarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { PressableScale } from '@/components/PressableScale';
@@ -15,6 +14,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Caption, InterText } from '@/components/Typography';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
+import { useFormatters } from '@/src/shared/utils/format';
 import { withAlpha } from '@/src/domain/trackers';
 import { useTrakl } from '@/src/application/store';
 import { bestStreak, lifeScore, weekCount } from '@/src/application/stats';
@@ -37,7 +37,7 @@ function startOfDay(d: Date): Date {
 }
 
 /** Time buckets (oldest -> newest) for the selected period. */
-function periodBuckets(
+export function periodBuckets(
   period: Period,
   dayLabels: string[],
   monthLabels: string[],
@@ -70,9 +70,9 @@ function periodBuckets(
   } else if (period === 'month') {
     for (let i = 3; i >= 0; i--) {
       const start = startOfDay(now);
-      start.setDate(start.getDate() - (i + 1) * 7 + 1);
+      start.setDate(start.getDate() - (i + 1) * 7);
       const end = startOfDay(now);
-      end.setDate(end.getDate() - i * 7 + 1);
+      end.setDate(end.getDate() - i * 7);
       buckets.push({ label: `W${4 - i}`, start, end });
     }
   } else {
@@ -96,6 +96,7 @@ export default function AnalyticsScreen() {
   const colors = useColors();
   const accents = useTrackerAccents();
   const { t } = useTranslation();
+  const fmt = useFormatters();
   const router = useRouter();
   const [period, setPeriod] = useState<(typeof PERIOD_KEYS)[number]>('week');
   const habits = useTrakl((s) => s.habits);
@@ -128,7 +129,11 @@ export default function AnalyticsScreen() {
     returnObjects: true,
   }) as unknown as string[];
 
-  const buckets = periodBuckets(period, dayInitials, monthInitials);
+  const buckets = periodBuckets(period, dayInitials, monthInitials).map((bucket) =>
+    period === 'week'
+      ? { ...bucket, label: fmt.date(bucket.start, { weekday: 'short' }) }
+      : bucket,
+  );
 
   // Finance: expenses summed per bucket for the selected period.
   const financeBars = buckets.map((b) => {
@@ -139,7 +144,7 @@ export default function AnalyticsScreen() {
         return d >= b.start && d < b.end;
       })
       .reduce((s, tx) => s + tx.amount, 0);
-    return { label: b.label, value: Math.round(spent) };
+    return { label: b.label, value: spent };
   });
 
   // Sleep: average hours per bucket (0 when no nights recorded in the bucket).
@@ -292,7 +297,6 @@ export default function AnalyticsScreen() {
             </Card>
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
     </Screen>
   );

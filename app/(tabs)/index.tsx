@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Avatar } from '@/components/Avatar';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { Confetti } from '@/components/Confetti';
@@ -310,27 +309,23 @@ export default function HomeScreen() {
                 style={{ padding: 24 }}
               >
                 <View className="flex-row items-start justify-between">
-                  <View className="flex-1">
+                  <View className="flex-1" style={{ minWidth: 0 }}>
                     <Caption>{t('home.lifeScore')}</Caption>
-                    <View className="mt-1 flex-row items-end">
+                    <View className="mt-1 flex-row items-end" style={{ minWidth: 0 }}>
                       {hasScore ? (
                         <AnimatedCounter
                           value={score}
                           weight="bold"
-                          style={{ fontSize: 72, lineHeight: 78 }}
+                          suffix={t('homeExtra.scoreDenominator').replace(/\s+/g, '')}
+                          suffixStyle={{ fontSize: 24, color: colors.muted }}
+                          style={{ fontSize: 72, lineHeight: 78, flexShrink: 1 }}
+                          numberOfLines={1}
                         />
                       ) : (
                         <ClashText weight="bold" style={{ fontSize: 72, lineHeight: 78 }}>
                           {t('homeExtra.scoreEmpty')}
                         </ClashText>
                       )}
-                      <ClashText
-                        weight="medium"
-                        color={colors.muted}
-                        style={{ fontSize: 24, marginBottom: 14, marginLeft: 4 }}
-                      >
-                        {t('homeExtra.scoreDenominator')}
-                      </ClashText>
                     </View>
                   </View>
                   <View className="pt-2">
@@ -488,7 +483,6 @@ export default function HomeScreen() {
             })}
           </ScrollView>
         </ScrollView>
-        <AdBanner />
       </View>
       <Confetti show={celebrate} onDone={() => setCelebrate(false)} />
     </Screen>

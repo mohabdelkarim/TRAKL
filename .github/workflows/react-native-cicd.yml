@@ -1,0 +1,446 @@
+name: React Native CI/CD (Android Release)
+
+# Pure Gradle build on GitHub-hosted Ubuntu runner.
+# - Δεν αγγίζει το EAS quota (variant B: expo prebuild + gradlew bundleRelease).
+# - Trigger: manual (workflow_dispatch) ή push σε main.
+# - Output: app-release.aab ως artifact.
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        type: choice
+        required: false
+        default: 'release-aab'
+        options:
+          - release-aab
+          - release-apk
+      version_code:
+        description: 'Android versionCode (leave empty to auto-increment from app.config.ts)'
+        type: number
+        required: false
+      version_name:
+        description: 'Android versionName (display string)'
+        type: string
+        required: false
+        default: '1.0.1'
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+# Avoid concurrent runs on the same branch; cancel in-progress on new push.
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --openssl-legacy-provider
+  EXPO_NO_TELEMETRY: '1'
+  CI: '1'
+
+jobs:
+  build-android-release:
+    name: Build Android Release (${{ github.event.inputs.build_type || 'release-aab' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TRAKL_ANDROID_PACKAGE: ${{ vars.TRAKL_ANDROID_PACKAGE || 'com.example.trakl' }}
+      TRAKL_IOS_BUNDLE_ID: ${{ vars.TRAKL_IOS_BUNDLE_ID || 'com.example.trakl' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          # NOTE: don't set cache: gradle here; it would fail because android/
+          # isn't generated yet. We cache ~/.gradle/caches explicitly below.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android SDK components
+        run: |
+          set -e
+          sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
+          yes | sdkmanager --licenses
+
+      - name: Resolve build inputs
+        id: inputs
+        run: |
+          VERSION_CODE="${{ github.event.inputs.version_code }}"
+          VERSION_NAME="${{ github.event.inputs.version_name }}"
+          # Use the next release code from app.config.ts when no explicit input is given.
+          if [ -z "$VERSION_CODE" ]; then
+            VERSION_CODE=$(grep -oE 'CURRENT_VERSION_CODE\s*=\s*[0-9]+' app.config.ts | grep -oE '[0-9]+' | head -1)
+          fi
+          echo "version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
+          echo "version_name=${VERSION_NAME:-1.0.1}" >> "$GITHUB_OUTPUT"
+          echo "Resolved: versionCode=${VERSION_CODE}, versionName=${VERSION_NAME:-1.0.1}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Android project (expo prebuild)
+        env:
+          TRAKL_APP_VERSION: ${{ steps.inputs.outputs.version_name }}
+          TRAKL_ANDROID_VERSION_CODE: ${{ steps.inputs.outputs.version_code }}
+        run: npx expo prebuild --platform android --clean --no-install
+
+      - name: Increase Gradle JVM memory & disable lint
+        working-directory: android
+        run: |
+          # Increase metaspace from default 512MB to 1GB to avoid OOM on large projects
+          if grep -q '^org.gradle.jvmargs=' gradle.properties; then
+            sed -i 's|^org.gradle.jvmargs=.*|org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g|' gradle.properties
+          else
+            echo 'org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g' >> gradle.properties
+          fi
+          # Disable lint vital analysis — it consumes significant metaspace and is not needed for AAB
+          if grep -q '^android.lintVitalRelease=' gradle.properties; then
+            sed -i 's|^android.lintVitalRelease=.*|android.lintVitalRelease=false|' gradle.properties
+          else
+            echo 'android.lintVitalRelease=false' >> gradle.properties
+          fi
+          echo '---- gradle.properties (memory & lint patched) ----'
+          grep -E 'org.gradle.jvmargs|android.lintVitalRelease' gradle.properties
+
+      - name: Cache Gradle (after prebuild so gradle files exist)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties', '**/build.gradle', '**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Decode Android keystore from secret
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -e
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 secret. Add it in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          mkdir -p android/app
+          # Diagnostics (no secret content is printed):
+          RAW_LEN=${#KEYSTORE_B64}
+          echo "Secret length: ${RAW_LEN} characters"
+          INVALID_COUNT=$(printf '%s' "$KEYSTORE_B64" | tr -d 'A-Za-z0-9+/=\n\r' | wc -c)
+          echo "Non-base64 characters found: $INVALID_COUNT"
+          # A valid base64 payload (once whitespace is stripped) must have a
+          # length that's a multiple of 4. If it isn't, the secret was
+          # truncated/corrupted when it was saved (e.g. pasted incompletely).
+          CLEAN_LEN=$(printf '%s' "$KEYSTORE_B64" | tr -d '\n\r ' | wc -c)
+          echo "Clean (whitespace-stripped) length: $CLEAN_LEN characters (~$((CLEAN_LEN * 3 / 4)) decoded bytes)"
+          if [ $((CLEAN_LEN % 4)) -ne 0 ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 secret is truncated or corrupted: its length ($CLEAN_LEN) is not a multiple of 4, which is impossible for valid base64. A real .p12/.jks keystore is normally several KB, so its base64 form should be several thousand characters — not $CLEAN_LEN. Regenerate the secret: run 'base64 -w 0 your-keystore.p12 > keystore_b64.txt' locally, then update the GitHub secret with the FULL contents of that file (prefer 'gh secret set ANDROID_KEYSTORE_BASE64 < keystore_b64.txt' over pasting in the browser UI, which can truncate very long values)."
+            exit 1
+          fi
+          # --ignore-garbage tells GNU base64 to skip any non-alphabet characters
+          # (stray newlines, whitespace, etc.) instead of failing on them.
+          printf '%s' "$KEYSTORE_B64" | base64 -d --ignore-garbage > android/app/upload-keystore.p12
+          chmod 600 android/app/upload-keystore.p12
+          ls -la android/app/upload-keystore.p12
+          file android/app/upload-keystore.p12
+          SIZE=$(stat -c%s android/app/upload-keystore.p12)
+          if [ "$SIZE" -lt 100 ]; then
+            echo "::error::Decoded keystore is only $SIZE bytes. The ANDROID_KEYSTORE_BASE64 secret is empty, truncated, or not valid base64. Regenerate it with: base64 -w 0 upload-keystore.p12 (Linux/Mac) or [Convert]::ToBase64String([IO.File]::ReadAllBytes('upload-keystore.p12')) (PowerShell), then update the GitHub secret."
+            exit 1
+          fi
+          echo "Decoded keystore size: $SIZE bytes"
+
+      - name: Convert PKCS12 (.p12) to JKS for Gradle signing
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        working-directory: android/app
+        run: |
+          set -e
+          if [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "::error::Missing ANDROID_KEYSTORE_PASSWORD secret."
+            exit 1
+          fi
+          # Detect alias in the source .p12 (assume single private key entry).
+          SRC_ALIAS=$(keytool -list -keystore upload-keystore.p12 -storetype PKCS12 \
+                      -storepass "$KEYSTORE_PASSWORD" -noprompt \
+                      | awk '/PrivateKeyEntry/{print $1; exit}' | tr -d ',')
+          if [ -z "$SRC_ALIAS" ]; then
+            echo "::error::No PrivateKeyEntry alias found in upload-keystore.p12"
+            exit 1
+          fi
+          echo "Source alias detected: $SRC_ALIAS"
+          echo "---- upload certificate SHA1 (compare with Play Console) ----"
+          keytool -list -v -keystore upload-keystore.p12 -storetype PKCS12 -storepass "$KEYSTORE_PASSWORD" -noprompt 2>/dev/null \
+            | grep -i "SHA1:" || true
+          keytool -importkeystore \
+            -srckeystore upload-keystore.p12 \
+            -srcstoretype PKCS12 \
+            -srcstorepass "$KEYSTORE_PASSWORD" \
+            -srcalias "$SRC_ALIAS" \
+            -srckeypass "$KEYSTORE_PASSWORD" \
+            -destkeystore upload-keystore.jks \
+            -deststoretype JKS \
+            -deststorepass "$KEYSTORE_PASSWORD" \
+            -destkeypass "$KEY_PASSWORD" \
+            -destalias "$KEY_ALIAS" \
+            -noprompt
+          ls -la upload-keystore.jks
+          keytool -list -keystore upload-keystore.jks -storepass "$KEYSTORE_PASSWORD" | head -n 5
+
+      - name: Configure release signing in gradle.properties
+        env:
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        working-directory: android
+        run: |
+          set -e
+          # Validate inputs early so we fail with a clear message.
+          for v in KEY_ALIAS KEYSTORE_PASSWORD KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Missing required secret: $v"
+              exit 1
+            fi
+          done
+          # Replace existing MYAPP_UPLOAD_* lines (created by Expo prebuild).
+          sed -i "s|^MYAPP_UPLOAD_STORE_FILE=.*|MYAPP_UPLOAD_STORE_FILE=upload-keystore.jks|" gradle.properties
+          sed -i "s|^MYAPP_UPLOAD_KEY_ALIAS=.*|MYAPP_UPLOAD_KEY_ALIAS=${KEY_ALIAS}|" gradle.properties
+          sed -i "s|^MYAPP_UPLOAD_STORE_PASSWORD=.*|MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}|" gradle.properties
+          sed -i "s|^MYAPP_UPLOAD_KEY_PASSWORD=.*|MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}|" gradle.properties
+          # Append only if a key wasn't present (defensive).
+          grep -q "^MYAPP_UPLOAD_STORE_FILE="     gradle.properties || echo "MYAPP_UPLOAD_STORE_FILE=upload-keystore.jks" >> gradle.properties
+          grep -q "^MYAPP_UPLOAD_KEY_ALIAS="      gradle.properties || echo "MYAPP_UPLOAD_KEY_ALIAS=${KEY_ALIAS}" >> gradle.properties
+          grep -q "^MYAPP_UPLOAD_STORE_PASSWORD=" gradle.properties || echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> gradle.properties
+          grep -q "^MYAPP_UPLOAD_KEY_PASSWORD="   gradle.properties || echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> gradle.properties
+          echo "---- gradle.properties (signing configured) ----"
+          # Do NOT echo lines containing passwords — only confirm they exist.
+          grep -qE "^MYAPP_UPLOAD_STORE_FILE="     gradle.properties && echo "  MYAPP_UPLOAD_STORE_FILE: set"   || echo "  MYAPP_UPLOAD_STORE_FILE: MISSING"
+          grep -qE "^MYAPP_UPLOAD_KEY_ALIAS="      gradle.properties && echo "  MYAPP_UPLOAD_KEY_ALIAS: set"    || echo "  MYAPP_UPLOAD_KEY_ALIAS: MISSING"
+          grep -qE "^MYAPP_UPLOAD_STORE_PASSWORD=" gradle.properties && echo "  MYAPP_UPLOAD_STORE_PASSWORD: set" || echo "  MYAPP_UPLOAD_STORE_PASSWORD: MISSING"
+          grep -qE "^MYAPP_UPLOAD_KEY_PASSWORD="   gradle.properties && echo "  MYAPP_UPLOAD_KEY_PASSWORD: set"   || echo "  MYAPP_UPLOAD_KEY_PASSWORD: MISSING"
+
+      - name: Patch app/build.gradle to use release signing config
+        # Expo's prebuild template hard-codes `signingConfig signingConfigs.debug`
+        # in the release block, which signs release builds with the debug key.
+        # We rewrite the signingConfigs and release buildType so the release
+        # build is signed with the upload key from MYAPP_UPLOAD_*.
+        # We also patch versionCode/versionName to the values from workflow inputs,
+        # because the prebuild template hardcodes them to 1 / 1.0.0.
+        env:
+          VERSION_CODE: ${{ steps.inputs.outputs.version_code }}
+          VERSION_NAME: ${{ steps.inputs.outputs.version_name }}
+        working-directory: android
+        run: |
+          set -e
+          FILE=app/build.gradle
+          if grep -q "MYAPP_UPLOAD_STORE_FILE" "$FILE" || grep -q "hasReleaseSigning" "$FILE"; then
+            echo "Release signing already wired in build.gradle, skipping patch"
+          else
+            python3 - <<'PY'
+          import os, re, pathlib
+          p = pathlib.Path("app/build.gradle")
+          s = p.read_text()
+
+          version_code = os.environ.get("VERSION_CODE", "2")
+          version_name = os.environ.get("VERSION_NAME", "1.0.1")
+
+          # 1. Inject variable definitions + `hasReleaseSigning` right after
+          #    the `apply plugin: "com.facebook.react"` line so they're in scope.
+          var_block = f'''
+          // --- Release signing (injected by CI workflow) ---
+          def uploadStoreFile     = findProperty('MYAPP_UPLOAD_STORE_FILE')
+          def uploadKeyAlias      = findProperty('MYAPP_UPLOAD_KEY_ALIAS')
+          def uploadStorePassword = findProperty('MYAPP_UPLOAD_STORE_PASSWORD')
+          def uploadKeyPassword   = findProperty('MYAPP_UPLOAD_KEY_PASSWORD')
+          def hasReleaseSigning   = [uploadStoreFile, uploadKeyAlias, uploadStorePassword, uploadKeyPassword].every {{
+              it != null && !it.toString().trim().isEmpty()
+          }}
+          // -----------------------------------------------
+          '''
+          s = re.sub(
+              r'(apply plugin:\s*"com\.facebook\.react"\s*\n)',
+              r'\1' + var_block,
+              s,
+              count=1,
+          )
+
+          # 2. Replace the `signingConfigs { ... }` block (debug only) with
+          #    debug + release.
+          s = re.sub(
+              r'signingConfigs\s*\{\s*debug\s*\{[^}]*\}\s*\}',
+              '''signingConfigs {
+              debug {
+                  storeFile file('debug.keystore')
+                  storePassword 'android'
+                  keyAlias 'androiddebugkey'
+                  keyPassword 'android'
+              }
+              release {
+                  if (hasReleaseSigning) {
+                      storeFile file(uploadStoreFile)
+                      storePassword uploadStorePassword
+                      keyAlias uploadKeyAlias
+                      keyPassword uploadKeyPassword
+                  }
+              }
+          }''',
+              s,
+              count=1,
+          )
+
+          # 3. In the release buildType, swap the hard-coded debug signing for
+          #    a conditional that uses signingConfigs.release when present.
+          s = re.sub(
+              r'release\s*\{\s*\n(\s*//[^\n]*\n)*\s*signingConfig signingConfigs\.debug',
+              '''release {
+              signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug''',
+              s,
+              count=1,
+          )
+
+          # 4. Bump versionCode / versionName from the (hardcoded) template values
+          #    to the values supplied by the workflow input. Each release must
+          #    have a versionCode greater than the previously uploaded one.
+          s, n1 = re.subn(r'versionCode\s+\d+', f'versionCode {version_code}', s, count=1)
+          s, n2 = re.subn(r'versionName\s+"[^"]*"', f'versionName "{version_name}"', s, count=1)
+          print(f"Patched versionCode (replacements={n1}) and versionName (replacements={n2})")
+
+          p.write_text(s)
+          print("---- patched app/build.gradle (signing region) ----")
+          for i, line in enumerate(s.splitlines(), 1):
+              if 1 <= i <= 8 or 95 <= i <= 145 or "signing" in line.lower() or "hasReleaseSigning" in line or "versionCode" in line or "versionName" in line:
+                  print(f"{i:3}: {line}")
+          PY
+          fi
+
+      - name: Verify versionCode in build.gradle
+        working-directory: android
+        run: |
+          set -e
+          echo "---- versionCode / versionName / applicationId in build.gradle ----"
+          grep -E "^\s*versionCode|^\s*versionName|applicationId" app/build.gradle || true
+          echo ""
+          echo "Expected versionCode: ${{ steps.inputs.outputs.version_code }}"
+          echo "Expected versionName: ${{ steps.inputs.outputs.version_name }}"
+
+      - name: Read previous versionCode from app.config.ts
+        id: previous_version
+        run: |
+          set -e
+          # app.config.ts defines the next release CURRENT_VERSION_CODE.
+          # The previous uploaded version is therefore one lower.
+          CURRENT_CODE=$(grep -E '^const CURRENT_VERSION_CODE\s*=\s*[0-9]+' app.config.ts | grep -oE '[0-9]+' | head -1)
+          PREVIOUS_MAX=$((CURRENT_CODE - 1))
+          if [ -z "$PREVIOUS_MAX" ]; then
+            echo "::error::Could not read CURRENT_VERSION_CODE from app.config.ts"
+            exit 1
+          fi
+          echo "previous_max=$PREVIOUS_MAX" >> "$GITHUB_OUTPUT"
+          echo "Previous versionCode from app.config.ts: $PREVIOUS_MAX"
+
+      - name: Validate versionCode is greater than previous release
+        env:
+          VERSION_CODE: ${{ steps.inputs.outputs.version_code }}
+          PREVIOUS_MAX: ${{ steps.previous_version.outputs.previous_max }}
+        run: |
+          set -e
+          if [ "${VERSION_CODE:-0}" -le "$PREVIOUS_MAX" ]; then
+            echo "::error::versionCode $VERSION_CODE is not greater than the previously uploaded version ($PREVIOUS_MAX). Update the workflow input to a value > $PREVIOUS_MAX, and bump CURRENT_VERSION_CODE in app.config.ts."
+            exit 1
+          fi
+          echo "OK: versionCode $VERSION_CODE > $PREVIOUS_MAX"
+
+      - name: Make gradlew executable
+        working-directory: android
+        run: chmod +x ./gradlew
+
+      - name: Build Release AAB
+        working-directory: android
+        env:
+          TRAKL_APP_VERSION: ${{ steps.inputs.outputs.version_name }}
+          TRAKL_ANDROID_VERSION_CODE: ${{ steps.inputs.outputs.version_code }}
+        run: ./gradlew bundleRelease --no-daemon --stacktrace
+
+      - name: Build Release APK (only when requested)
+        if: github.event.inputs.build_type == 'release-apk'
+        working-directory: android
+        env:
+          TRAKL_APP_VERSION: ${{ steps.inputs.outputs.version_name }}
+          TRAKL_ANDROID_VERSION_CODE: ${{ steps.inputs.outputs.version_code }}
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: List built artifacts
+        run: |
+          echo "---- AAB ----"
+          find android/app/build/outputs/bundle -name "*.aab" -type f -exec ls -la {} \; 2>/dev/null || echo "No AAB found"
+          echo "---- APK ----"
+          find android/app/build/outputs/apk -name "*.apk" -type f -exec ls -la {} \; 2>/dev/null || echo "No APK (only built when build_type=release-apk)"
+
+      - name: Verify AAB signing certificate
+        run: |
+          set -e
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          EXTRACT_DIR=$(mktemp -d)
+          unzip -q "$AAB" -d "$EXTRACT_DIR"
+          RSA=$(find "$EXTRACT_DIR" -path "*/META-INF/*.RSA" -o -path "*/META-INF/*.DSA" -o -path "*/META-INF/*.EC" | head -n 1)
+          if [ -z "$RSA" ]; then
+            echo "::warning::No signing certificate found in AAB META-INF"
+          else
+            echo "---- AAB signing certificate SHA1 (compare with Play Console upload cert) ----"
+            keytool -printcert -file "$RSA" | grep -i "SHA1:" || true
+          fi
+          rm -rf "$EXTRACT_DIR"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload APK artifact (when built)
+        if: github.event.inputs.build_type == 'release-apk'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify mapping file exists
+        run: |
+          MAPPING=android/app/build/outputs/mapping/release/mapping.txt
+          if [ -f "$MAPPING" ]; then
+            echo "OK: mapping file found at $MAPPING ($(wc -l < "$MAPPING") lines)"
+          else
+            echo "::warning::R8/ProGuard mapping.txt not found at $MAPPING. Upload this file to Play Console under Release > Deobfuscation files to fix stack traces."
+          fi
+
+      - name: Upload mapping files (for Play Console deobfuscation)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-mapping
+          path: |
+            android/app/build/outputs/mapping/release/mapping.txt
+          if-no-files-found: warn
+          retention-days: 30

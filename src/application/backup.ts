@@ -2,6 +2,13 @@ import { Platform, Share } from 'react-native';
 
 import type { TraklState } from './store';
 
+const RETENTION_BACKUP_DEFAULTS = {
+  retentionNotificationsEnabled: true,
+  quietHoursEnabled: true,
+  quietHoursStart: '22:00',
+  quietHoursEnd: '08:00',
+};
+
 export const BACKUP_VERSION = 'trakl-backup-v1';
 
 export type BackupData = {
@@ -27,6 +34,12 @@ export type BackupData = {
   achievements: TraklState['achievements'];
   monthlyBudget: TraklState['monthlyBudget'];
   notificationsEnabled: TraklState['notificationsEnabled'];
+  retentionNotificationsEnabled: TraklState['retentionNotificationsEnabled'];
+  quietHoursEnabled: TraklState['quietHoursEnabled'];
+  quietHoursStart: TraklState['quietHoursStart'];
+  quietHoursEnd: TraklState['quietHoursEnd'];
+  retentionNotifiedAchievementIds: TraklState['retentionNotifiedAchievementIds'];
+  retentionLastInactivityNotificationAt?: TraklState['retentionLastInactivityNotificationAt'];
   waterGoal: TraklState['waterGoal'];
 };
 
@@ -77,6 +90,12 @@ export function createBackup(state: TraklState): string {
     achievements: state.achievements,
     monthlyBudget: state.monthlyBudget,
     notificationsEnabled: state.notificationsEnabled,
+    retentionNotificationsEnabled: state.retentionNotificationsEnabled,
+    quietHoursEnabled: state.quietHoursEnabled,
+    quietHoursStart: state.quietHoursStart,
+    quietHoursEnd: state.quietHoursEnd,
+    retentionNotifiedAchievementIds: state.retentionNotifiedAchievementIds,
+    retentionLastInactivityNotificationAt: state.retentionLastInactivityNotificationAt,
     waterGoal: state.waterGoal,
   };
   return JSON.stringify(payload, null, 2);
@@ -135,6 +154,16 @@ export function parseBackup(json: string): ParseResult {
   if (typeof parsed.waterGoal !== 'number' || !Number.isFinite(parsed.waterGoal)) {
     parsed.waterGoal = 8;
   }
+  if (typeof parsed.retentionNotificationsEnabled !== 'boolean')
+    parsed.retentionNotificationsEnabled = RETENTION_BACKUP_DEFAULTS.retentionNotificationsEnabled;
+  if (typeof parsed.quietHoursEnabled !== 'boolean')
+    parsed.quietHoursEnabled = RETENTION_BACKUP_DEFAULTS.quietHoursEnabled;
+  if (typeof parsed.quietHoursStart !== 'string')
+    parsed.quietHoursStart = RETENTION_BACKUP_DEFAULTS.quietHoursStart;
+  if (typeof parsed.quietHoursEnd !== 'string')
+    parsed.quietHoursEnd = RETENTION_BACKUP_DEFAULTS.quietHoursEnd;
+  if (!Array.isArray(parsed.retentionNotifiedAchievementIds))
+    parsed.retentionNotifiedAchievementIds = [];
   if (typeof parsed.onboarded !== 'boolean') {
     parsed.onboarded = true;
   }

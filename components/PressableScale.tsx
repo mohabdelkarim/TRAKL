@@ -1,20 +1,17 @@
 import { type ReactNode } from 'react';
-import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import {
-  createAnimatedComponent,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+  Pressable,
+  type PressableProps,
+  type PressableStateCallbackType,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import { haptics } from '@/src/shared/haptics';
 
-const AnimatedPressable = createAnimatedComponent(Pressable);
-
 /**
  * Distinct-but-coherent press feedback treatments. Each surface type gets the
- * motion that fits it: chunky buttons dip firmly, cards settle softly, chips
+ * feedback that fits it: chunky buttons dip firmly, cards settle softly, chips
  * pop quickly, tab/icon taps give a light bounce.
  */
 export type PressFeedback = 'button' | 'card' | 'chip' | 'tab' | 'icon';
@@ -24,21 +21,19 @@ type FeedbackSpec = {
   scale: number;
   /** Opacity while pressed. */
   opacity: number;
-  /** Spring config for the press-down. */
-  spring: { damping: number; stiffness: number; mass: number };
 };
 
 const SPECS: Record<PressFeedback, FeedbackSpec> = {
   // Solid CTA — a firm, confident dip.
-  button: { scale: 0.96, opacity: 0.96, spring: { damping: 15, stiffness: 320, mass: 0.7 } },
+  button: { scale: 0.96, opacity: 0.96 },
   // Large surface — gentle, slow settle so big areas don't feel jumpy.
-  card: { scale: 0.975, opacity: 0.94, spring: { damping: 20, stiffness: 240, mass: 0.9 } },
+  card: { scale: 0.975, opacity: 0.94 },
   // Pill filter — quick, snappy pop.
-  chip: { scale: 0.92, opacity: 0.9, spring: { damping: 12, stiffness: 400, mass: 0.5 } },
+  chip: { scale: 0.92, opacity: 0.9 },
   // Bottom-nav item — subtle, restrained.
-  tab: { scale: 0.9, opacity: 1, spring: { damping: 14, stiffness: 380, mass: 0.6 } },
+  tab: { scale: 0.9, opacity: 1 },
   // Standalone icon / FAB — lively bounce.
-  icon: { scale: 0.88, opacity: 1, spring: { damping: 11, stiffness: 420, mass: 0.5 } },
+  icon: { scale: 0.88, opacity: 1 },
 };
 
 /** The haptic each feedback variant fires on press-in (web/Expo-safe no-op). */
@@ -59,9 +54,9 @@ type PressableScaleProps = Omit<PressableProps, 'style'> & {
 };
 
 /**
- * Drop-in Pressable that animates scale + opacity on the UI thread using
- * Reanimated springs, so press feedback feels physical instead of a static
- * style flip. Pick the `feedback` variant that matches the element.
+ * Cross-platform Pressable with reliable native touch handling and a small
+ * pressed-state scale/opacity treatment. Pick the `feedback` variant that
+ * matches the element.
  */
 export function PressableScale({
   children,
@@ -74,35 +69,33 @@ export function PressableScale({
   ...rest
 }: PressableScaleProps) {
   const spec = SPECS[feedback];
-  const progress = useSharedValue(0);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        scale: withSpring(1 - (1 - spec.scale) * progress.value, spec.spring),
-      },
-    ],
-    opacity: withTiming(1 - (1 - spec.opacity) * progress.value, { duration: 90 }),
-  }));
+  const handlePressIn: NonNullable<PressableProps['onPressIn']> = (event) => {
+    if (!disabled && haptic) HAPTIC[feedback]();
+    onPressIn?.(event);
+  };
+
+  const handlePressOut: NonNullable<PressableProps['onPressOut']> = (event) => {
+    onPressOut?.(event);
+  };
+
+  const pressStyle = (state: PressableStateCallbackType): StyleProp<ViewStyle> => [
+    style,
+    state.pressed && {
+      transform: [{ scale: spec.scale }],
+      opacity: spec.opacity,
+    },
+  ];
 
   return (
-    <AnimatedPressable
+    <Pressable
       {...rest}
       disabled={disabled}
-      onPressIn={(e) => {
-        if (!disabled) {
-          progress.value = 1;
-          if (haptic) HAPTIC[feedback]();
-        }
-        onPressIn?.(e);
-      }}
-      onPressOut={(e) => {
-        progress.value = 0;
-        onPressOut?.(e);
-      }}
-      style={[style, animatedStyle]}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={pressStyle}
     >
       {children}
-    </AnimatedPressable>
+    </Pressable>
   );
 }

@@ -228,10 +228,16 @@ export function Stepper({
         () => onChange(clamp(value - step)),
         'Decrease',
       )}
-      <View className="flex-1 items-center">
-        <ClashText weight="bold" style={{ fontSize: 24 }}>
+      <View style={{ flex: 1, minWidth: 36, alignItems: 'center' }}>
+        <ClashText
+          weight="bold"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.75}
+          style={{ fontSize: 20, lineHeight: 24, flexShrink: 1 }}
+        >
           {value}
-          {suffix ? <InterText style={{ fontSize: 14 }}> {suffix}</InterText> : null}
+          {suffix ? <InterText style={{ fontSize: 13 }}> {suffix}</InterText> : null}
         </ClashText>
       </View>
       {btn(

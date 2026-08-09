@@ -1,10 +1,18 @@
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import type * as NotificationsModule from 'expo-notifications';
 import type { ParseKeys } from 'i18next';
 
 import i18n from './i18n';
-import type { CustomTracker, Habit, Task } from '@/src/domain/types';
+import type { Achievement, CustomTracker, Habit, Task } from '@/src/domain/types';
+import type { TrackerKey } from '@/src/domain/trackers';
+import { isWithinQuietHours, selectRetentionCandidates } from './retention';
+
+function localDateFromKey(key: string): Date {
+  const [year, month, day] = key.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 /** Translate in the currently-active language (bound translator avoids
  *  English fallback due to load timing). */
@@ -75,7 +83,8 @@ async function ensureAndroidChannel(Notifications: typeof NotificationsModule): 
   if (Platform.OS !== 'android') return;
   await Notifications.setNotificationChannelAsync('default', {
     name: 'Reminders',
-    importance: Notifications.AndroidImportance.DEFAULT,
+    importance: Notifications.AndroidImportance.HIGH,
+    sound: 'default',
     vibrationPattern: [0, 250, 250, 250],
   });
 }
@@ -84,15 +93,132 @@ async function ensureAndroidChannel(Notifications: typeof NotificationsModule): 
  * Request notification permission. Returns true if granted.
  * Safe to call repeatedly; resolves immediately if already granted.
  */
+let permissionRequestPromise: Promise<boolean> | null = null;
+
 export async function requestNotificationPermission(): Promise<boolean> {
+  if (isWeb) return false;
+  if (permissionRequestPromise) return permissionRequestPromise;
+  permissionRequestPromise = (async () => {
+    const Notifications = getNotifications();
+    if (!Notifications) return false;
+    const current = await Notifications.getPermissionsAsync();
+    if (current.granted) return true;
+    if (!current.canAskAgain) return false;
+    const next = await Notifications.requestPermissionsAsync();
+    return next.granted;
+  })().finally(() => {
+    permissionRequestPromise = null;
+  });
+  return permissionRequestPromise;
+}
+
+const PERMISSION_REQUESTED_KEY = 'trakl-notification-permission-requested-v1';
+
+/** Request permission once automatically on the first native app opening. */
+export async function requestNotificationPermissionOnce(): Promise<boolean> {
+  if (isWeb) return false;
+  const granted = await hasNotificationPermission();
+  if (granted) return true;
+  try {
+    const requested = await AsyncStorage.getItem(PERMISSION_REQUESTED_KEY);
+    if (requested === '1') return false;
+    await AsyncStorage.setItem(PERMISSION_REQUESTED_KEY, '1');
+  } catch {
+    // A storage failure must not block the OS permission prompt.
+  }
+  return requestNotificationPermission();
+}
+
+/** Read the OS permission without prompting the user. */
+export async function hasNotificationPermission(): Promise<boolean> {
   if (isWeb) return false;
   const Notifications = getNotifications();
   if (!Notifications) return false;
-  const current = await Notifications.getPermissionsAsync();
-  if (current.granted) return true;
-  if (!current.canAskAgain) return false;
-  const next = await Notifications.requestPermissionsAsync();
-  return next.granted;
+  const permissions = await Notifications.getPermissionsAsync();
+  return permissions.granted;
+}
+
+export type AppNotificationEvent = {
+  id: string;
+  tracker: TrackerKey;
+  title: string;
+  message: string;
+  time: string;
+};
+
+function toAppNotificationEvent(
+  notification: NotificationsModule.Notification,
+): AppNotificationEvent {
+  const data = notification.request.content.data as
+    | { kind?: string; name?: string; stableId?: string }
+    | undefined;
+  const tracker: TrackerKey =
+    data?.kind === 'habit' ? 'habits' : data?.kind === 'task' ? 'tasks' : 'custom';
+  const content = notification.request.content;
+  let fallbackTitle = 'custom.title';
+  let fallbackBody = 'notifReminders.customBody';
+  if (data?.kind === 'habit') {
+    fallbackTitle = 'notifReminders.habitTitle';
+    fallbackBody = 'notifReminders.habitBody';
+  } else if (data?.kind === 'task') {
+    fallbackTitle = 'notifReminders.taskTitle';
+    fallbackBody = 'notifReminders.taskBody';
+  } else if (data?.kind === 'retention') {
+    const stableId = data.stableId ?? '';
+    fallbackTitle = stableId.includes(':weekly:')
+      ? 'notifReminders.weeklyReviewTitle'
+      : stableId.includes(':streak:')
+        ? 'notifReminders.streakTitle'
+        : stableId.includes(':milestone:')
+          ? 'notifReminders.milestoneTitle'
+          : 'notifReminders.inactivityTitle';
+    fallbackBody = stableId.includes(':weekly:')
+      ? 'notifReminders.weeklyReviewBody'
+      : stableId.includes(':streak:')
+        ? 'notifReminders.streakBody'
+        : stableId.includes(':milestone:')
+          ? 'notifReminders.milestoneBody'
+          : 'notifReminders.inactivityBody';
+  }
+  return {
+    id: `native-${notification.request.identifier}`,
+    tracker,
+    title: content.title || data?.name || nt(fallbackTitle),
+    message: content.body || nt(fallbackBody, { name: data?.name ?? '' }),
+    time: new Date().toISOString(),
+  };
+}
+
+/** Import notifications delivered while the app was backgrounded or closed. */
+export async function syncDeliveredNotifications(
+  onEvent: (event: AppNotificationEvent) => void,
+): Promise<void> {
+  if (isWeb) return;
+  const Notifications = getNotifications();
+  if (!Notifications) return;
+  const delivered = await Notifications.getPresentedNotificationsAsync();
+  for (const notification of delivered) onEvent(toAppNotificationEvent(notification));
+  const response = await Notifications.getLastNotificationResponseAsync();
+  if (response) onEvent(toAppNotificationEvent(response.notification));
+}
+
+/** Listen for delivered/tapped local notifications so the in-app history stays in sync. */
+export function subscribeToNotificationEvents(
+  onEvent: (event: AppNotificationEvent) => void,
+): () => void {
+  if (isWeb) return () => undefined;
+  const Notifications = getNotifications();
+  if (!Notifications) return () => undefined;
+  const received = Notifications.addNotificationReceivedListener((notification) =>
+    onEvent(toAppNotificationEvent(notification)),
+  );
+  const response = Notifications.addNotificationResponseReceivedListener((result) =>
+    onEvent(toAppNotificationEvent(result.notification)),
+  );
+  return () => {
+    received.remove();
+    response.remove();
+  };
 }
 
 /** Parse an "HH:mm" string into { hour, minute }; null if invalid. */
@@ -106,10 +232,19 @@ function parseTime(time: string | undefined): { hour: number; minute: number } |
   return { hour, minute };
 }
 
-interface ReminderData {
+export interface ReminderData {
   habits: Habit[];
   tasks: Task[];
   customTrackers: CustomTracker[];
+  achievements: Array<Pick<Achievement, 'id' | 'unlocked'> & { name?: string }>;
+  retentionNotifiedAchievementIds: string[];
+  retentionLastInactivityNotificationAt?: string;
+  retentionNotificationsEnabled: boolean;
+  quietHoursEnabled: boolean;
+  quietHoursStart: string;
+  quietHoursEnd: string;
+  onRetentionAchievementsScheduled?: (ids: string[]) => void;
+  onRetentionInactivityScheduled?: (at: string) => void;
 }
 
 /** Cancel every reminder this app has scheduled. */
@@ -170,7 +305,9 @@ async function doSyncReminders(data: ReminderData, enabled: boolean): Promise<Sy
         content: {
           title: nt('notifReminders.habitTitle'),
           body: nt('notifReminders.habitBody', { name: habit.name }),
-          data: { kind: 'habit', id: habit.id },
+          sound: 'default',
+          data: { kind: 'habit', id: habit.id, name: habit.name },
+          ...(Platform.OS === 'android' ? { channelId: 'default' } : {}),
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -194,7 +331,9 @@ async function doSyncReminders(data: ReminderData, enabled: boolean): Promise<Sy
         content: {
           title: tracker.name,
           body: nt('notifReminders.customBody', { name: tracker.name }),
-          data: { kind: 'custom', id: tracker.id },
+          sound: 'default',
+          data: { kind: 'custom', id: tracker.id, name: tracker.name },
+          ...(Platform.OS === 'android' ? { channelId: 'default' } : {}),
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -221,7 +360,9 @@ async function doSyncReminders(data: ReminderData, enabled: boolean): Promise<Sy
         content: {
           title: nt('notifReminders.taskTitle'),
           body: nt('notifReminders.taskBody', { name: task.name }),
-          data: { kind: 'task', id: task.id },
+          sound: 'default',
+          data: { kind: 'task', id: task.id, name: task.name },
+          ...(Platform.OS === 'android' ? { channelId: 'default' } : {}),
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DATE,
@@ -229,6 +370,46 @@ async function doSyncReminders(data: ReminderData, enabled: boolean): Promise<Sy
         },
       }),
     );
+  }
+
+  if (data.retentionNotificationsEnabled) {
+    const retention = selectRetentionCandidates({
+      ...data,
+      notifiedAchievementIds: data.retentionNotifiedAchievementIds,
+      lastInactivityNotificationAt: data.retentionLastInactivityNotificationAt,
+    });
+    const milestoneIds: string[] = [];
+    let inactivityScheduled = false;
+    for (const candidate of retention) {
+      const fireAt = localDateFromKey(candidate.date);
+      fireAt.setHours(candidate.hour, candidate.minute, 0, 0);
+      if (fireAt.getTime() <= now) continue;
+      if (isWithinQuietHours(fireAt, data.quietHoursEnabled, data.quietHoursStart, data.quietHoursEnd)) continue;
+      if (candidate.achievementId) milestoneIds.push(candidate.achievementId);
+      if (candidate.kind === 'inactivity') inactivityScheduled = true;
+      const copy =
+        candidate.kind === 'weekly-review'
+          ? ['notifReminders.weeklyReviewTitle', 'notifReminders.weeklyReviewBody']
+          : candidate.kind === 'streak-protection'
+            ? ['notifReminders.streakTitle', 'notifReminders.streakBody']
+            : candidate.kind === 'milestone'
+              ? ['notifReminders.milestoneTitle', 'notifReminders.milestoneBody']
+              : ['notifReminders.inactivityTitle', 'notifReminders.inactivityBody'];
+      tasks.push(
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: nt(copy[0]),
+            body: nt(copy[1]),
+            sound: 'default',
+            data: { kind: 'retention', stableId: candidate.stableId, achievementId: candidate.achievementId },
+            ...(Platform.OS === 'android' ? { channelId: 'default' } : {}),
+          },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: fireAt },
+        }),
+      );
+    }
+    if (milestoneIds.length > 0) data.onRetentionAchievementsScheduled?.(milestoneIds);
+    if (inactivityScheduled) data.onRetentionInactivityScheduled?.(new Date().toISOString());
   }
 
   await Promise.all(tasks);

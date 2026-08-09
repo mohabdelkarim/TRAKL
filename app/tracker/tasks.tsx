@@ -80,36 +80,45 @@ function TaskRow({
               <Circle size={24} color={colors.faint} strokeWidth={1.5} />
             )}
           </PressableScale>
-          <View className="flex-1 px-3">
-            <View className="flex-row items-center gap-2">
-              <InterText
-                weight="medium"
+          <View style={{ flex: 1, minWidth: 0, paddingHorizontal: 12 }}>
+            <InterText
+              weight="medium"
+              style={{
+                flexShrink: 1,
+                fontSize: 15,
+                textDecorationLine: task.done ? 'line-through' : 'none',
+              }}
+              color={task.done ? colors.faint : colors.text}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {task.name}
+            </InterText>
+            {task.status === 'inprogress' && !task.done ? (
+              <View
                 style={{
-                  fontSize: 15,
-                  textDecorationLine: task.done ? 'line-through' : 'none',
+                  alignSelf: 'flex-start',
+                  maxWidth: '100%',
+                  marginTop: 6,
+                  backgroundColor: withAlpha(accent, 0.14),
+                  borderRadius: 999,
                 }}
-                color={task.done ? colors.faint : colors.text}
-                numberOfLines={1}
+                className="flex-row items-center gap-1 px-2 py-0.5"
               >
-                {task.name}
-              </InterText>
-              {task.status === 'inprogress' && !task.done ? (
                 <View
-                  style={{
-                    backgroundColor: withAlpha(accent, 0.14),
-                    borderRadius: 999,
-                  }}
-                  className="flex-row items-center gap-1 px-2 py-0.5"
+                  style={{ width: 5, height: 5, borderRadius: 999, backgroundColor: accent }}
+                />
+                <InterText
+                  weight="medium"
+                  color={accent}
+                  style={{ fontSize: 10, flexShrink: 1 }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
-                  <View
-                    style={{ width: 5, height: 5, borderRadius: 999, backgroundColor: accent }}
-                  />
-                  <InterText weight="medium" color={accent} style={{ fontSize: 10 }}>
-                    {inProgressLabel}
-                  </InterText>
-                </View>
-              ) : null}
-            </View>
+                  {inProgressLabel}
+                </InterText>
+              </View>
+            ) : null}
             <View className="mt-1 flex-row items-center gap-3">
               <View className="flex-row items-center gap-1">
                 <Folder size={12} color={colors.muted} strokeWidth={1.5} />

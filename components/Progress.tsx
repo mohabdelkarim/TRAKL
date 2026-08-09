@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { useColors } from '@/src/shared/theme';
-import { ClashText, InterText } from './Typography';
+import { ClashText, InterText, uppercaseForDisplay } from './Typography';
 
 type RingProps = {
   size?: number;
@@ -152,7 +152,7 @@ export function SemiGauge({
             color={colors.muted}
             style={{ letterSpacing: 1, fontSize: 11 }}
           >
-            {centerLabel.toUpperCase()}
+            {uppercaseForDisplay(centerLabel)}
           </InterText>
         ) : null}
       </View>

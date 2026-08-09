@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Tabs, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { AdBanner } from '@/components/AdBanner';
 import { TabBar } from '@/components/TabBar';
 import { useColors, useResolvedScheme } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
@@ -33,18 +34,27 @@ export default function TabLayout() {
       {/* expo-status-bar StatusBar takes a string for `style`, not an object — linter false positive */}
       {/* oxlint-disable-next-line react/style-prop-object */}
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-      <Tabs
-        tabBar={(props) => <TabBar {...props} />}
-        screenOptions={{
-          headerShown: false,
-          sceneStyle: { backgroundColor: colors.bg },
-        }}
-      >
-        <Tabs.Screen name="index" options={{ title: 'Home' }} />
-        <Tabs.Screen name="trackers" options={{ title: 'Trackers' }} />
-        <Tabs.Screen name="analytics" options={{ title: 'Analytics' }} />
-        <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
-      </Tabs>
+      <View style={{ flex: 1 }}>
+        <Tabs
+          tabBar={(props) => (
+            <View style={{ backgroundColor: colors.bg }}>
+              <View style={{ alignItems: 'center' }}>
+                <AdBanner />
+              </View>
+              <TabBar {...props} />
+            </View>
+          )}
+          screenOptions={{
+            headerShown: false,
+            sceneStyle: { backgroundColor: colors.bg },
+          }}
+        >
+          <Tabs.Screen name="index" options={{ title: 'Home' }} />
+          <Tabs.Screen name="trackers" options={{ title: 'Trackers' }} />
+          <Tabs.Screen name="analytics" options={{ title: 'Analytics' }} />
+          <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
+        </Tabs>
+      </View>
     </>
   );
 }
