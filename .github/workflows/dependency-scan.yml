@@ -1,0 +1,111 @@
+name: Dependency Scan
+
+# Dependency analysis: OSV-Scanner (vulnerabilities), RetireJS (known-vulnerable JS),
+# Dependency Review (PR-only policy), and Syft SBOM generation.
+# Results are uploaded as artifacts and to GitHub Dependency Snapshot API.
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1'
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: dependency-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  osv-scanner:
+    name: OSV-Scanner
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run OSV-Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@v1
+        continue-on-error: true
+
+  retirejs:
+    name: RetireJS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install RetireJS
+        run: npm install -g retire
+
+      - name: Run RetireJS
+        run: retire --path . --outputformat json --outputpath retirejs-results.json --severity medium
+        continue-on-error: true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retirejs-results
+          path: retirejs-results.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          comment-summary-in-pr: on-failure
+
+  sbom:
+    name: Syft SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate SPDX-JSON SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: '.'
+          config: .syft.yaml
+          format: spdx-json
+          artifact-name: trakl-sbom.spdx.json
+          upload-artifact: true
+          upload-artifact-retention: 30
+          upload-release-assets: false
+          dependency-snapshot: true
+
+      - name: Generate CycloneDX-JSON SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: '.'
+          config: .syft.yaml
+          format: cyclonedx-json
+          artifact-name: trakl-sbom.cdx.json
+          upload-artifact: true
+          upload-artifact-retention: 30
+          upload-release-assets: false
+          dependency-snapshot: false

@@ -1,0 +1,101 @@
+name: Vulnerability Scan
+
+# Scans npm dependencies for known CVEs using Trivy and Grype.
+# Results are uploaded to GitHub Security tab (SARIF) and as artifacts.
+# Scans do NOT fail the build — adjust severity-cutoff/exit-code to enforce.
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: vuln-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trivy:
+    name: Trivy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '0'
+          skip-dirs: 'node_modules,.expo,dist,android,ios,.git,.idea,__tests__'
+          ignore-unfixed: true
+
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && (github.event_name != 'pull_request' || github.event_pull_request.head.repo.full_name == github.repository)
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Upload Trivy results as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-sarif-results
+          path: trivy-results.sarif
+          if-no-files-found: warn
+          retention-days: 30
+
+  grype:
+    name: Grype
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Grype vulnerability scanner
+        uses: anchore/scan-action@v7
+        with:
+          path: '.'
+          config: .grype.yaml
+          output-format: sarif
+          output-file: grype-results.sarif
+          fail-build: false
+          severity-cutoff: critical
+          only-fixed: false
+          by-cve: true
+
+      - name: Upload Grype results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && (github.event_name != 'pull_request' || github.event_pull_request.head.repo.full_name == github.repository)
+        continue-on-error: true
+        with:
+          sarif_file: grype-results.sarif
+
+      - name: Upload Grype results as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: grype-sarif-results
+          path: grype-results.sarif
+          if-no-files-found: warn
+          retention-days: 30
