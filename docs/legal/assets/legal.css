@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 
-:root {
+:root,
+[data-theme='light'] {
+  color-scheme: light;
   --bg: #f7f5f0;
   --surface: #ffffff;
   --surface-2: #f0ede8;
@@ -18,21 +20,20 @@
   --max-width: 42rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141210;
-    --surface: #1e1c19;
-    --surface-2: #27241f;
-    --border: #34302a;
-    --text: #f2efe9;
-    --muted: #9a938c;
-    --faint: #5c564f;
-    --ink: #f2efe9;
-    --accent: #f0c061;
-    --success: #4fa877;
-    --destructive: #e0614f;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 0 1px 0 rgba(0, 0, 0, 0.4);
-  }
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #141210;
+  --surface: #1e1c19;
+  --surface-2: #27241f;
+  --border: #34302a;
+  --text: #f2efe9;
+  --muted: #9a938c;
+  --faint: #5c564f;
+  --ink: #f2efe9;
+  --accent: #f0c061;
+  --success: #4fa877;
+  --destructive: #e0614f;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 *,
@@ -146,6 +147,59 @@ body {
 .site-nav a[aria-current='page'] {
   color: var(--text);
   background: var(--surface-2);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.theme-toggle:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme='dark'] .theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme='dark'] .theme-toggle .icon-moon {
+  display: block;
 }
 
 main {

@@ -6,6 +6,12 @@
   <meta name="description" content="Privacy Policy for TRAKL, a local-first life tracking app by Pimora.">
   <title>Privacy Policy — TRAKL</title>
   <link rel="icon" href="../assets/logo.png" type="image/png">
+  <script>
+    (function () {
+      var theme = localStorage.getItem('trakl-legal-theme');
+      document.documentElement.setAttribute('data-theme', theme === 'dark' || theme === 'light' ? theme : 'light');
+    })();
+  </script>
   <link rel="stylesheet" href="../assets/legal.css">
 </head>
 <body>
@@ -17,10 +23,21 @@
         <img src="../assets/logo.png" width="36" height="36" alt="TRAKL logo">
         <span class="brand-name">TRAKL</span>
       </a>
-      <nav class="site-nav" aria-label="Legal pages">
-        <a href="../privacy-policy/" aria-current="page">Privacy Policy</a>
-        <a href="../terms-of-service/">Terms of Service</a>
-      </nav>
+      <div class="header-actions">
+        <nav class="site-nav" aria-label="Legal pages">
+          <a href="../privacy-policy/" aria-current="page">Privacy Policy</a>
+          <a href="../terms-of-service/">Terms of Service</a>
+        </nav>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" title="Dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -181,5 +198,6 @@
       <p>TRAKL · Everything. Tracked. · Made by Pimora</p>
     </div>
   </footer>
+  <script src="../assets/legal.js"></script>
 </body>
 </html>
