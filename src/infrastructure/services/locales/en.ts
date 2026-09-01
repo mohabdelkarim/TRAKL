@@ -748,8 +748,8 @@ export const en = {
   legal: {
     privacyPolicy: 'Privacy Policy',
     termsOfService: 'Terms of Service',
-    privacyUrl: 'https://www.pimora.tech/privacy',
-    termsUrl: 'https://www.pimora.tech/terms',
+    privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/',
+    termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/',
   },
 };
 

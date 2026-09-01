@@ -692,5 +692,5 @@ export const ko = {
   },
   consent: { title: '맞춤형 광고 및 분석', description: 'TRAKL은 맞춤형 광고를 표시하고 광고 성과를 측정하기 위해 Google Mobile Ads를 사용합니다. 데이터는 개인정보처리방침에 따라 처리됩니다.', personalized: '관심사에 기반한 맞춤형 광고', measurement: '광고 효과 측정', noTracking: '개인 데이터를 판매하거나 공유하지 않습니다', privacyNote: '설정에서 언제든지 동의를 변경할 수 있습니다.', accept: '동의하고 계속', reject: '거부' },
   backup: { exportBackup: '백업 내보내기', importBackup: '백업 가져오기', exportTitle: '백업 내보내기', importTitle: '백업 가져오기', export: '내보내기', import: '복원', pasteJson: '백업 JSON', pasteJsonPlaceholder: 'TRAKL 백업 JSON을 여기에 붙여넣으세요...', orChooseFile: '또는 .json 파일 선택', exportSuccess: '백업을 내보냈습니다.', importSuccess: '백업을 성공적으로 복원했습니다.', confirmTitle: '백업을 복원할까요?', confirmBody: '현재 TRAKL 데이터가 백업 데이터로 모두 대체됩니다. 되돌릴 수 없습니다.', confirm: '복원' },
-  legal: { privacyPolicy: '개인정보처리방침', termsOfService: '서비스 약관', privacyUrl: 'https://www.pimora.tech/privacy', termsUrl: 'https://www.pimora.tech/terms' },
+  legal: { privacyPolicy: '개인정보처리방침', termsOfService: '서비스 약관', privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/' },
 };
