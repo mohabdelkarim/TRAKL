@@ -90,8 +90,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'react-native-google-mobile-ads',
         {
-          androidAppId: requireEnv('TRAKL_ADMOB_ANDROID_APP_ID', 'ca-app-pub-3940256099942544~3347511713'),
-          iosAppId: requireEnv('TRAKL_ADMOB_IOS_APP_ID', 'ca-app-pub-3940256099942544~1458002511'),
+          androidAppId: requireEnv('TRAKL_ADMOB_ANDROID_APP_ID', 'ca-app-pub-4918095220813645~5762692634'),
+          iosAppId: requireEnv('TRAKL_ADMOB_IOS_APP_ID', 'ca-app-pub-4918095220813645~1685670652'),
         },
       ],
       ...nativePlugins,

@@ -133,7 +133,7 @@ npm run retirejs                 # Known-vulnerable JS library scan
 
 ## Configuration
 
-Production identifiers (Expo project, AdMob App IDs, bundle/package names) are **not hardcoded** — they're read from environment variables with safe, non-functional placeholders as fallbacks (see `app.config.ts`).
+Production identifiers (Expo project, bundle/package names) are read from environment variables. AdMob production App IDs default to the TRAKL publisher account (`pub-4918095220813645`); dev builds still serve Google test ad units via `USE_TEST_ADS`.
 
 Copy `.env.example` to `.env` and fill in your values:
 
@@ -145,8 +145,8 @@ cp .env.example .env
 | --- | --- |
 | `TRAKL_EXPO_OWNER`, `TRAKL_EAS_PROJECT_ID` | Your Expo/EAS account and project |
 | `TRAKL_ANDROID_PACKAGE`, `TRAKL_IOS_BUNDLE_ID` | Native app identifiers |
-| `TRAKL_ADMOB_ANDROID_APP_ID`, `TRAKL_ADMOB_IOS_APP_ID` | AdMob App IDs (defaults to Google's public test IDs) |
-| `TRAKL_ADMOB_ANDROID_BANNER_UNIT_ID`, `TRAKL_ADMOB_IOS_BANNER_UNIT_ID` | AdMob banner ad unit IDs |
+| `TRAKL_ADMOB_ANDROID_APP_ID`, `TRAKL_ADMOB_IOS_APP_ID` | AdMob App IDs (production defaults; override via env) |
+| `TRAKL_ADMOB_ANDROID_BANNER_UNIT_ID`, `TRAKL_ADMOB_IOS_BANNER_UNIT_ID` | AdMob banner ad unit IDs (production defaults) |
 
 ## Project Structure
 
