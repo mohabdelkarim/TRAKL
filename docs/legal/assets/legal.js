@@ -13,7 +13,7 @@
     try {
       localStorage.setItem(STORAGE_KEY, theme);
     } catch (e) {
-      /* ignore storage errors */
+      /* ignore */
     }
 
     var buttons = document.querySelectorAll('[data-theme-choice]');
@@ -21,6 +21,7 @@
       var btn = buttons[i];
       var active = btn.getAttribute('data-theme-choice') === theme;
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.classList.toggle('is-active', active);
     }
   }
 
@@ -38,18 +39,19 @@
   }
 
   function bindReveal() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      var staticReveal = document.querySelectorAll('.reveal');
-      for (var s = 0; s < staticReveal.length; s++) {
-        staticReveal[s].classList.add('is-visible');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.reveal');
+
+    if (reduced || !items.length) {
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.add('is-visible');
       }
       return;
     }
 
-    var items = document.querySelectorAll('.reveal');
-    if (!items.length || !('IntersectionObserver' in window)) {
-      for (var f = 0; f < items.length; f++) {
-        items[f].classList.add('is-visible');
+    if (!('IntersectionObserver' in window)) {
+      for (var j = 0; j < items.length; j++) {
+        items[j].classList.add('is-visible');
       }
       return;
     }
@@ -57,17 +59,17 @@
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' },
     );
 
-    for (var i = 0; i < items.length; i++) {
-      observer.observe(items[i]);
+    for (var k = 0; k < items.length; k++) {
+      items[k].style.transitionDelay = Math.min(k * 55, 440) + 'ms';
+      observer.observe(items[k]);
     }
   }
 
