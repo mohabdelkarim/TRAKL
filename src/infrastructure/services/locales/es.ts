@@ -698,5 +698,5 @@ export const es = {
   backup: {
     exportBackup: 'Exportar copia de seguridad', importBackup: 'Importar copia de seguridad', exportTitle: 'Exportar copia de seguridad', importTitle: 'Importar copia de seguridad', export: 'Exportar', import: 'Restaurar', pasteJson: 'JSON de la copia de seguridad', pasteJsonPlaceholder: 'Pega aquí el JSON de tu copia de seguridad de TRAKL...', orChooseFile: 'O elige un archivo .json', exportSuccess: 'Copia de seguridad exportada.', importSuccess: 'Copia de seguridad restaurada correctamente.', confirmTitle: '¿Restaurar la copia de seguridad?', confirmBody: 'Esto reemplazará todos tus datos actuales de TRAKL con la copia de seguridad. No se puede deshacer.', confirm: 'Restaurar',
   },
-  legal: { privacyPolicy: 'Política de privacidad', termsOfService: 'Términos del servicio', privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/' },
+  legal: { privacyPolicy: 'Política de privacidad', termsOfService: 'Términos del servicio', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
 };

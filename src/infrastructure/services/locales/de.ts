@@ -706,5 +706,5 @@ export const de = {
   backup: {
     exportBackup: 'Backup exportieren', importBackup: 'Backup importieren', exportTitle: 'Backup exportieren', importTitle: 'Backup importieren', export: 'Exportieren', import: 'Wiederherstellen', pasteJson: 'Backup-JSON', pasteJsonPlaceholder: 'Füge hier dein TRAKL-Backup-JSON ein...', orChooseFile: 'Oder eine .json-Datei auswählen', exportSuccess: 'Backup exportiert.', importSuccess: 'Backup erfolgreich wiederhergestellt.', confirmTitle: 'Backup wiederherstellen?', confirmBody: 'Dadurch werden alle aktuellen TRAKL-Daten durch das Backup ersetzt. Dies kann nicht rückgängig gemacht werden.', confirm: 'Wiederherstellen',
   },
-  legal: { privacyPolicy: 'Datenschutzerklärung', termsOfService: 'Nutzungsbedingungen', privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/' },
+  legal: { privacyPolicy: 'Datenschutzerklärung', termsOfService: 'Nutzungsbedingungen', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
 };

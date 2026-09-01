@@ -748,8 +748,8 @@ export const en = {
   legal: {
     privacyPolicy: 'Privacy Policy',
     termsOfService: 'Terms of Service',
-    privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/',
-    termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/',
+    privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/',
+    termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/',
   },
 };
 

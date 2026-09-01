@@ -699,5 +699,5 @@ export const fr = {
   backup: {
     exportBackup: 'Exporter la sauvegarde', importBackup: 'Importer la sauvegarde', exportTitle: 'Exporter la sauvegarde', importTitle: 'Importer la sauvegarde', export: 'Exporter', import: 'Restaurer', pasteJson: 'JSON de sauvegarde', pasteJsonPlaceholder: 'Collez ici votre JSON de sauvegarde TRAKL...', orChooseFile: 'Ou choisir un fichier .json', exportSuccess: 'Sauvegarde exportée.', importSuccess: 'Sauvegarde restaurée avec succès.', confirmTitle: 'Restaurer la sauvegarde ?', confirmBody: 'Toutes vos données TRAKL actuelles seront remplacées par la sauvegarde. Cette action est irréversible.', confirm: 'Restaurer',
   },
-  legal: { privacyPolicy: 'Politique de confidentialité', termsOfService: 'Conditions d’utilisation', privacyUrl: 'https://mohabdelkarim.github.io/TRAKL/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/TRAKL/terms-of-service/' },
+  legal: { privacyPolicy: 'Politique de confidentialité', termsOfService: 'Conditions d’utilisation', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
 };
