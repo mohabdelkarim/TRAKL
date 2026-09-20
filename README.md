@@ -11,11 +11,11 @@
 
   <p>
     <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
-      <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1700000000" alt="Download on the App Store" height="54" />
+      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="40" />
     </a>
-    &nbsp;
+    &nbsp;&nbsp;
     <a href="https://play.google.com/store/apps/details?id=trakl.app">
-      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="40" />
     </a>
   </p>
 
@@ -24,19 +24,17 @@
     ·
     <a href="https://play.google.com/store/apps/details?id=trakl.app">Google Play</a>
     ·
-    <img src="https://img.shields.io/badge/iOS-16.4%2B-000000?logo=apple&logoColor=white" alt="iOS 16.4+" />
-    <img src="https://img.shields.io/badge/Android-available-3DDC84?logo=android&logoColor=white" alt="Android" />
-    <img src="https://img.shields.io/badge/license-GPL%20v3-blue.svg" alt="License GPL v3" />
+    Free · 20 languages · Local first
   </p>
 </div>
 
 <br />
 
 <p align="center">
-  <img src="./assets/image/ios-image-1.jpeg" width="720" alt="TRAKL home dashboard with Life Score" />
+  <img src="./assets/image/ios_image_1.jpeg" width="380" alt="TRAKL home dashboard with Life Score" />
 </p>
 
----
+<hr />
 
 ## Why TRAKL
 
@@ -44,71 +42,71 @@ Most trackers force you to juggle five apps, create an account, and sync your li
 
 TRAKL is different:
 
-- **One calm dashboard** for habits, money, sleep, tasks, goals, and wellbeing
-- **Local-first** — tracker entries stay on your phone
-- **No signup** — open the app and start logging today
-- **Clear insights** — Life Score, streaks, weekly reviews, and spending charts
-- **Yours to customize** — build your own trackers when the built-ins are not enough
+* **One calm dashboard** for habits, money, sleep, tasks, goals, and wellbeing
+* **Local first**: tracker entries stay on your phone
+* **No signup**: open the app and start logging today
+* **Clear insights**: Life Score, streaks, weekly reviews, and spending charts
+* **Yours to customize**: build your own trackers when the built-ins are not enough
 
 > [!TIP]
 > Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662?l=el) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support.
 
----
+<hr />
 
 ## See it in action
 
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-2.jpeg" width="360" alt="All trackers in one place" />
+      <img src="./assets/image/ios_image_2.jpeg" width="200" alt="All trackers in one place" />
       <br /><strong>One app. Your whole life.</strong>
       <br /><sub>Finance, habits, tasks, goals, sleep, fitness, mood, water and more.</sub>
     </td>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-3.jpeg" width="360" alt="Life Score analytics" />
+      <img src="./assets/image/ios_image_3.jpeg" width="200" alt="Life Score analytics" />
       <br /><strong>Know your Life Score</strong>
       <br /><sub>Weekly insights, streaks, spending and progress at a glance.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-4.jpeg" width="360" alt="Finance tracker" />
+      <img src="./assets/image/ios_image_4.jpeg" width="200" alt="Finance tracker" />
       <br /><strong>See where money goes</strong>
       <br /><sub>Net balance, monthly budget and category breakdown.</sub>
     </td>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-5.jpeg" width="360" alt="Tasks list and kanban" />
+      <img src="./assets/image/ios_image_5.jpeg" width="200" alt="Tasks list and kanban" />
       <br /><strong>Tasks that stay on track</strong>
       <br /><sub>List and kanban. Sort by due date or priority.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-6.jpeg" width="360" alt="Weekly review" />
+      <img src="./assets/image/ios_image_6.jpeg" width="200" alt="Weekly review" />
       <br /><strong>Your week, decoded</strong>
       <br /><sub>Highlights, streaks, sleep average and spending every week.</sub>
     </td>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-7.jpeg" width="360" alt="Sleep tracker" />
+      <img src="./assets/image/ios_image_7.jpeg" width="200" alt="Sleep tracker" />
       <br /><strong>Sleep you can improve</strong>
       <br /><sub>Log bedtime, track 7 night trends, see your average.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-8.jpeg" width="360" alt="Meditation tracker" />
+      <img src="./assets/image/ios_image_8.jpeg" width="200" alt="Meditation tracker" />
       <br /><strong>Calm starts here</strong>
       <br /><sub>Track sessions, streaks and minutes this week.</sub>
     </td>
     <td align="center" width="50%">
-      <img src="./assets/image/ios-image-9.jpeg" width="360" alt="Goals and milestones" />
+      <img src="./assets/image/ios_image_9.jpeg" width="200" alt="Goals and milestones" />
       <br /><strong>Set goals. Hit milestones.</strong>
       <br /><sub>Deadlines, milestones and progress built in.</sub>
     </td>
   </tr>
 </table>
 
----
+<hr />
 
 ## What you can track
 
@@ -120,7 +118,7 @@ TRAKL is different:
 | **Tasks** | List + kanban, due dates, priorities, labels |
 | **Goals** | Deadlines, milestones, progress |
 | **Planner** | Today's focus without spreadsheet chaos |
-| **Sleep** | Bedtime, wake time, 7-night trends |
+| **Sleep** | Bedtime, wake time, 7 night trends |
 | **Fitness** | Workouts that sit next to the rest of your life |
 | **Mood** | Check-ins you can actually stick with |
 | **Water** | Simple daily hydration logging |
@@ -130,31 +128,31 @@ TRAKL is different:
 
 Plus local reminders, achievements, weekly review, and CSV/JSON backup you control.
 
----
+<hr />
 
 ## Privacy by design
 
 TRAKL is built so a life tracker never needs a server for your personal entries.
 
-- **On-device storage** with Zustand + AsyncStorage
-- **Encrypted finances** via `expo-secure-store` (iOS Keychain / Android Keystore)
-- **No account required** to use the core trackers
-- **Ads only after consent** through Google's official UMP flow (plus iOS ATT)
-- **Backup you own** — export and import locally, never auto-uploaded
+* **On device storage** with Zustand + AsyncStorage
+* **Encrypted finances** via `expo-secure-store` (iOS Keychain / Android Keystore)
+* **No account required** to use the core trackers
+* **Ads only after consent** through Google's official UMP flow (plus iOS ATT)
+* **Backup you own**: export and import locally, never auto uploaded
 
 See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
 
----
+<hr />
 
 ## Download
 
 <p align="center">
   <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
-    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1700000000" alt="Download on the App Store" height="54" />
+    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="40" />
   </a>
   &nbsp;&nbsp;
   <a href="https://play.google.com/store/apps/details?id=trakl.app">
-    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="40" />
   </a>
 </p>
 
@@ -164,7 +162,7 @@ See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
   <a href="https://play.google.com/store/apps/details?id=trakl.app"><strong>Download for Android</strong></a>
 </p>
 
----
+<hr />
 
 ## For developers
 
@@ -216,9 +214,9 @@ npm run semgrep
 
 Copy `.env.example` to `.env` for Expo / AdMob identifiers. See `docs/adr/` for architecture decisions.
 
-Dev-client builds: set `TRAKL_DEV_CLIENT=1` in a local `.env.local` (git-ignored). Store / production builds leave it unset.
+Dev client builds: set `TRAKL_DEV_CLIENT=1` in a local `.env.local` (ignored by git). Store / production builds leave it unset.
 
----
+<hr />
 
 ## License
 
