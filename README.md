@@ -1,9 +1,8 @@
+<p align="center">
+  <img src="./assets/banner.png" width="880" alt="TRAKL banner: Everything. Tracked. Life Control Dashboard" />
+</p>
+
 <div align="center">
-  <img src="./assets/logo.png" width="88" alt="TRAKL logo" />
-
-  <h1>TRAKL</h1>
-
-  <p><strong>Everything. Tracked.</strong></p>
   <p>
     Habits, money, sleep, tasks, goals, fitness, mood, water, meditation, and more,<br />
     in one calm app. No account. No cloud. Your data stays on your device.
@@ -28,12 +27,6 @@
   </p>
 </div>
 
-<br />
-
-<p align="center">
-  <img src="./assets/image/ios_image_1.jpeg" width="380" alt="TRAKL home dashboard with Life Score" />
-</p>
-
 <hr />
 
 ## Why TRAKL
@@ -57,51 +50,39 @@ TRAKL is different:
 
 <table>
   <tr>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_2.jpeg" width="200" alt="All trackers in one place" />
-      <br /><strong>One app. Your whole life.</strong>
-      <br /><sub>Finance, habits, tasks, goals, sleep, fitness, mood, water and more.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_1.jpeg" width="160" alt="Home Life Score" />
+      <br /><sub>Home</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_3.jpeg" width="200" alt="Life Score analytics" />
-      <br /><strong>Know your Life Score</strong>
-      <br /><sub>Weekly insights, streaks, spending and progress at a glance.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_2.jpeg" width="160" alt="All trackers" />
+      <br /><sub>Trackers</sub>
     </td>
-  </tr>
-  <tr>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_4.jpeg" width="200" alt="Finance tracker" />
-      <br /><strong>See where money goes</strong>
-      <br /><sub>Net balance, monthly budget and category breakdown.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_3.jpeg" width="160" alt="Life Score analytics" />
+      <br /><sub>Analytics</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_5.jpeg" width="200" alt="Tasks list and kanban" />
-      <br /><strong>Tasks that stay on track</strong>
-      <br /><sub>List and kanban. Sort by due date or priority.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_4.jpeg" width="160" alt="Finance tracker" />
+      <br /><sub>Finance</sub>
     </td>
   </tr>
   <tr>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_6.jpeg" width="200" alt="Weekly review" />
-      <br /><strong>Your week, decoded</strong>
-      <br /><sub>Highlights, streaks, sleep average and spending every week.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_5.jpeg" width="160" alt="Tasks" />
+      <br /><sub>Tasks</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_7.jpeg" width="200" alt="Sleep tracker" />
-      <br /><strong>Sleep you can improve</strong>
-      <br /><sub>Log bedtime, track 7 night trends, see your average.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_6.jpeg" width="160" alt="Weekly review" />
+      <br /><sub>Weekly review</sub>
     </td>
-  </tr>
-  <tr>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_8.jpeg" width="200" alt="Meditation tracker" />
-      <br /><strong>Calm starts here</strong>
-      <br /><sub>Track sessions, streaks and minutes this week.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_7.jpeg" width="160" alt="Sleep tracker" />
+      <br /><sub>Sleep</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="./assets/image/ios_image_9.jpeg" width="200" alt="Goals and milestones" />
-      <br /><strong>Set goals. Hit milestones.</strong>
-      <br /><sub>Deadlines, milestones and progress built in.</sub>
+    <td align="center" width="25%">
+      <img src="./assets/image/ios_image_8.jpeg" width="160" alt="Meditation tracker" />
+      <br /><sub>Meditation</sub>
     </td>
   </tr>
 </table>
