@@ -1,117 +1,204 @@
 <div align="center">
-  <img src="./assets/logo.png" width="96" alt="TRAKL logo" />
+  <img src="./assets/logo.png" width="88" alt="TRAKL logo" />
 
-  # TRAKL
+  <h1>TRAKL</h1>
 
-  **A local-first life tracker for habits, finances, sleep, fitness, and more — no account, no cloud, no data leaving your device.**
+  <p><strong>Everything. Tracked.</strong></p>
+  <p>
+    Habits, money, sleep, tasks, goals, fitness, mood, water, meditation, and more,<br />
+    in one calm app. No account. No cloud. Your data stays on your device.
+  </p>
 
-  ![Expo SDK 54](https://img.shields.io/badge/Expo-SDK%2054-000020?logo=expo&logoColor=white)
-  ![React Native 0.81](https://img.shields.io/badge/React%20Native-0.81-61DAFB?logo=react&logoColor=white)
-  ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
-  ![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)
+  <p>
+    <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
+      <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1700000000" alt="Download on the App Store" height="54" />
+    </a>
+    &nbsp;
+    <a href="https://play.google.com/store/apps/details?id=trakl.app">
+      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />
+    </a>
+  </p>
+
+  <p>
+    <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">App Store</a>
+    ·
+    <a href="https://play.google.com/store/apps/details?id=trakl.app">Google Play</a>
+    ·
+    <img src="https://img.shields.io/badge/iOS-16.4%2B-000000?logo=apple&logoColor=white" alt="iOS 16.4+" />
+    <img src="https://img.shields.io/badge/Android-available-3DDC84?logo=android&logoColor=white" alt="Android" />
+    <img src="https://img.shields.io/badge/license-GPL%20v3-blue.svg" alt="License GPL v3" />
+  </p>
 </div>
 
+<br />
+
 <p align="center">
-  <img src="./assets/onboarding/hook.png" width="260" alt="TRAKL onboarding hook screen" />
-  <img src="./assets/onboarding/preview.png" width="260" alt="TRAKL onboarding preview screen" />
+  <img src="./assets/image/ios-image-1.jpeg" width="720" alt="TRAKL home dashboard with Life Score" />
 </p>
 
 ---
 
-## What is TRAKL?
+## Why TRAKL
 
-TRAKL is a cross-platform (iOS / Android / Web) life-tracking app built with Expo and React Native. It bundles **12 trackers** — Finance, Habits, Tasks, Goals, Planner, Sleep, Fitness, Mood, Water, Weight, Meditation, and a fully Custom tracker — into a single, fast, offline-first app with **zero backend**. Everything a user logs stays on their device.
+Most trackers force you to juggle five apps, create an account, and sync your life to someone else's server.
 
-### Highlights
+TRAKL is different:
 
-- **12 built-in trackers** plus a user-defined Custom tracker type
-- **20 languages** with full RTL support (Arabic, Urdu, and more) via i18next
-- **No account, no server** — all data is stored on-device with Zustand + AsyncStorage
-- **Encrypted financial data** — transactions are stored via `expo-secure-store` (iOS Keychain / Android Keystore), not plain AsyncStorage
-- **Local notifications**, streaks, achievements, weekly reviews, and CSV/JSON backup & restore
-- **GDPR/UMP-compliant ads** — Google's official UMP consent flow gates AdMob banners, with iOS ATT support
-- **Test-covered** — Jest test suite for store, stats, backup, retention, security, and startup behavior
+- **One calm dashboard** for habits, money, sleep, tasks, goals, and wellbeing
+- **Local-first** — tracker entries stay on your phone
+- **No signup** — open the app and start logging today
+- **Clear insights** — Life Score, streaks, weekly reviews, and spending charts
+- **Yours to customize** — build your own trackers when the built-ins are not enough
 
-## Screens
+> [!TIP]
+> Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662?l=el) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support.
 
-| Onboarding | Daily tracking |
-| :---: | :---: |
-| <img src="./assets/onboarding/hook.png" width="220" /> | <img src="./assets/onboarding/preview.png" width="220" /> |
+---
 
-## Tech Stack
+## See it in action
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-2.jpeg" width="360" alt="All trackers in one place" />
+      <br /><strong>One app. Your whole life.</strong>
+      <br /><sub>Finance, habits, tasks, goals, sleep, fitness, mood, water and more.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-3.jpeg" width="360" alt="Life Score analytics" />
+      <br /><strong>Know your Life Score</strong>
+      <br /><sub>Weekly insights, streaks, spending and progress at a glance.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-4.jpeg" width="360" alt="Finance tracker" />
+      <br /><strong>See where money goes</strong>
+      <br /><sub>Net balance, monthly budget and category breakdown.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-5.jpeg" width="360" alt="Tasks list and kanban" />
+      <br /><strong>Tasks that stay on track</strong>
+      <br /><sub>List and kanban. Sort by due date or priority.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-6.jpeg" width="360" alt="Weekly review" />
+      <br /><strong>Your week, decoded</strong>
+      <br /><sub>Highlights, streaks, sleep average and spending every week.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-7.jpeg" width="360" alt="Sleep tracker" />
+      <br /><strong>Sleep you can improve</strong>
+      <br /><sub>Log bedtime, track 7 night trends, see your average.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-8.jpeg" width="360" alt="Meditation tracker" />
+      <br /><strong>Calm starts here</strong>
+      <br /><sub>Track sessions, streaks and minutes this week.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/image/ios-image-9.jpeg" width="360" alt="Goals and milestones" />
+      <br /><strong>Set goals. Hit milestones.</strong>
+      <br /><sub>Deadlines, milestones and progress built in.</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## What you can track
+
+| Tracker | What you get |
+| --- | --- |
+| **Home & Life Score** | One daily pulse across habits, money, sleep, and tasks |
+| **Finance** | Income, expenses, budget ring, category charts |
+| **Habits** | Streaks, check-ins, consistency over time |
+| **Tasks** | List + kanban, due dates, priorities, labels |
+| **Goals** | Deadlines, milestones, progress |
+| **Planner** | Today's focus without spreadsheet chaos |
+| **Sleep** | Bedtime, wake time, 7-night trends |
+| **Fitness** | Workouts that sit next to the rest of your life |
+| **Mood** | Check-ins you can actually stick with |
+| **Water** | Simple daily hydration logging |
+| **Weight** | Progress without another separate app |
+| **Meditation** | Sessions, streaks, weekly minutes |
+| **Custom** | Build trackers that fit *your* life |
+
+Plus local reminders, achievements, weekly review, and CSV/JSON backup you control.
+
+---
+
+## Privacy by design
+
+TRAKL is built so a life tracker never needs a server for your personal entries.
+
+- **On-device storage** with Zustand + AsyncStorage
+- **Encrypted finances** via `expo-secure-store` (iOS Keychain / Android Keystore)
+- **No account required** to use the core trackers
+- **Ads only after consent** through Google's official UMP flow (plus iOS ATT)
+- **Backup you own** — export and import locally, never auto-uploaded
+
+See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
+
+---
+
+## Download
+
+<p align="center">
+  <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
+    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1700000000" alt="Download on the App Store" height="54" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://play.google.com/store/apps/details?id=trakl.app">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el"><strong>Download for iPhone</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://play.google.com/store/apps/details?id=trakl.app"><strong>Download for Android</strong></a>
+</p>
+
+---
+
+## For developers
+
+TRAKL is open source (Expo / React Native). Contributions welcome.
 
 | Layer | Choice |
 | --- | --- |
 | Framework | Expo SDK 54, React Native 0.81, React 19 |
-| Language | TypeScript 5.7 (strict mode) |
-| Navigation | Expo Router (file-based, typed routes) |
-| State | Zustand (sliced store with persist + versioned migrations) |
-| Secure storage | `expo-secure-store` (Keychain / Keystore) for financial data |
-| Styling | Uniwind / Tailwind CSS (NativeWind) |
-| i18n | i18next + react-i18next (20 languages, RTL support) |
-| Ads | `react-native-google-mobile-ads` with Google UMP consent + iOS ATT |
-| Notifications | `expo-notifications` (local scheduling only) |
-| Testing | Jest + `@testing-library/react-native` (73 tests) |
-| E2E | Maestro smoke tests |
-| Code quality | oxlint, oxfmt, Knip, jscpd, ast-grep |
-| Security scanning | Semgrep, OSV-Scanner, Trivy, Grype, TruffleHog, Checkov, KICS |
+| Language | TypeScript (strict) |
+| Navigation | Expo Router |
+| State | Zustand + versioned migrations |
+| Secure storage | `expo-secure-store` for financial data |
+| Styling | Uniwind / Tailwind (NativeWind) |
+| i18n | i18next (20 languages, RTL) |
+| Ads | `react-native-google-mobile-ads` + UMP |
+| Tests | Jest + Maestro smoke tests |
 
-## Architecture
-
-TRAKL follows a light layered architecture to keep UI, business logic, and platform concerns separate:
-
-```
-app/                    Expo Router screens (tabs + tracker routes)
-components/             Reusable, presentation-only UI components
+```text
+app/                    Expo Router screens
+components/             Presentation UI
 src/
-  domain/                 Tracker definitions, shared types — no I/O, no React
-  application/            Zustand store, stats, backup, achievements, seed data
-  infrastructure/
-    services/               i18n, notifications, AdMob, GDPR/UMP consent, analytics
-    storage/                Encrypted storage for sensitive (financial) data
-  shared/                 Theme, fonts, haptics, avatar, formatting utils
-assets/                 App icon, splash screen, onboarding illustrations
-__tests__/              Jest test suite
+  domain/               Tracker definitions (no I/O)
+  application/          Store, stats, backup, achievements
+  infrastructure/       i18n, notifications, ads, consent, secure storage
+  shared/               Theme, fonts, formatting
+assets/                 Logo, splash, store creatives
+__tests__/              Jest suite
 ```
 
-- **`domain/`** has no dependency on React Native or storage — pure types and tracker metadata, easy to unit test.
-- **`application/`** owns state (`store.ts`) and cross-tracker logic (stats, weekly review, achievements, backup/restore).
-- **`infrastructure/`** wraps every native/third-party integration (notifications, ads, consent, analytics) behind small service modules, and isolates encrypted storage from regular `AsyncStorage`.
-- **`shared/`** holds cross-cutting, dependency-free utilities (theme tokens, formatting, haptics).
-
-This separation keeps tracker screens thin, makes the store and stats logic testable without mocking React Native, and means a native module (e.g. the ads SDK) can be swapped without touching business logic.
-
-## Security & Privacy
-
-TRAKL is designed around the principle that a life-tracking app should never need a server:
-
-- **On-device only** — no user account, no backend API, no telemetry endpoint that stores personal data. All trackers persist locally via Zustand + AsyncStorage.
-- **Encrypted at rest for sensitive data** — financial transactions go through `src/infrastructure/storage/secureStorage.ts`, backed by the OS Keychain (iOS) / Keystore (Android) via `expo-secure-store`, not plaintext AsyncStorage.
-- **Explicit, standards-based consent** — ads only render after the official Google UMP consent flow (`src/infrastructure/services/consent.ts`) resolves, and iOS App Tracking Transparency is respected.
-- **No committed secrets** — signing keystores, provisioning profiles, and API tokens are never committed (see `.gitignore` and `SECURITY.md`); CI workflows reference secrets by name only and read platform/App IDs from environment variables with safe placeholder fallbacks.
-- **Automated scanning** — the project ships `npm run` scripts for Semgrep (SAST), OSV-Scanner (dependency vulnerabilities), and Retire.js (known-vulnerable JS libraries), plus `oxlint`'s security plugin, so regressions are caught before release.
-- **Backup you control** — export/import is local file-based (CSV/JSON), never uploaded anywhere automatically.
-
-See `SECURITY.md` for the responsible-disclosure policy and environment-variable configuration for forks.
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20+ and npm
-- [Expo CLI](https://docs.expo.dev/get-started/installation/) (via `npx`, no global install required)
-- Xcode (iOS) and/or Android Studio (Android) for native builds — not required for web or Expo Go
-
-### Install & run
+### Quick start
 
 ```bash
-# Install dependencies
 npm ci
-
-# Start the Expo dev server
-npm start
-
-# Run on a specific platform
+npm start          # Expo Go by default
 npm run android
 npm run ios
 npm run web
@@ -120,94 +207,21 @@ npm run web
 ### Quality checks
 
 ```bash
-npm run typecheck        # TypeScript strict type checking
-npm test                  # Jest test suite
-npm run test:coverage     # Jest with coverage report
-npm run lint               # oxlint (type-aware)
-npm run knip                # Unused files/exports/dependencies
-npm run jscpd               # Duplicate code detection
-npm run semgrep              # Static application security testing
-npm run osv-scanner            # Dependency vulnerability scan
-npm run retirejs                 # Known-vulnerable JS library scan
+npm run typecheck
+npm test
+npm run lint
+npm run knip
+npm run semgrep
 ```
 
-## Configuration
+Copy `.env.example` to `.env` for Expo / AdMob identifiers. See `docs/adr/` for architecture decisions.
 
-Production identifiers (Expo project, bundle/package names) are read from environment variables. AdMob production App IDs default to the TRAKL publisher account (`pub-4918095220813645`); dev builds still serve Google test ad units via `USE_TEST_ADS`.
+Dev-client builds: set `TRAKL_DEV_CLIENT=1` in a local `.env.local` (git-ignored). Store / production builds leave it unset.
 
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
-cp .env.example .env
-```
-
-| Variable | Purpose |
-| --- | --- |
-| `TRAKL_EXPO_OWNER`, `TRAKL_EAS_PROJECT_ID` | Your Expo/EAS account and project |
-| `TRAKL_ANDROID_PACKAGE`, `TRAKL_IOS_BUNDLE_ID` | Native app identifiers |
-| `TRAKL_ADMOB_ANDROID_APP_ID`, `TRAKL_ADMOB_IOS_APP_ID` | AdMob App IDs (production defaults; override via env) |
-| `TRAKL_ADMOB_ANDROID_BANNER_UNIT_ID`, `TRAKL_ADMOB_IOS_BANNER_UNIT_ID` | AdMob banner ad unit IDs (production defaults) |
-
-## Project Structure
-
-See [Architecture](#architecture) above for the full breakdown of `app/`, `components/`, and `src/`.
-
-## Testing
-
-| Type | Tool | Coverage |
-| --- | --- | --- |
-| Unit tests | Jest + React Native Testing Library | 73 tests across 8 suites |
-| E2E | Maestro smoke tests | Onboarding + home + trackers flow |
-| Migration tests | Jest | Idempotent store version migrations |
-| Security tests | Jest | Partialize exclusion + secure storage calls |
-
-```bash
-npm test                  # Run all 73 tests
-npm run test:coverage     # With coverage report
-```
-
-## CI/CD
-
-5 consolidated GitHub Actions workflows run on every PR and push to `main`:
-
-| Workflow | Purpose |
-| --- | --- |
-| `ci.yml` | Typecheck + Jest tests |
-| `code-quality.yml` | oxlint, oxfmt, Knip, jscpd, ast-grep |
-| `sast-scan.yml` | Semgrep (SAST) + TruffleHog (secret scanning) + Checkov + KICS (IaC) |
-| `dependency-scan.yml` | OSV-Scanner + Dependabot |
-| `vuln-scan.yml` | Trivy + Grype (container & filesystem vulnerability scanning) |
-
-## Architecture Decision Records
-
-6 ADRs document key architectural decisions in `docs/adr/`:
-
-1. **Secure storage for transactions** — Keychain/Keystore via `expo-secure-store`
-2. **Store split into slices** — Domain-based Zustand slice architecture
-3. **Secure ID generation** — UUID v4 for all entity IDs
-4. **Versioned migration pipeline** — Idempotent store migrations with test coverage
-5. **CI workflow consolidation** — 5 focused workflows instead of 15+ scattered ones
-6. **Per-screen error boundaries** — Graceful degradation with `ScreenErrorBoundary`
-
-## Download
-
-<!-- Add store links when published -->
-
-_Coming soon to the App Store and Google Play._
+---
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0** with a dual-license option:
+**GNU GPL v3** for open source use. Commercial licensing available at commercial@trakl.app.
 
-- **GPLv3** for open source use (forks must also be GPLv3 with source published)
-- **Commercial license** available for proprietary use (contact: commercial@trakl.app)
-
-See [LICENSE](./LICENSE) for the full text.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, code style, and PR guidelines.
-
-## Security
-
-See [SECURITY.md](./SECURITY.md) for the responsible disclosure policy.
+Full text: [LICENSE](./LICENSE) · Contribute: [CONTRIBUTING.md](./CONTRIBUTING.md) · Security: [SECURITY.md](./SECURITY.md)
