@@ -115,14 +115,18 @@ jobs:
         run: mkdir -p kics-results
 
       - name: Run KICS Scan
-        uses: checkmarx/kics-github-action@v2
-        with:
-          path: .
-          output_path: kics-results
-          output_formats: json,sarif
-          ignore_on_exit: results
-          exclude_paths: 'node_modules,.expo,dist,android,ios,.git,__tests__'
-          fail_on: ''
+        # Use the KICS image directly. checkmarx/kics-github-action@v2 always
+        # apk-installs Alpine node after the scan and crashes with GLIBC_2.44.
+        run: |
+          docker run --rm \
+            -v "$PWD":/src \
+            -w /src \
+            checkmarx/kics:v2.1.20 \
+            scan -p . \
+            -o kics-results \
+            --report-formats json,sarif \
+            --ignore-on-exit results \
+            -e node_modules,.expo,dist,android,ios,.git,__tests__
 
       - name: Upload KICS results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
