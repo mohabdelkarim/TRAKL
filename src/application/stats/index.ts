@@ -70,6 +70,9 @@ export {
 
 export { lifeScore } from './lifeScore';
 
+export { layoutDayEvents, type LaidOutPlannerEvent } from './plannerLayout';
+export { mondayKeyOf, mondayKeyForOffset } from './plannerWeek';
+
 export {
   trackerInsight,
   minutesSince,

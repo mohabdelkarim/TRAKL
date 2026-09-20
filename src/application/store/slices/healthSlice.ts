@@ -43,7 +43,11 @@ export const createHealthSlice: StateCreator<TraklState, [], [], HealthSlice> = 
       };
     }),
 
-  setWaterGoal: (goal) => set({ waterGoal: Math.min(30, Math.max(1, Math.round(goal))) }),
+  setWaterGoal: (goal) =>
+    set((s) => {
+      const next = Math.min(30, Math.max(1, Math.round(goal)));
+      return s.waterGoal === next ? s : { waterGoal: next };
+    }),
 
   addWeight: (kg) =>
     set((s) => ({

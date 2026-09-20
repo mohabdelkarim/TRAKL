@@ -5,7 +5,6 @@ import { Brain, Flame } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { ChipSelect, Field, FormSheet, Stepper } from '@/components/FormSheet';
@@ -142,7 +141,6 @@ export default function MeditationScreen() {
             />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
 
       <MeditationForm

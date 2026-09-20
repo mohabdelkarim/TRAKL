@@ -5,7 +5,6 @@ import { Check, ChevronDown, ChevronUp, Target, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { Confetti } from '@/components/Confetti';
 import { EmptyState } from '@/components/EmptyState';
@@ -192,7 +191,6 @@ export default function GoalsScreen() {
             <PrimaryButton label={t('goals.newGoal')} onPress={() => setFormOpen(true)} />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <GoalForm
         visible={formOpen}

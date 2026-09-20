@@ -232,6 +232,22 @@ const backfillAllTrackerArrays: MigrationStep = {
   },
 };
 
+const backfillAsoPrefs: MigrationStep = {
+  name: 'asoPrefs',
+  fn: (record) => {
+    if (typeof record.exitConfirmEnabled !== 'boolean') record.exitConfirmEnabled = true;
+    if (typeof record.ratePromptNever !== 'boolean') record.ratePromptNever = false;
+    if (typeof record.ratePromptPending !== 'boolean') record.ratePromptPending = false;
+    if (typeof record.ratePromptCount !== 'number' || !Number.isFinite(record.ratePromptCount)) {
+      record.ratePromptCount = 0;
+    }
+    if (record.ratePromptLastAt !== undefined && typeof record.ratePromptLastAt !== 'string') {
+      delete record.ratePromptLastAt;
+    }
+    return record;
+  },
+};
+
 // Ordered migration pipeline
 
 const MIGRATION_STEPS: MigrationStep[] = [
@@ -249,6 +265,7 @@ const MIGRATION_STEPS: MigrationStep[] = [
   backfillNotificationTitles,
   resetStaleBudget,
   backfillAllTrackerArrays,
+  backfillAsoPrefs,
 ];
 
 /**

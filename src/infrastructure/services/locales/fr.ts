@@ -76,22 +76,30 @@ export const fr = {
     more: 'Plus',
     rate: 'Noter TRAKL',
     share: 'Partager',
+    shareMessage: 'TRAKL. Tout. Suivi. Suivez habitudes, tâches, sommeil, finances et plus.',
     help: 'Aide et support',
     about: 'À propos',
     deleteData: 'Supprimer toutes les données',
-    pro: 'TRAKL Pro',
-    proTagline: 'Débloquez l’expérience complète',
-    proBackup: 'Sauvegarde Cloud',
-    proAi: 'Analyses IA',
-    proNoAds: 'Sans Pub',
-    upgrade: 'Passer à Pro',
-    comingSoon: 'Bientôt disponible',
     themeLight: 'Clair',
     themeDark: 'Sombre',
     themeSystem: 'Système',
     chooseTheme: 'Choisir un thème',
     chooseLanguage: 'Choisir une langue',
     loadSample: 'Charger des données d’exemple',
+    exitConfirm: 'Confirmer avant de quitter',
+  },
+  ratePrompt: {
+    title: 'Vous aimez TRAKL ?',
+    body: "Une note rapide aide les autres à trouver l'app.",
+    rate: 'Noter',
+    later: 'Plus tard',
+    never: 'Ne plus demander',
+  },
+  exit: {
+    title: 'Quitter TRAKL ?',
+    body: "Fermer l'app maintenant ? Modifiable dans Profil → Préférences.",
+    stay: 'Rester',
+    leave: 'Quitter',
   },
   trackerNames: {
     finance: 'Finances',
@@ -630,7 +638,6 @@ export const fr = {
     aboutBody: 'TRAKL · Tout. Suivi.\nVersion 1.0\n\nCréé par Pimora\ninfo@pimora.tech',
     helpBody:
       'Besoin d\u2019aide ou un retour à partager ? Écrivez-nous à info@pimora.tech, nous vous répondrons.',
-    upgradeBody: 'TRAKL Pro arrive bientôt. Activez les paiements pour débloquer les abonnements.',
     deleteTitle: 'Supprimer toutes les données ?',
     deleteBody:
       'Cela efface définitivement votre profil, vos suivis et chaque entrée. L\u2019app redémarre comme neuve. Action irréversible.',
@@ -693,11 +700,8 @@ export const fr = {
     notifGoalTitle: 'Jalon atteint',
     notifGoalMsg: 'Vous avez atteint un jalon sur Économiser 5 000 €',
   },
-  consent: {
-    title: 'Publicités et analyses personnalisées', description: 'TRAKL utilise Google Mobile Ads pour afficher des publicités personnalisées et mesurer leur performance. Vos données sont traitées conformément à notre Politique de confidentialité.', personalized: 'Publicités personnalisées selon vos centres d’intérêt', measurement: 'Mesure de l’efficacité des publicités', noTracking: 'Nous ne vendons ni ne partageons vos données personnelles', privacyNote: 'Vous pouvez modifier votre consentement à tout moment dans les Réglages.', accept: 'Accepter et continuer', reject: 'Refuser',
-  },
   backup: {
     exportBackup: 'Exporter la sauvegarde', importBackup: 'Importer la sauvegarde', exportTitle: 'Exporter la sauvegarde', importTitle: 'Importer la sauvegarde', export: 'Exporter', import: 'Restaurer', pasteJson: 'JSON de sauvegarde', pasteJsonPlaceholder: 'Collez ici votre JSON de sauvegarde TRAKL...', orChooseFile: 'Ou choisir un fichier .json', exportSuccess: 'Sauvegarde exportée.', importSuccess: 'Sauvegarde restaurée avec succès.', confirmTitle: 'Restaurer la sauvegarde ?', confirmBody: 'Toutes vos données TRAKL actuelles seront remplacées par la sauvegarde. Cette action est irréversible.', confirm: 'Restaurer',
   },
-  legal: { privacyPolicy: 'Politique de confidentialité', termsOfService: 'Conditions d’utilisation', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
+  legal: { privacyPolicy: 'Politique de confidentialité', termsOfService: 'Conditions d’utilisation', },
 };

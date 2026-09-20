@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import type { ParseKeys } from 'i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { Field, FormSheet, TextField } from '@/components/FormSheet';
@@ -159,7 +158,6 @@ export default function MoodScreen() {
             <PrimaryButton label={t('moodScreen.logMood')} onPress={() => setFormOpen(true)} />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
 
       <MoodForm

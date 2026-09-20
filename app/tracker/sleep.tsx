@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { Star } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { Field, FormSheet, Stepper, TextField } from '@/components/FormSheet';
@@ -128,7 +127,6 @@ export default function SleepScreen() {
             </View>
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <SleepForm
         visible={formOpen}

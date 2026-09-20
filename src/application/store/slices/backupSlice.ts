@@ -69,6 +69,11 @@ export const createBackupSlice: StateCreator<TraklState, [], [], BackupSlice> = 
       retentionNotifiedAchievementIds: data.retentionNotifiedAchievementIds,
       retentionLastInactivityNotificationAt: data.retentionLastInactivityNotificationAt,
       waterGoal: data.waterGoal,
+      exitConfirmEnabled: data.exitConfirmEnabled ?? true,
+      ratePromptNever: data.ratePromptNever ?? false,
+      ratePromptPending: data.ratePromptPending ?? false,
+      ratePromptCount: data.ratePromptCount ?? 0,
+      ratePromptLastAt: data.ratePromptLastAt,
     });
     return { success: true, message: 'Backup restored successfully.' };
   },

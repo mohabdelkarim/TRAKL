@@ -11,7 +11,6 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Bell, Check, Clock3, Hash, ListPlus, Plus, SlidersHorizontal } from 'lucide-react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { Stepper } from '@/components/FormSheet';
 import { CustomLogForm } from '@/components/CustomLogForm';
@@ -398,7 +397,6 @@ export default function CustomBuilderScreen() {
               <PrimaryButton label={t('custom.createTracker')} onPress={save} disabled={!valid} />
             </View>
           </ScrollView>
-          <AdBanner />
         </View>
       </KeyboardAvoidingView>
       {logTarget ? (

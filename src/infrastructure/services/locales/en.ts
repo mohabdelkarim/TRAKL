@@ -92,22 +92,30 @@ export const en = {
     more: 'More',
     rate: 'Rate TRAKL',
     share: 'Share',
+    shareMessage: 'TRAKL. Everything. Tracked. Track habits, tasks, sleep, finance and more.',
     help: 'Help & Support',
     about: 'About',
     deleteData: 'Delete all data',
-    pro: 'TRAKL Pro',
-    proTagline: 'Unlock the full experience',
-    proBackup: 'Cloud Backup',
-    proAi: 'AI Insights',
-    proNoAds: 'No Ads',
-    upgrade: 'Upgrade to Pro',
-    comingSoon: 'Coming soon',
     themeLight: 'Light',
     themeDark: 'Dark',
     themeSystem: 'System',
     chooseTheme: 'Choose theme',
     chooseLanguage: 'Choose language',
     loadSample: 'Load sample data',
+    exitConfirm: 'Confirm before exit',
+  },
+  exit: {
+    title: 'Leave TRAKL?',
+    body: 'Close the app now? You can change this in Profile → Preferences.',
+    stay: 'Stay',
+    leave: 'Exit',
+  },
+  ratePrompt: {
+    title: 'Enjoying TRAKL?',
+    body: 'A quick rating helps others find the app.',
+    rate: 'Rate now',
+    later: 'Not now',
+    never: 'Never ask again',
   },
   trackerNames: {
     finance: 'Finance',
@@ -640,11 +648,13 @@ export const en = {
     },
   },
   profileMsg: {
-    rateBody: 'Thanks for using TRAKL! Ratings will be available once the app is on the App Store.',
-    aboutBody: 'TRAKL · Everything. Tracked.\nVersion 1.0\n\nMade by Pimora\ninfo@pimora.tech',
+    rateBody: 'Pick a store to leave a rating. Thanks for supporting TRAKL.',
+    openAppStore: 'App Store',
+    openPlayStore: 'Google Play',
+    aboutBody:
+      'TRAKL · Everything. Tracked.\nVersion {{version}}\n\nMade by Pimora\ninfo@pimora.tech',
     helpBody:
       'Need a hand or have feedback? Email us at info@pimora.tech and we\u2019ll get back to you.',
-    upgradeBody: 'TRAKL Pro is coming soon. Enable payments to unlock subscriptions.',
     deleteTitle: 'Delete all data?',
     deleteBody:
       'This permanently erases your profile, trackers and every entry. The app restarts as new. This cannot be undone.',
@@ -717,17 +727,6 @@ export const en = {
     notifGoalTitle: 'Milestone reached',
     notifGoalMsg: 'You hit a milestone on Save €5,000',
   },
-  consent: {
-    title: 'Personalized Ads & Analytics',
-    description:
-      'TRAKL uses Google Mobile Ads to show you personalized ads and measure ad performance. Your data is processed in accordance with our Privacy Policy.',
-    personalized: 'Personalized ads based on your interests',
-    measurement: 'Measurement of ad effectiveness',
-    noTracking: 'We do not sell or share your personal data',
-    privacyNote: 'You can change your consent anytime in Settings.',
-    accept: 'Accept & Continue',
-    reject: 'Reject',
-  },
   backup: {
     exportBackup: 'Export backup',
     importBackup: 'Import backup',
@@ -748,8 +747,6 @@ export const en = {
   legal: {
     privacyPolicy: 'Privacy Policy',
     termsOfService: 'Terms of Service',
-    privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/',
-    termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/',
   },
 };
 

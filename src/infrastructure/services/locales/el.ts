@@ -76,22 +76,30 @@ export const el = {
     more: 'Περισσότερα',
     rate: 'Βαθμολόγηση TRAKL',
     share: 'Κοινοποίηση',
+    shareMessage: 'TRAKL. Όλα. Καταγεγραμμένα. Παρακολούθησε συνήθειες, εργασίες, ύπνο, οικονομικά και άλλα.',
     help: 'Βοήθεια & Υποστήριξη',
     about: 'Σχετικά',
     deleteData: 'Διαγραφή όλων των δεδομένων',
-    pro: 'TRAKL Pro',
-    proTagline: 'Ξεκλειδώστε την πλήρη εμπειρία',
-    proBackup: 'Αντίγραφο Cloud',
-    proAi: 'Πληροφορίες AI',
-    proNoAds: 'Χωρίς Διαφημίσεις',
-    upgrade: 'Αναβάθμιση σε Pro',
-    comingSoon: 'Έρχεται σύντομα',
     themeLight: 'Φωτεινό',
     themeDark: 'Σκούρο',
     themeSystem: 'Σύστημα',
     chooseTheme: 'Επιλέξτε θέμα',
     chooseLanguage: 'Επιλέξτε γλώσσα',
     loadSample: 'Φόρτωση δείγματος δεδομένων',
+    exitConfirm: 'Επιβεβαίωση πριν την έξοδο',
+  },
+  ratePrompt: {
+    title: 'Σου αρέσει το TRAKL;',
+    body: 'Μια γρήγορη αξιολόγηση βοηθά άλλους να βρουν την εφαρμογή.',
+    rate: 'Αξιολόγηση',
+    later: 'Όχι τώρα',
+    never: 'Να μην ξαναρωτηθώ',
+  },
+  exit: {
+    title: 'Έξοδος από το TRAKL;',
+    body: 'Να κλείσει η εφαρμογή τώρα; Μπορείς να το αλλάξεις στο Προφίλ → Προτιμήσεις.',
+    stay: 'Παραμονή',
+    leave: 'Έξοδος',
   },
   trackerNames: {
     finance: 'Οικονομικά',
@@ -629,11 +637,11 @@ export const el = {
   profileMsg: {
     rateBody:
       'Ευχαριστούμε που χρησιμοποιείς το TRAKL! Οι αξιολογήσεις θα είναι διαθέσιμες μόλις η εφαρμογή βγει στο App Store.',
+    openAppStore: 'Άνοιγμα App Store',
+    openPlayStore: 'Άνοιγμα Google Play',
     aboutBody: 'TRAKL · Τα πάντα. Καταγεγραμμένα.\nΈκδοση 1.0\n\nΑπό την Pimora\ninfo@pimora.tech',
     helpBody:
       'Χρειάζεσαι βοήθεια ή έχεις σχόλια; Στείλε μας email στο info@pimora.tech και θα σου απαντήσουμε.',
-    upgradeBody:
-      'Το TRAKL Pro έρχεται σύντομα. Ενεργοποίησε τις πληρωμές για να ξεκλειδώσεις τις συνδρομές.',
     deleteTitle: 'Διαγραφή όλων των δεδομένων;',
     deleteBody:
       'Διαγράφονται οριστικά το προφίλ, οι παρακολουθήσεις και κάθε καταχώρηση. Η εφαρμογή ξεκινά από την αρχή. Δεν αναιρείται.',
@@ -696,7 +704,6 @@ export const el = {
     notifGoalTitle: 'Ορόσημο επιτεύχθηκε',
     notifGoalMsg: 'Έφτασες ένα ορόσημο στο Αποταμίευση 5.000 €',
   },
-  consent: { title: 'Εξατομικευμένες διαφημίσεις και αναλύσεις', description: 'Το TRAKL χρησιμοποιεί το Google Mobile Ads για να προβάλλει εξατομικευμένες διαφημίσεις και να μετρά την απόδοσή τους. Τα δεδομένα σας υποβάλλονται σε επεξεργασία σύμφωνα με την Πολιτική απορρήτου μας.', personalized: 'Εξατομικευμένες διαφημίσεις βάσει των ενδιαφερόντων σας', measurement: 'Μέτρηση της αποτελεσματικότητας των διαφημίσεων', noTracking: 'Δεν πουλάμε ούτε κοινοποιούμε τα προσωπικά σας δεδομένα', privacyNote: 'Μπορείτε να αλλάξετε τη συγκατάθεσή σας οποιαδήποτε στιγμή στις Ρυθμίσεις.', accept: 'Αποδοχή και συνέχεια', reject: 'Απόρριψη' },
   backup: { exportBackup: 'Εξαγωγή αντιγράφου ασφαλείας', importBackup: 'Εισαγωγή αντιγράφου ασφαλείας', exportTitle: 'Εξαγωγή αντιγράφου ασφαλείας', importTitle: 'Εισαγωγή αντιγράφου ασφαλείας', export: 'Εξαγωγή', import: 'Επαναφορά', pasteJson: 'JSON αντιγράφου ασφαλείας', pasteJsonPlaceholder: 'Επικολλήστε εδώ το JSON του αντιγράφου TRAKL...', orChooseFile: 'Ή επιλέξτε ένα αρχείο .json', exportSuccess: 'Το αντίγραφο ασφαλείας εξήχθη.', importSuccess: 'Το αντίγραφο ασφαλείας επαναφέρθηκε με επιτυχία.', confirmTitle: 'Επαναφορά αντιγράφου ασφαλείας;', confirmBody: 'Όλα τα τρέχοντα δεδομένα TRAKL θα αντικατασταθούν από το αντίγραφο ασφαλείας. Δεν είναι δυνατή η αναίρεση.', confirm: 'Επαναφορά' },
-  legal: { privacyPolicy: 'Πολιτική απορρήτου', termsOfService: 'Όροι χρήσης', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
+  legal: { privacyPolicy: 'Πολιτική απορρήτου', termsOfService: 'Όροι χρήσης', },
 };

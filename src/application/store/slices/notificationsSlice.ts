@@ -17,5 +17,8 @@ export const createNotificationsSlice: StateCreator<TraklState, [], [], Notifica
     }),
 
   markAllNotificationsRead: () =>
-    set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
+    set((s) => {
+      if (s.notifications.every((n) => n.read)) return s;
+      return { notifications: s.notifications.map((n) => ({ ...n, read: true })) };
+    }),
 });

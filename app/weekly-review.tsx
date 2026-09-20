@@ -13,7 +13,6 @@ import {
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { Card } from '@/components/Card';
 import { Screen } from '@/components/Screen';
@@ -191,7 +190,6 @@ export default function WeeklyReviewScreen() {
             </Card>
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
     </Screen>
   );

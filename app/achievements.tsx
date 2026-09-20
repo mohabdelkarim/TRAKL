@@ -4,7 +4,6 @@ import { Award, Check, Crown, Lock } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import type { ParseKeys } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { Confetti } from '@/components/Confetti';
 import { PressableScale } from '@/components/PressableScale';
@@ -17,6 +16,7 @@ import { Card } from '@/components/Card';
 import { Zap } from '@/components/icons';
 import { useColors } from '@/src/shared/theme';
 import type { Palette } from '@/src/shared/theme';
+import { formatTaskProject } from '@/src/shared/utils/i18nStoredLabels';
 import { useTrakl } from '@/src/application/store';
 import { computeAchievements } from '@/src/application/achievements';
 import type { ComputedAchievement } from '@/src/application/achievements';
@@ -254,7 +254,9 @@ export default function AchievementsScreen() {
                       <InterText weight="medium" style={{ fontSize: 15 }}>
                         {task.name}
                       </InterText>
-                      {task.project ? <Caption color={colors.muted}>{task.project}</Caption> : null}
+                      {task.project ? (
+                        <Caption color={colors.muted}>{formatTaskProject(task.project, t)}</Caption>
+                      ) : null}
                     </View>
                   </Card>
                 ))}
@@ -262,7 +264,6 @@ export default function AchievementsScreen() {
             )}
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <Confetti show={celebrate} onDone={() => setCelebrate(false)} />
     </Screen>

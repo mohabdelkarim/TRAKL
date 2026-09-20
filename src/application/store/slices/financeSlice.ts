@@ -25,5 +25,8 @@ export const createFinanceSlice: StateCreator<TraklState, [], [], FinanceSlice> 
     }),
 
   setMonthlyBudget: (budget) =>
-    set({ monthlyBudget: Math.min(10_000_000, Math.max(0, Math.round(budget))) }),
+    set((s) => {
+      const next = Math.min(10_000_000, Math.max(0, Math.round(budget)));
+      return s.monthlyBudget === next ? s : { monthlyBudget: next };
+    }),
 });

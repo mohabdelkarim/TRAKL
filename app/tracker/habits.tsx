@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { Confetti } from '@/components/Confetti';
 import { Field, FormSheet, TextField } from '@/components/FormSheet';
@@ -30,6 +29,7 @@ import {
   hasHabitCompletionOnDate,
 } from '@/src/application/stats';
 import { dayISO } from '@/src/application/seed';
+import { formatHabitCadence } from '@/src/shared/utils/i18nStoredLabels';
 import type { Habit } from '@/src/domain/types';
 
 function HabitRow({
@@ -47,7 +47,7 @@ function HabitRow({
   const week = weekCount(habit);
   const streak = habitStreak(habit);
   const targetHit = week >= WEEKLY_TARGET;
-  const cadenceLabel = habit.cadence === 'Daily' ? t('habits.daily') : habit.cadence;
+  const cadenceLabel = formatHabitCadence(habit.cadence, t);
   return (
     <PressableScale
       feedback="card"
@@ -286,7 +286,6 @@ export default function HabitsScreen() {
             />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <HabitForm
         visible={formOpen}
@@ -309,9 +308,7 @@ export default function HabitsScreen() {
         title={actionTarget?.name ?? ''}
         subtitle={
           actionTarget
-            ? actionTarget.cadence === 'Daily'
-              ? t('habits.daily')
-              : actionTarget.cadence
+            ? formatHabitCadence(actionTarget.cadence, t)
             : undefined
         }
         actions={[

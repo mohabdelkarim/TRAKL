@@ -1,10 +1,9 @@
 import { ScrollView, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, ArrowRight } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { ChipSelect, Field, FormSheet, Stepper, TextField } from '@/components/FormSheet';
 import { PressableScale } from '@/components/PressableScale';
 import { Fab, Screen } from '@/components/Screen';
@@ -13,6 +12,7 @@ import { Caption, InterText } from '@/components/Typography';
 import { useFormatters } from '@/src/shared/utils/format';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
 import { useTrakl } from '@/src/application/store';
+import { layoutDayEvents } from '@/src/application/stats';
 import type { PlannerEvent } from '@/src/domain/types';
 
 const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
@@ -27,16 +27,25 @@ function hourLabel(h: number): string {
   return `${display}${period}`;
 }
 
-function EventBlock({ event }: { event: PlannerEvent }) {
+function EventBlock({
+  event,
+  column,
+  columnCount,
+}: {
+  event: PlannerEvent;
+  column: number;
+  columnCount: number;
+}) {
   const top = (event.startHour - START_HOUR) * HOUR_HEIGHT;
   const height = event.durationHours * HOUR_HEIGHT - 6;
+  const widthPct = 100 / columnCount;
   return (
     <View
       style={{
         position: 'absolute',
         top: top + 3,
-        left: 0,
-        right: 0,
+        left: `${column * widthPct}%`,
+        width: `${widthPct}%`,
         height,
         backgroundColor: event.color,
         borderRadius: 12,
@@ -87,8 +96,17 @@ export default function PlannerScreen() {
     if (params.add === '1') setFormOpen(true);
   }, [params.add]);
 
-  const hours = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i);
-  const dayEvents = planner.filter((e) => e.day === selectedDay && e.weekOffset === weekOffset);
+  const hours = useMemo(
+    () => Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i),
+    [],
+  );
+  const dayEvents = useMemo(
+    () =>
+      layoutDayEvents(
+        planner.filter((e) => e.day === selectedDay && e.weekOffset === weekOffset),
+      ),
+    [planner, selectedDay, weekOffset],
+  );
 
   return (
     <Screen>
@@ -172,16 +190,18 @@ export default function PlannerScreen() {
                 />
               ))}
               {dayEvents.map((e) => (
-                <EventBlock key={e.id} event={e} />
+                <EventBlock
+                  key={e.id}
+                  event={e}
+                  column={e.column}
+                  columnCount={e.columnCount}
+                />
               ))}
             </View>
           </View>
         </ScrollView>
 
         <Fab onPress={() => setFormOpen(true)} bottom={68} />
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-          <AdBanner />
-        </View>
       </View>
       <PlannerForm
         visible={formOpen}

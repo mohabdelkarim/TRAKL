@@ -5,7 +5,6 @@ import { Activity } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { Field, FormSheet, Stepper, TextField } from '@/components/FormSheet';
@@ -176,7 +175,6 @@ export default function FitnessScreen() {
             <PrimaryButton label={t('fitness.logWorkout')} onPress={() => setFormOpen(true)} />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <WorkoutForm
         visible={formOpen}

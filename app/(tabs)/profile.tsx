@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import { Image, Linking, Platform, ScrollView, Share, View } from 'react-native';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { Switch } from 'heroui-native';
 import { useTranslation } from 'react-i18next';
-import { useShallow } from 'zustand/react/shallow';
 import {
   Award,
   BarChart2,
   Bell,
   ChevronRight,
-  Cloud,
-  Cpu,
-  Crown,
   Download,
   Globe,
   HelpCircle,
   Info,
+  LogOut,
   Monitor,
   Moon,
   Share2,
@@ -25,7 +23,6 @@ import {
   Trash2,
   Upload,
   UserPen,
-  XCircle,
   Zap,
 } from 'lucide-react-native';
 
@@ -37,7 +34,6 @@ import { OptionSheet, type SheetOption } from '@/components/OptionSheet';
 import { InfoSheet } from '@/components/InfoSheet';
 import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { PressableScale } from '@/components/PressableScale';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { Screen } from '@/components/Screen';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionLabel } from '@/components/SectionLabel';
@@ -46,6 +42,14 @@ import { CheckSquare } from '@/components/icons';
 import { TRACKER_MAP, TRACKERS, withAlpha } from '@/src/domain/trackers';
 import { useColors, useTrackerAccents, useThemeStore } from '@/src/shared/theme';
 import { useFormatters } from '@/src/shared/utils/format';
+import {
+  buildSharePayload,
+  getShareText,
+  openAppStoreReview,
+  openPlayStoreListing,
+  openStoreReview,
+} from '@/src/shared/storeLinks';
+import { PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL } from '@/src/shared/legalLinks';
 import { changeLanguage } from '@/src/infrastructure/services/i18n';
 import { codeToName, LANGUAGES, nameToCode } from '@/src/infrastructure/services/languages';
 import { requestNotificationPermission } from '@/src/infrastructure/services/notifications';
@@ -142,23 +146,21 @@ function emailSupport() {
   void Linking.openURL('mailto:info@pimora.tech?subject=TRAKL%20Support');
 }
 
-const SHARE_MESSAGE = 'TRAKL — Everything. Tracked. Track habits, tasks, sleep, finance and more.';
-
-function onShare() {
+function onShare(shareMessage: string) {
+  const opts = { message: shareMessage };
   if (Platform.OS === 'web') {
-    // navigator.share throws "Permission denied" outside a user gesture or
-    // when unsupported (e.g. iframe preview). Fall back gracefully.
+    const shareText = getShareText(opts);
     const nav = typeof navigator !== 'undefined' ? navigator : undefined;
     if (nav && typeof nav.share === 'function') {
-      nav.share({ text: SHARE_MESSAGE }).catch(() => {
-        void nav.clipboard?.writeText?.(SHARE_MESSAGE);
+      nav.share({ text: shareText }).catch(() => {
+        void nav.clipboard?.writeText?.(shareText);
       });
       return;
     }
-    void nav?.clipboard?.writeText?.(SHARE_MESSAGE);
+    void nav?.clipboard?.writeText?.(shareText);
     return;
   }
-  void Share.share({ message: SHARE_MESSAGE });
+  void Share.share(buildSharePayload(opts));
 }
 
 export default function ProfileScreen() {
@@ -171,71 +173,38 @@ export default function ProfileScreen() {
   const themeMode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
 
-  const {
-    profile,
-    enabled,
-    toggleTracker,
-    updateProfile,
-    notifOn,
-    setNotifOn,
-    retentionOn,
-    setRetentionOn,
-    quietOn,
-    setQuietOn,
-    quietStart,
-    quietEnd,
-    setQuietHours,
-    resetApp,
-    loadSampleData,
-    exportAppData,
-    importAppData,
-    transactions,
-    habits,
-    tasks,
-    goals,
-    planner,
-    sleep,
-    workouts,
-    mood,
-    water,
-    weight,
-    meditation,
-    customTrackers,
-    monthlyBudget,
-  } = useTrakl(
-    useShallow((s) => ({
-      profile: s.profile,
-      enabled: s.enabledTrackers,
-      toggleTracker: s.toggleTracker,
-      updateProfile: s.updateProfile,
-      notifOn: s.notificationsEnabled,
-      setNotifOn: s.setNotificationsEnabled,
-      retentionOn: s.retentionNotificationsEnabled,
-      setRetentionOn: s.setRetentionNotificationsEnabled,
-      quietOn: s.quietHoursEnabled,
-      setQuietOn: s.setQuietHoursEnabled,
-      quietStart: s.quietHoursStart,
-      quietEnd: s.quietHoursEnd,
-      setQuietHours: s.setQuietHours,
-      resetApp: s.resetApp,
-      loadSampleData: s.loadSampleData,
-      exportAppData: s.exportAppData,
-      importAppData: s.importAppData,
-      transactions: s.transactions,
-      habits: s.habits,
-      tasks: s.tasks,
-      goals: s.goals,
-      planner: s.planner,
-      sleep: s.sleep,
-      workouts: s.workouts,
-      mood: s.mood,
-      water: s.water,
-      weight: s.weight,
-      meditation: s.meditation,
-      customTrackers: s.customTrackers,
-      monthlyBudget: s.monthlyBudget,
-    })),
-  );
+  const profile = useTrakl((s) => s.profile);
+  const enabled = useTrakl((s) => s.enabledTrackers);
+  const toggleTracker = useTrakl((s) => s.toggleTracker);
+  const updateProfile = useTrakl((s) => s.updateProfile);
+  const notifOn = useTrakl((s) => s.notificationsEnabled);
+  const setNotifOn = useTrakl((s) => s.setNotificationsEnabled);
+  const retentionOn = useTrakl((s) => s.retentionNotificationsEnabled);
+  const setRetentionOn = useTrakl((s) => s.setRetentionNotificationsEnabled);
+  const quietOn = useTrakl((s) => s.quietHoursEnabled);
+  const setQuietOn = useTrakl((s) => s.setQuietHoursEnabled);
+  const quietStart = useTrakl((s) => s.quietHoursStart);
+  const quietEnd = useTrakl((s) => s.quietHoursEnd);
+  const setQuietHours = useTrakl((s) => s.setQuietHours);
+  const exitConfirmEnabled = useTrakl((s) => s.exitConfirmEnabled);
+  const setExitConfirmEnabled = useTrakl((s) => s.setExitConfirmEnabled);
+  const resetApp = useTrakl((s) => s.resetApp);
+  const loadSampleData = useTrakl((s) => s.loadSampleData);
+  const exportAppData = useTrakl((s) => s.exportAppData);
+  const importAppData = useTrakl((s) => s.importAppData);
+  const transactions = useTrakl((s) => s.transactions);
+  const habits = useTrakl((s) => s.habits);
+  const tasks = useTrakl((s) => s.tasks);
+  const goals = useTrakl((s) => s.goals);
+  const planner = useTrakl((s) => s.planner);
+  const sleep = useTrakl((s) => s.sleep);
+  const workouts = useTrakl((s) => s.workouts);
+  const mood = useTrakl((s) => s.mood);
+  const water = useTrakl((s) => s.water);
+  const weight = useTrakl((s) => s.weight);
+  const meditation = useTrakl((s) => s.meditation);
+  const customTrackers = useTrakl((s) => s.customTrackers);
+  const monthlyBudget = useTrakl((s) => s.monthlyBudget);
 
   const [themeOpen, setThemeOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -274,7 +243,11 @@ export default function ProfileScreen() {
     });
   };
 
-  const onRate = () => setRateOpen(true);
+  const onRate = () => {
+    void openStoreReview().then((result) => {
+      if (result === 'needs_picker') setRateOpen(true);
+    });
+  };
   const onAbout = () => setAboutOpen(true);
   const onHelp = () => setHelpOpen(true);
   const onDeleteData = () => setDeleteOpen(true);
@@ -505,38 +478,24 @@ export default function ProfileScreen() {
                   />
                 </>
               ) : null}
+              {Platform.OS === 'android' ? (
+                <>
+                  <View style={{ height: 1, backgroundColor: colors.border }} />
+                  <PrefRow
+                    icon={LogOut}
+                    label={t('profile.exitConfirm')}
+                    toggle
+                    toggleValue={exitConfirmEnabled}
+                    onToggle={setExitConfirmEnabled}
+                  />
+                </>
+              ) : null}
               <View style={{ height: 1, backgroundColor: colors.border }} />
               <PrefRow
                 icon={UserPen}
                 label={t('editProfile.title')}
                 onPress={() => setEditOpen(true)}
               />
-            </Card>
-          </View>
-
-          {/* Trakl Pro */}
-          <View>
-            <SectionLabel>{t('profile.pro')}</SectionLabel>
-            <Card style={{ borderColor: colors.text, borderWidth: 1 }} className="gap-4">
-              <View className="flex-row items-center gap-2">
-                <Crown size={22} color={colors.text} strokeWidth={1.5} />
-                <ClashText weight="medium" style={{ fontSize: 16 }}>
-                  {t('profile.proTagline')}
-                </ClashText>
-              </View>
-              <View className="gap-2.5">
-                {[
-                  { icon: Cloud, label: t('profile.proBackup') },
-                  { icon: Cpu, label: t('profile.proAi') },
-                  { icon: XCircle, label: t('profile.proNoAds') },
-                ].map((f) => (
-                  <View key={f.label} className="flex-row items-center gap-2.5">
-                    <f.icon size={18} color={colors.muted} strokeWidth={1.5} />
-                    <InterText style={{ fontSize: 14 }}>{f.label}</InterText>
-                  </View>
-                ))}
-              </View>
-              <PrimaryButton label={t('profile.comingSoon')} disabled />
             </Card>
           </View>
 
@@ -552,7 +511,11 @@ export default function ProfileScreen() {
               <View style={{ height: 1, backgroundColor: colors.border }} />
               <PrefRow icon={Star} label={t('profile.rate')} onPress={onRate} />
               <View style={{ height: 1, backgroundColor: colors.border }} />
-              <PrefRow icon={Share2} label={t('profile.share')} onPress={onShare} />
+              <PrefRow
+                icon={Share2}
+                label={t('profile.share')}
+                onPress={() => onShare(t('profile.shareMessage'))}
+              />
               <View style={{ height: 1, backgroundColor: colors.border }} />
               <PrefRow icon={HelpCircle} label={t('profile.help')} onPress={onHelp} />
               <View style={{ height: 1, backgroundColor: colors.border }} />
@@ -614,7 +577,7 @@ export default function ProfileScreen() {
             <View className="flex-row justify-center gap-2">
               <PressableScale
                 feedback="chip"
-                onPress={() => void Linking.openURL(t('legal.privacyUrl'))}
+                onPress={() => void Linking.openURL(PRIVACY_POLICY_URL)}
                 hitSlop={8}
                 accessibilityRole="link"
                 accessibilityLabel={t('legal.privacyPolicy')}
@@ -631,7 +594,7 @@ export default function ProfileScreen() {
               </Caption>
               <PressableScale
                 feedback="chip"
-                onPress={() => void Linking.openURL(t('legal.termsUrl'))}
+                onPress={() => void Linking.openURL(TERMS_OF_SERVICE_URL)}
                 hitSlop={8}
                 accessibilityRole="link"
                 accessibilityLabel={t('legal.termsOfService')}
@@ -716,7 +679,12 @@ export default function ProfileScreen() {
       <InfoSheet
         visible={aboutOpen}
         title={t('profile.about')}
-        body={t('profileMsg.aboutBody')}
+        body={t('profileMsg.aboutBody', {
+          version:
+            Constants.expoConfig?.version ??
+            (Constants as { nativeAppVersion?: string }).nativeAppVersion ??
+            '1.0.9',
+        })}
         actions={[{ label: 'info@pimora.tech', onPress: emailSupport, variant: 'plain' }]}
         onClose={() => setAboutOpen(false)}
       />
@@ -724,6 +692,10 @@ export default function ProfileScreen() {
         visible={rateOpen}
         title={t('profile.rate')}
         body={t('profileMsg.rateBody')}
+        actions={[
+          { label: t('profileMsg.openAppStore'), onPress: () => void openAppStoreReview() },
+          { label: t('profileMsg.openPlayStore'), onPress: () => void openPlayStoreListing() },
+        ]}
         onClose={() => setRateOpen(false)}
       />
       <InfoSheet

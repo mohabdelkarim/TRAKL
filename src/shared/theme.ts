@@ -101,10 +101,14 @@ export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
       mode: 'light',
-      systemScheme: normalize(Appearance.getColorScheme()),
+      systemScheme: normalize(Appearance.getColorScheme() ?? 'light'),
       hydrated: false,
-      setMode: (mode) => set({ mode }),
-      setSystemScheme: (scheme) => set({ systemScheme: normalize(scheme) }),
+      setMode: (mode) => set((s) => (s.mode === mode ? s : { mode })),
+      setSystemScheme: (scheme) =>
+        set((s) => {
+          const next = normalize(scheme ?? 'light');
+          return s.systemScheme === next ? s : { systemScheme: next };
+        }),
     }),
     {
       name: 'trakl-theme-v1',

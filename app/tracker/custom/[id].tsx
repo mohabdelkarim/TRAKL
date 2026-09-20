@@ -4,7 +4,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MoreHorizontal, Plus } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { CustomLogForm } from '@/components/CustomLogForm';
@@ -200,7 +199,6 @@ export default function CustomDetailScreen() {
             />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
 
       {logOpen ? (

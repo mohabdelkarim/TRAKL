@@ -102,7 +102,13 @@ export const createOnboardingSlice: StateCreator<TraklState, [], [], OnboardingS
         : [...s.pinnedTrackers, key],
     })),
 
-  updateProfile: (patch) => set((s) => ({ profile: { ...s.profile, ...patch } })),
+  updateProfile: (patch) =>
+    set((s) => {
+      const next = { ...s.profile, ...patch };
+      const keys = Object.keys(next) as (keyof typeof next)[];
+      if (keys.every((k) => Object.is(next[k], s.profile[k]))) return s;
+      return { profile: next };
+    }),
 
   resetApp: () => {
     void deleteTransactionsSecure();
@@ -118,6 +124,11 @@ export const createOnboardingSlice: StateCreator<TraklState, [], [], OnboardingS
       retentionNotifiedAchievementIds: [],
       retentionLastInactivityNotificationAt: undefined,
       waterGoal: WATER_GOAL,
+      exitConfirmEnabled: true,
+      ratePromptNever: false,
+      ratePromptPending: false,
+      ratePromptCount: 0,
+      ratePromptLastAt: undefined,
     });
   },
 });

@@ -76,22 +76,30 @@ export const ja = {
     more: 'その他',
     rate: 'TRAKLを評価',
     share: '共有',
+    shareMessage: 'TRAKL。すべてを記録。習慣・タスク・睡眠・家計などを追跡。',
     help: 'ヘルプとサポート',
     about: '概要',
     deleteData: 'すべてのデータを削除',
-    pro: 'TRAKL Pro',
-    proTagline: 'すべての機能を解放',
-    proBackup: 'クラウドバックアップ',
-    proAi: 'AIインサイト',
-    proNoAds: '広告なし',
-    upgrade: 'Proにアップグレード',
-    comingSoon: '近日公開',
     themeLight: 'ライト',
     themeDark: 'ダーク',
     themeSystem: 'システム',
     chooseTheme: 'テーマを選択',
     chooseLanguage: '言語を選択',
     loadSample: 'サンプルデータを読み込む',
+    exitConfirm: '終了前に確認',
+  },
+  ratePrompt: {
+    title: 'TRAKLは気に入りましたか？',
+    body: '短い評価は、他の人がアプリを見つけるのに役立ちます。',
+    rate: '評価する',
+    later: '後で',
+    never: '二度と聞かない',
+  },
+  exit: {
+    title: 'TRAKLを終了しますか？',
+    body: 'アプリを閉じますか？プロフィール→設定で変更できます。',
+    stay: '残る',
+    leave: '終了',
   },
   trackerNames: {
     finance: '家計',
@@ -626,11 +634,11 @@ export const ja = {
   profileMsg: {
     rateBody:
       'TRAKL をご利用いただきありがとうございます！評価はアプリが App Store に公開され次第ご利用いただけます。',
+    openAppStore: 'App Store を開く',
+    openPlayStore: 'Google Play を開く',
     aboutBody: 'TRAKL · すべてを記録。\nバージョン 1.0\n\nPimora 制作\ninfo@pimora.tech',
     helpBody:
       'お困りですか、ご意見はありますか？ info@pimora.tech までメールください。返信いたします。',
-    upgradeBody:
-      'TRAKL Pro は近日公開予定です。サブスクリプションを解除するには支払いを有効にしてください。',
     deleteTitle: 'すべてのデータを削除しますか？',
     deleteBody:
       'プロフィール、トラッカー、すべての記録が完全に消去されます。アプリは新規状態で再開します。取り消せません。',
@@ -693,7 +701,6 @@ export const ja = {
     notifGoalTitle: 'マイルストーン達成',
     notifGoalMsg: '5,000ユーロ貯めるでマイルストーンを達成しました',
   },
-  consent: { title: 'パーソナライズド広告と分析', description: 'TRAKLは、パーソナライズド広告の表示と広告効果の測定にGoogle Mobile Adsを使用します。データはプライバシーポリシーに従って処理されます。', personalized: '興味に基づくパーソナライズド広告', measurement: '広告効果の測定', noTracking: '個人データを販売または共有することはありません', privacyNote: '同意は設定からいつでも変更できます。', accept: '同意して続行', reject: '拒否' },
   backup: { exportBackup: 'バックアップをエクスポート', importBackup: 'バックアップをインポート', exportTitle: 'バックアップをエクスポート', importTitle: 'バックアップをインポート', export: 'エクスポート', import: '復元', pasteJson: 'バックアップJSON', pasteJsonPlaceholder: 'TRAKLのバックアップJSONをここに貼り付けてください...', orChooseFile: 'または.jsonファイルを選択', exportSuccess: 'バックアップをエクスポートしました。', importSuccess: 'バックアップを復元しました。', confirmTitle: 'バックアップを復元しますか？', confirmBody: '現在のTRAKLデータがすべてバックアップに置き換わります。この操作は元に戻せません。', confirm: '復元' },
-  legal: { privacyPolicy: 'プライバシーポリシー', termsOfService: '利用規約', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
+  legal: { privacyPolicy: 'プライバシーポリシー', termsOfService: '利用規約', },
 };

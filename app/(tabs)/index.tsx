@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
 import { Avatar } from '@/components/Avatar';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
@@ -159,49 +158,25 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const fmt = useFormatters();
 
-  const {
-    hydrated,
-    profile,
-    transactions,
-    habits,
-    tasks,
-    sleep,
-    goals,
-    monthlyBudget,
-    enabledTrackers,
-    notifications,
-    toggleTask,
-    mood,
-    water,
-    weight,
-    meditation,
-    waterGoal,
-    customTrackers,
-    workouts,
-    planner,
-  } = useTrakl(
-    useShallow((s) => ({
-      hydrated: s.hydrated,
-      profile: s.profile,
-      transactions: s.transactions,
-      habits: s.habits,
-      tasks: s.tasks,
-      sleep: s.sleep,
-      goals: s.goals,
-      monthlyBudget: s.monthlyBudget,
-      enabledTrackers: s.enabledTrackers,
-      notifications: s.notifications,
-      toggleTask: s.toggleTask,
-      mood: s.mood,
-      water: s.water,
-      weight: s.weight,
-      meditation: s.meditation,
-      waterGoal: s.waterGoal,
-      customTrackers: s.customTrackers,
-      workouts: s.workouts,
-      planner: s.planner,
-    })),
-  );
+  const hydrated = useTrakl((s) => s.hydrated);
+  const profile = useTrakl((s) => s.profile);
+  const transactions = useTrakl((s) => s.transactions);
+  const habits = useTrakl((s) => s.habits);
+  const tasks = useTrakl((s) => s.tasks);
+  const sleep = useTrakl((s) => s.sleep);
+  const goals = useTrakl((s) => s.goals);
+  const monthlyBudget = useTrakl((s) => s.monthlyBudget);
+  const enabledTrackers = useTrakl((s) => s.enabledTrackers);
+  const notifications = useTrakl((s) => s.notifications);
+  const toggleTask = useTrakl((s) => s.toggleTask);
+  const mood = useTrakl((s) => s.mood);
+  const water = useTrakl((s) => s.water);
+  const weight = useTrakl((s) => s.weight);
+  const meditation = useTrakl((s) => s.meditation);
+  const waterGoal = useTrakl((s) => s.waterGoal);
+  const customTrackers = useTrakl((s) => s.customTrackers);
+  const workouts = useTrakl((s) => s.workouts);
+  const planner = useTrakl((s) => s.planner);
 
   const priorityBar: Record<string, string> = {
     high: colors.destructive,

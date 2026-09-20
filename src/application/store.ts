@@ -35,7 +35,7 @@ export const useTrakl = create<TraklState>()(
     {
       name: 'trakl-store-v1',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 11,
+      version: 12,
       migrate,
       // Transactions are intentionally excluded from partialize; they are
       // stored in encrypted secure storage (expo-secure-store) instead.
@@ -66,6 +66,11 @@ export const useTrakl = create<TraklState>()(
         retentionNotifiedAchievementIds: s.retentionNotifiedAchievementIds,
         retentionLastInactivityNotificationAt: s.retentionLastInactivityNotificationAt,
         waterGoal: s.waterGoal,
+        exitConfirmEnabled: s.exitConfirmEnabled,
+        ratePromptNever: s.ratePromptNever,
+        ratePromptPending: s.ratePromptPending,
+        ratePromptCount: s.ratePromptCount,
+        ratePromptLastAt: s.ratePromptLastAt,
       }),
       onRehydrateStorage: () => (state, error) => {
         if (error) {

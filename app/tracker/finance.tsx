@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Svg, { Circle } from 'react-native-svg';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { ChipSelect, Field, FormSheet, TextField } from '@/components/FormSheet';
@@ -440,7 +439,6 @@ export default function FinanceScreen() {
             <PrimaryButton label={t('finance.addTransaction')} onPress={() => setFormOpen(true)} />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <TransactionForm
         visible={formOpen}

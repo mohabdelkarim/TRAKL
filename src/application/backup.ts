@@ -41,6 +41,11 @@ export type BackupData = {
   retentionNotifiedAchievementIds: TraklState['retentionNotifiedAchievementIds'];
   retentionLastInactivityNotificationAt?: TraklState['retentionLastInactivityNotificationAt'];
   waterGoal: TraklState['waterGoal'];
+  exitConfirmEnabled?: TraklState['exitConfirmEnabled'];
+  ratePromptNever?: TraklState['ratePromptNever'];
+  ratePromptPending?: TraklState['ratePromptPending'];
+  ratePromptCount?: TraklState['ratePromptCount'];
+  ratePromptLastAt?: TraklState['ratePromptLastAt'];
 };
 
 const BACKUP_ARRAY_KEYS: (keyof BackupData)[] = [
@@ -97,6 +102,11 @@ export function createBackup(state: TraklState): string {
     retentionNotifiedAchievementIds: state.retentionNotifiedAchievementIds,
     retentionLastInactivityNotificationAt: state.retentionLastInactivityNotificationAt,
     waterGoal: state.waterGoal,
+    exitConfirmEnabled: state.exitConfirmEnabled,
+    ratePromptNever: state.ratePromptNever,
+    ratePromptPending: state.ratePromptPending,
+    ratePromptCount: state.ratePromptCount,
+    ratePromptLastAt: state.ratePromptLastAt,
   };
   return JSON.stringify(payload, null, 2);
 }
@@ -208,6 +218,15 @@ export function parseBackup(json: string): ParseResult {
     parsed.retentionNotifiedAchievementIds = [];
   if (typeof parsed.onboarded !== 'boolean') {
     parsed.onboarded = true;
+  }
+  if (typeof parsed.exitConfirmEnabled !== 'boolean') parsed.exitConfirmEnabled = true;
+  if (typeof parsed.ratePromptNever !== 'boolean') parsed.ratePromptNever = false;
+  if (typeof parsed.ratePromptPending !== 'boolean') parsed.ratePromptPending = false;
+  if (typeof parsed.ratePromptCount !== 'number' || !Number.isFinite(parsed.ratePromptCount)) {
+    parsed.ratePromptCount = 0;
+  }
+  if (parsed.ratePromptLastAt !== undefined && typeof parsed.ratePromptLastAt !== 'string') {
+    delete parsed.ratePromptLastAt;
   }
 
   // Runtime validation of critical array element shapes.

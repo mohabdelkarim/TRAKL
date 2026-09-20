@@ -5,7 +5,6 @@ import { TrendingDown, TrendingUp } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { Field, FormSheet, TextField } from '@/components/FormSheet';
 import { PressableScale } from '@/components/PressableScale';
@@ -155,7 +154,6 @@ export default function WeightScreen() {
             <PrimaryButton label={t('weightScreen.logWeight')} onPress={() => setFormOpen(true)} />
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
 
       <WeightForm

@@ -10,10 +10,17 @@ function requireEnv(name: string, fallback: string): string {
   return value ?? fallback;
 }
 
+function isFlagEnabled(name: string): boolean {
+  // oxlint-disable-next-line expo/no-dynamic-env-var
+  const value = process.env[name];
+  if (value === undefined) return false;
+  return ['1', 'true', 'yes'].includes(value.trim().toLowerCase());
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const nativePlugins: ExpoPlugins = [
-    'expo-dev-client',
-  ];
+  // Keep expo-dev-client out of default Expo Go sessions. Opt in with TRAKL_DEV_CLIENT=1.
+  const includeDevClient = isFlagEnabled('TRAKL_DEV_CLIENT');
+  const nativePlugins: ExpoPlugins = includeDevClient ? ['expo-dev-client'] : [];
 
   const appVersion = requireEnv('TRAKL_APP_VERSION', '1.0.9');
   const androidPackage = requireEnv('TRAKL_ANDROID_PACKAGE', 'com.example.trakl');
@@ -51,12 +58,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: androidPackage,
-      // Bump on every Play Console release (must be > previously uploaded versionCode).
       versionCode: androidVersionCode,
-      // permissions: ['com.google.android.gms.permission.AD_ID'] — re-enable with AdMob
     },
     extra: {
-      appStoreAppId: process.env.TRAKL_APP_STORE_APP_ID,
+      appStoreAppId: process.env.TRAKL_APP_STORE_APP_ID ?? '6800000662',
+      playStorePackage: androidPackage === 'com.example.trakl' ? 'trakl.app' : androidPackage,
       eas: {
         projectId: requireEnv('TRAKL_EAS_PROJECT_ID', '00000000-0000-0000-0000-000000000000'),
       },
@@ -85,13 +91,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           imageWidth: 200,
           resizeMode: 'contain',
           backgroundColor: '#f0c061',
-        },
-      ],
-      [
-        'react-native-google-mobile-ads',
-        {
-          androidAppId: requireEnv('TRAKL_ADMOB_ANDROID_APP_ID', 'ca-app-pub-4918095220813645~5762692634'),
-          iosAppId: requireEnv('TRAKL_ADMOB_IOS_APP_ID', 'ca-app-pub-4918095220813645~1685670652'),
         },
       ],
       ...nativePlugins,

@@ -76,22 +76,30 @@ export const es = {
     more: 'Más',
     rate: 'Valorar TRAKL',
     share: 'Compartir',
+    shareMessage: 'TRAKL. Todo. Registrado. Sigue hábitos, tareas, sueño, finanzas y más.',
     help: 'Ayuda y soporte',
     about: 'Acerca de',
     deleteData: 'Eliminar todos los datos',
-    pro: 'TRAKL Pro',
-    proTagline: 'Desbloquea la experiencia completa',
-    proBackup: 'Copia en la Nube',
-    proAi: 'Análisis con IA',
-    proNoAds: 'Sin Anuncios',
-    upgrade: 'Mejorar a Pro',
-    comingSoon: 'Próximamente',
     themeLight: 'Claro',
     themeDark: 'Oscuro',
     themeSystem: 'Sistema',
     chooseTheme: 'Elige un tema',
     chooseLanguage: 'Elige un idioma',
     loadSample: 'Cargar datos de ejemplo',
+    exitConfirm: 'Confirmar antes de salir',
+  },
+  ratePrompt: {
+    title: '¿Te gusta TRAKL?',
+    body: 'Una valoración rápida ayuda a otros a encontrar la app.',
+    rate: 'Valorar',
+    later: 'Ahora no',
+    never: 'No volver a preguntar',
+  },
+  exit: {
+    title: '¿Salir de TRAKL?',
+    body: '¿Cerrar la app ahora? Puedes cambiarlo en Perfil → Preferencias.',
+    stay: 'Quedarme',
+    leave: 'Salir',
   },
   trackerNames: {
     finance: 'Finanzas',
@@ -626,10 +634,11 @@ export const es = {
   profileMsg: {
     rateBody:
       '¡Gracias por usar TRAKL! Las valoraciones estarán disponibles cuando la app esté en la App Store.',
+    openAppStore: 'Abrir App Store',
+    openPlayStore: 'Abrir Google Play',
     aboutBody: 'TRAKL · Todo. Registrado.\nVersión 1.0\n\nHecho por Pimora\ninfo@pimora.tech',
     helpBody:
       '¿Necesitas ayuda o tienes comentarios? Escríbenos a info@pimora.tech y te responderemos.',
-    upgradeBody: 'TRAKL Pro llegará pronto. Activa los pagos para desbloquear las suscripciones.',
     deleteTitle: '¿Eliminar todos los datos?',
     deleteBody:
       'Esto borra permanentemente tu perfil, los rastreadores y cada entrada. La app se reinicia como nueva. No se puede deshacer.',
@@ -692,11 +701,8 @@ export const es = {
     notifGoalTitle: 'Hito alcanzado',
     notifGoalMsg: 'Alcanzaste un hito en Ahorrar 5.000 €',
   },
-  consent: {
-    title: 'Anuncios y análisis personalizados', description: 'TRAKL utiliza Google Mobile Ads para mostrarte anuncios personalizados y medir su rendimiento. Tus datos se procesan de acuerdo con nuestra Política de privacidad.', personalized: 'Anuncios personalizados según tus intereses', measurement: 'Medición de la eficacia de los anuncios', noTracking: 'No vendemos ni compartimos tus datos personales', privacyNote: 'Puedes cambiar tu consentimiento en cualquier momento desde Ajustes.', accept: 'Aceptar y continuar', reject: 'Rechazar',
-  },
   backup: {
     exportBackup: 'Exportar copia de seguridad', importBackup: 'Importar copia de seguridad', exportTitle: 'Exportar copia de seguridad', importTitle: 'Importar copia de seguridad', export: 'Exportar', import: 'Restaurar', pasteJson: 'JSON de la copia de seguridad', pasteJsonPlaceholder: 'Pega aquí el JSON de tu copia de seguridad de TRAKL...', orChooseFile: 'O elige un archivo .json', exportSuccess: 'Copia de seguridad exportada.', importSuccess: 'Copia de seguridad restaurada correctamente.', confirmTitle: '¿Restaurar la copia de seguridad?', confirmBody: 'Esto reemplazará todos tus datos actuales de TRAKL con la copia de seguridad. No se puede deshacer.', confirm: 'Restaurar',
   },
-  legal: { privacyPolicy: 'Política de privacidad', termsOfService: 'Términos del servicio', privacyUrl: 'https://mohabdelkarim.github.io/trakl-privacy/privacy-policy/', termsUrl: 'https://mohabdelkarim.github.io/trakl-privacy/terms-of-service/' },
+  legal: { privacyPolicy: 'Política de privacidad', termsOfService: 'Términos del servicio', },
 };

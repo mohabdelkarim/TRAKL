@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Bell } from 'lucide-react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { PressableScale } from '@/components/PressableScale';
@@ -202,7 +201,6 @@ export default function NotificationsScreen() {
             )}
           </ScrollView>
         )}
-        <AdBanner />
       </View>
     </Screen>
   );

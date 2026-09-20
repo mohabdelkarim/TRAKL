@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { ArrowRight, Search, Target, X } from 'lucide-react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { PressableScale } from '@/components/PressableScale';
@@ -18,6 +17,7 @@ import type { LucideIcon } from 'lucide-react-native';
 import { withAlpha } from '@/src/domain/trackers';
 import { useFormatters } from '@/src/shared/utils/format';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
+import { formatHabitCadence, formatTaskProject } from '@/src/shared/utils/i18nStoredLabels';
 import { useTrakl } from '@/src/application/store';
 
 type ResultGroup = 'finance' | 'tasks' | 'goals' | 'habits';
@@ -72,7 +72,7 @@ export default function SearchScreen() {
           id: `task-${task.id}`,
           group: 'tasks',
           title: task.name,
-          subtitle: task.project,
+          subtitle: formatTaskProject(task.project, t),
           icon: CheckSquare,
           accent: accents.tasks,
           route: '/tracker/tasks',
@@ -106,7 +106,7 @@ export default function SearchScreen() {
           id: `habit-${habit.id}`,
           group: 'habits',
           title: habit.name,
-          subtitle: habit.cadence === 'Daily' ? t('habits.daily') : habit.cadence,
+          subtitle: formatHabitCadence(habit.cadence, t),
           icon: Repeat2,
           accent: habit.color,
           route: '/tracker/habits',
@@ -251,7 +251,6 @@ export default function SearchScreen() {
               </Animated.View>
             )}
           </ScrollView>
-          <AdBanner />
         </View>
       </KeyboardAvoidingView>
     </Screen>

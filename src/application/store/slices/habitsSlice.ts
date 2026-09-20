@@ -3,13 +3,15 @@ import type { StateCreator } from 'zustand';
 import type { TraklState, HabitsSlice } from '../types';
 import { generateId } from '@/src/shared/utils/id';
 import { dayISO } from '@/src/application/seed';
+import { maybeArmRatePrompt } from '@/src/shared/ratePrompt';
 
 export const createHabitsSlice: StateCreator<TraklState, [], [], HabitsSlice> = (set) => ({
   habits: [],
 
   toggleHabitToday: (hid) =>
-    set((s) => ({
-      habits: s.habits.map((h) => {
+    set((s) => {
+      let completedNow = false;
+      const habits = s.habits.map((h) => {
         if (h.id !== hid) return h;
         const today = dayISO(0).slice(0, 10);
         const completions = { ...h.completions };
@@ -20,10 +22,17 @@ export const createHabitsSlice: StateCreator<TraklState, [], [], HabitsSlice> = 
           Object.keys(completions).forEach((key) => {
             if (key.slice(0, 10) === today) delete completions[key];
           });
-        } else completions[today] = true;
+        } else {
+          completions[today] = true;
+          completedNow = true;
+        }
         return { ...h, completions };
-      }),
-    })),
+      });
+      return {
+        habits,
+        ...(completedNow ? maybeArmRatePrompt(s) : {}),
+      };
+    }),
 
   addHabit: (name, color) =>
     set((s) => ({

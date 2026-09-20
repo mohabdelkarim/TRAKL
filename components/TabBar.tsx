@@ -27,14 +27,14 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
   const { t } = useTranslation();
 
   // Insert FAB between analytics (index 2) and profile (index 3)
-  const routes = state.routes.filter((r) => TAB_META[r.name]);
+  const routes = state.routes.filter((r: { name: string }) => TAB_META[r.name]);
   const left = routes.slice(0, 2);
   const right = routes.slice(2);
 
   const renderTab = (routeName: string, key: string) => {
     const meta = TAB_META[routeName];
     if (!meta) return null;
-    const routeIndex = state.routes.findIndex((r) => r.name === routeName);
+    const routeIndex = state.routes.findIndex((r: { name: string }) => r.name === routeName);
     const focused = state.index === routeIndex;
     const Icon = meta.icon;
     const color = focused ? colors.text : colors.muted;
@@ -79,7 +79,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       }}
       className="flex-row items-center px-2"
     >
-      {left.map((r) => renderTab(r.name, r.key))}
+      {left.map((r: { name: string; key: string }) => renderTab(r.name, r.key))}
 
       <View className="flex-1 items-center justify-center">
         <PressableScale
@@ -104,7 +104,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         </PressableScale>
       </View>
 
-      {right.map((r) => renderTab(r.name, r.key))}
+      {right.map((r: { name: string; key: string }) => renderTab(r.name, r.key))}
     </View>
   );
 }

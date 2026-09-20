@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { ChipSelect, Field, FormSheet, TextField } from '@/components/FormSheet';
@@ -22,6 +21,7 @@ import { withAlpha } from '@/src/domain/trackers';
 import { useTrakl } from '@/src/application/store';
 import { haptics } from '@/src/shared/haptics';
 import { type TaskGroupKey, type TaskSort, groupTasks } from '@/src/application/stats';
+import { formatTaskProject } from '@/src/shared/utils/i18nStoredLabels';
 import type { Priority, Task, TaskStatus } from '@/src/domain/types';
 
 type TaskView = 'list' | 'kanban';
@@ -55,6 +55,8 @@ function TaskRow({
   const accents = useTrackerAccents();
   const accent = accents.tasks;
   const fmt = useFormatters();
+  const { t } = useTranslation();
+  const projectLabel = formatTaskProject(task.project, t);
   return (
     <SwipeableRow
       left={{
@@ -123,7 +125,7 @@ function TaskRow({
               <View className="flex-row items-center gap-1">
                 <Folder size={12} color={colors.muted} strokeWidth={1.5} />
                 <InterText color={colors.muted} style={{ fontSize: 12 }}>
-                  {task.project}
+                  {projectLabel}
                 </InterText>
               </View>
               <View className="flex-row items-center gap-1">
@@ -335,7 +337,7 @@ export default function TasksScreen() {
                             <View className="flex-row items-center gap-1">
                               <Folder size={12} color={colors.muted} strokeWidth={1.5} />
                               <InterText color={colors.muted} style={{ fontSize: 12 }}>
-                                {task.project}
+                                {formatTaskProject(task.project, t)}
                               </InterText>
                             </View>
                           </Card>
@@ -351,7 +353,6 @@ export default function TasksScreen() {
 
         <Fab onPress={() => setFormOpen(true)} bottom={68} />
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-          <AdBanner />
         </View>
       </View>
       <TaskForm

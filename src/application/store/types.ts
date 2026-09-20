@@ -196,10 +196,17 @@ export interface PreferencesSlice {
   retentionNotifiedAchievementIds: string[];
   retentionLastInactivityNotificationAt?: string;
   waterGoal: number;
+  exitConfirmEnabled: boolean;
+  ratePromptNever: boolean;
+  ratePromptPending: boolean;
+  ratePromptCount: number;
+  ratePromptLastAt?: string;
   setNotificationsEnabled: (enabled: boolean) => void;
   setRetentionNotificationsEnabled: (enabled: boolean) => void;
   setQuietHoursEnabled: (enabled: boolean) => void;
   setQuietHours: (start: string, end: string) => void;
+  setExitConfirmEnabled: (enabled: boolean) => void;
+  dismissRatePrompt: (opts?: { never?: boolean }) => void;
   markRetentionAchievementsNotified: (ids: string[]) => void;
   markRetentionInactivityScheduled: (at: string) => void;
 }

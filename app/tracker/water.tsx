@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { Droplet, Pencil, RotateCcw } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AdBanner } from '@/components/AdBanner';
 import { BarChart } from '@/components/Charts';
 import { Card } from '@/components/Card';
 import { Field, FormSheet, Stepper } from '@/components/FormSheet';
@@ -193,7 +192,6 @@ export default function WaterScreen() {
             </View>
           </View>
         </ScrollView>
-        <AdBanner />
       </View>
       <GoalForm
         visible={goalOpen}

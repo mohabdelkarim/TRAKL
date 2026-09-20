@@ -9,7 +9,7 @@
   </p>
 
   <p>
-    <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
+    <a href="https://apps.apple.com/gr/app/trakl/id6800000662">
       <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="40" />
     </a>
     &nbsp;&nbsp;
@@ -19,7 +19,7 @@
   </p>
 
   <p>
-    <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">App Store</a>
+    <a href="https://apps.apple.com/gr/app/trakl/id6800000662">App Store</a>
     ·
     <a href="https://play.google.com/store/apps/details?id=trakl.app">Google Play</a>
     ·
@@ -42,7 +42,7 @@ TRAKL is different:
 * **Yours to customize**: build your own trackers when the built-ins are not enough
 
 > [!TIP]
-> Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662?l=el) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support.
+> Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support.
 
 <hr />
 
@@ -118,7 +118,7 @@ TRAKL is built so a life tracker never needs a server for your personal entries.
 * **On device storage** with Zustand + AsyncStorage
 * **Encrypted finances** via `expo-secure-store` (iOS Keychain / Android Keystore)
 * **No account required** to use the core trackers
-* **Ads only after consent** through Google's official UMP flow (plus iOS ATT)
+* **No advertising SDKs** in the app or the open source tree
 * **Backup you own**: export and import locally, never auto uploaded
 
 See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
@@ -128,7 +128,7 @@ See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
 ## Download
 
 <p align="center">
-  <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el">
+  <a href="https://apps.apple.com/gr/app/trakl/id6800000662">
     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="40" />
   </a>
   &nbsp;&nbsp;
@@ -138,7 +138,7 @@ See [SECURITY.md](./SECURITY.md) for disclosure policy and fork configuration.
 </p>
 
 <p align="center">
-  <a href="https://apps.apple.com/gr/app/trakl/id6800000662?l=el"><strong>Download for iPhone</strong></a>
+  <a href="https://apps.apple.com/gr/app/trakl/id6800000662"><strong>Download for iPhone</strong></a>
   &nbsp;·&nbsp;
   <a href="https://play.google.com/store/apps/details?id=trakl.app"><strong>Download for Android</strong></a>
 </p>
@@ -151,14 +151,13 @@ TRAKL is open source (Expo / React Native). Contributions welcome.
 
 | Layer | Choice |
 | --- | --- |
-| Framework | Expo SDK 54, React Native 0.81, React 19 |
+| Framework | Expo SDK 57, React Native 0.86, React 19 |
 | Language | TypeScript (strict) |
 | Navigation | Expo Router |
 | State | Zustand + versioned migrations |
 | Secure storage | `expo-secure-store` for financial data |
 | Styling | Uniwind / Tailwind (NativeWind) |
 | i18n | i18next (20 languages, RTL) |
-| Ads | `react-native-google-mobile-ads` + UMP |
 | Tests | Jest + Maestro smoke tests |
 
 ```text
@@ -167,7 +166,7 @@ components/             Presentation UI
 src/
   domain/               Tracker definitions (no I/O)
   application/          Store, stats, backup, achievements
-  infrastructure/       i18n, notifications, ads, consent, secure storage
+  infrastructure/       i18n, notifications, secure storage
   shared/               Theme, fonts, formatting
 assets/                 Logo, splash, store creatives
 __tests__/              Jest suite
@@ -193,9 +192,9 @@ npm run knip
 npm run semgrep
 ```
 
-Copy `.env.example` to `.env` for Expo / AdMob identifiers. See `docs/adr/` for architecture decisions.
+Copy `.env.example` to `.env` for Expo identifiers. See `docs/adr/` for architecture decisions.
 
-Dev client builds: set `TRAKL_DEV_CLIENT=1` in a local `.env.local` (ignored by git). Store / production builds leave it unset.
+Dev client builds: set `TRAKL_DEV_CLIENT=1` in a local `.env.local` (ignored by git). Store / production builds leave it unset. Default `npm start` uses Expo Go (`expo start --go`).
 
 <hr />
 

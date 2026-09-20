@@ -4,7 +4,6 @@ import { type Href, useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AlertCircle, Layers, Search, SlidersHorizontal } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { useShallow } from 'zustand/react/shallow';
 
 import { Card } from '@/components/Card';
 import { OptionSheet, type SheetOption } from '@/components/OptionSheet';
@@ -18,6 +17,7 @@ import { Caption, ClashText, InterText } from '@/components/Typography';
 import { iconForKey } from '@/components/icons';
 import { formatLogValue } from '@/src/shared/utils/customFormat';
 import { TRACKERS, type TrackerKey, withAlpha } from '@/src/domain/trackers';
+import { ROUTES } from '@/src/domain/routes';
 import { useFormatters } from '@/src/shared/utils/format';
 import { haptics } from '@/src/shared/haptics';
 import { useColors, useTrackerAccents } from '@/src/shared/theme';
@@ -36,18 +36,18 @@ import {
 
 /** Per-tracker quick-add deep links (open the screen with its add form). */
 const QUICK_ADD_ROUTE: Partial<Record<TrackerKey, Href>> = {
-  finance: '/tracker/finance?add=expense',
-  habits: '/tracker/habits?add=1',
-  tasks: '/tracker/tasks?add=1',
-  goals: '/tracker/goals?add=1',
-  planner: '/tracker/planner?add=1',
-  sleep: '/tracker/sleep?add=1',
-  fitness: '/tracker/fitness?add=1',
-  mood: '/tracker/mood?add=1',
-  water: '/tracker/water?add=1',
-  weight: '/tracker/weight?add=1',
-  meditation: '/tracker/meditation?add=1',
-  custom: '/tracker/custom',
+  finance: ROUTES.financeAddExpense,
+  habits: ROUTES.habitsAdd,
+  tasks: ROUTES.tasksAdd,
+  goals: ROUTES.goalsAdd,
+  planner: ROUTES.plannerAdd,
+  sleep: ROUTES.sleepAdd,
+  fitness: ROUTES.fitnessAdd,
+  mood: ROUTES.moodAdd,
+  water: ROUTES.waterAdd,
+  weight: ROUTES.weightAdd,
+  meditation: ROUTES.meditationAdd,
+  custom: ROUTES.custom,
 };
 
 export default function TrackersScreen() {
@@ -56,63 +56,57 @@ export default function TrackersScreen() {
   const accents = useTrackerAccents();
   const { t } = useTranslation();
   const fmt = useFormatters();
-  const { enabled, pinned, togglePin, store } = useTrakl(
-    useShallow((s) => ({
-      enabled: s.enabledTrackers,
-      pinned: s.pinnedTrackers,
-      togglePin: s.togglePinTracker,
-      store: {
-        transactions: s.transactions,
-        habits: s.habits,
-        tasks: s.tasks,
-        goals: s.goals,
-        planner: s.planner,
-        sleep: s.sleep,
-        workouts: s.workouts,
-        mood: s.mood,
-        water: s.water,
-        weight: s.weight,
-        meditation: s.meditation,
-        customTrackers: s.customTrackers,
-        monthlyBudget: s.monthlyBudget,
-        waterGoal: s.waterGoal,
-      },
-    })),
-  );
+  const enabled = useTrakl((s) => s.enabledTrackers);
+  const pinned = useTrakl((s) => s.pinnedTrackers);
+  const togglePin = useTrakl((s) => s.togglePinTracker);
+  const transactions = useTrakl((s) => s.transactions);
+  const habits = useTrakl((s) => s.habits);
+  const tasks = useTrakl((s) => s.tasks);
+  const goals = useTrakl((s) => s.goals);
+  const planner = useTrakl((s) => s.planner);
+  const sleep = useTrakl((s) => s.sleep);
+  const workouts = useTrakl((s) => s.workouts);
+  const mood = useTrakl((s) => s.mood);
+  const water = useTrakl((s) => s.water);
+  const weight = useTrakl((s) => s.weight);
+  const meditation = useTrakl((s) => s.meditation);
+  const customTrackers = useTrakl((s) => s.customTrackers);
+  const monthlyBudget = useTrakl((s) => s.monthlyBudget);
+  const waterGoal = useTrakl((s) => s.waterGoal);
   const [sortOpen, setSortOpen] = useState(false);
   const [sort, setSort] = useState<'default' | 'name'>('default');
   const [actionKey, setActionKey] = useState<TrackerKey | null>(null);
 
   const insightInput = useMemo(
     () => ({
-      transactions: store.transactions,
-      habits: store.habits,
-      tasks: store.tasks,
-      goals: store.goals,
-      planner: store.planner,
-      sleep: store.sleep,
-      workouts: store.workouts,
-      mood: store.mood,
-      water: store.water,
-      weight: store.weight,
-      meditation: store.meditation,
-      customTrackers: store.customTrackers,
-      monthlyBudget: store.monthlyBudget,
+      transactions,
+      habits,
+      tasks,
+      goals,
+      planner,
+      sleep,
+      workouts,
+      mood,
+      water,
+      weight,
+      meditation,
+      customTrackers,
+      monthlyBudget,
     }),
     [
-      store.transactions,
-      store.habits,
-      store.tasks,
-      store.goals,
-      store.planner,
-      store.sleep,
-      store.workouts,
-      store.mood,
-      store.water,
-      store.weight,
-      store.meditation,
-      store.customTrackers,
-      store.monthlyBudget,
+      transactions,
+      habits,
+      tasks,
+      goals,
+      planner,
+      sleep,
+      workouts,
+      mood,
+      water,
+      weight,
+      meditation,
+      customTrackers,
+      monthlyBudget,
     ],
   );
 
@@ -120,43 +114,43 @@ export default function TrackersScreen() {
     switch (key) {
       case 'finance':
         return t('trackerStats.financeLeft', {
-          amount: fmt.currency(budgetLeft(store.transactions, store.monthlyBudget)),
+          amount: fmt.currency(budgetLeft(transactions, monthlyBudget)),
         });
       case 'habits': {
-        const h = habitsToday(store.habits);
+        const h = habitsToday(habits);
         return t('trackerStats.habitsDone', { done: h.done, total: h.total });
       }
       case 'tasks':
-        return t('trackerStats.tasksDue', { count: tasksDueToday(store.tasks) });
+        return t('trackerStats.tasksDue', { count: tasksDueToday(tasks) });
       case 'goals':
-        return t('trackerStats.goalsInProgress', { count: store.goals.length });
+        return t('trackerStats.goalsInProgress', { count: goals.length });
       case 'planner':
         return t('trackerStats.plannerEvents', {
-          count: store.planner.filter((e) => e.weekOffset === 0).length,
+          count: planner.filter((e) => e.weekOffset === 0).length,
         });
       case 'sleep':
-        return t('trackerStats.sleepLast', { hours: lastSleepHours(store.sleep) });
+        return t('trackerStats.sleepLast', { hours: lastSleepHours(sleep) });
       case 'fitness':
-        return t('trackerStats.workoutsLogged', { count: store.workouts.length });
+        return t('trackerStats.workoutsLogged', { count: workouts.length });
       case 'mood': {
-        const avg = avgMood(store.mood);
+        const avg = avgMood(mood);
         return avg > 0 ? t('trackerStats.moodAvg', { value: avg }) : t('trackerStats.moodNone');
       }
       case 'water':
         return t('trackerStats.waterToday', {
-          count: waterToday(store.water),
-          goal: store.waterGoal,
+          count: waterToday(water),
+          goal: waterGoal,
         });
       case 'weight': {
-        const latest = latestWeight(store.weight);
+        const latest = latestWeight(weight);
         return latest != null
           ? t('trackerStats.weightLatest', { value: fmt.number(latest) })
           : t('trackerStats.weightNone');
       }
       case 'meditation':
-        return t('trackerStats.meditationStreak', { count: meditationStreak(store.meditation) });
+        return t('trackerStats.meditationStreak', { count: meditationStreak(meditation) });
       case 'custom':
-        return t('trackerStats.customTrackers', { count: store.customTrackers.length });
+        return t('trackerStats.customTrackers', { count: customTrackers.length });
       default:
         return '';
     }
@@ -321,11 +315,11 @@ export default function TrackersScreen() {
           </View>
 
           {/* Custom trackers created by the user */}
-          {store.customTrackers.length > 0 ? (
+          {customTrackers.length > 0 ? (
             <View className="mt-2">
               <SectionLabel>{t('trackerHub.customSection')}</SectionLabel>
               <View className="gap-3">
-                {store.customTrackers.map((tr, i) => {
+                {customTrackers.map((tr, i) => {
                   const Icon = iconForKey(tr.icon);
                   const last = tr.logs?.[0];
                   return (

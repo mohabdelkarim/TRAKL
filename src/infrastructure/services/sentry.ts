@@ -1,14 +1,8 @@
 import { Platform } from 'react-native';
 
 /**
- * Initialize Sentry crash reporting for native platforms (iOS/Android).
- * Web uses PostHog instead (see posthog.ts).
- *
- * Requires @sentry/react-native to be installed:
- *   npx expo install @sentry/react-native
- *
- * And a SENTRY_DSN environment variable set in EAS Build / CI secrets.
- * If SENTRY_DSN is not set or the package is not installed, this is a no-op.
+ * Initialize Sentry for native builds when SENTRY_DSN is set and
+ * @sentry/react-native is installed. Otherwise this is a no op.
  */
 export async function initSentry() {
   if (Platform.OS === 'web') return;

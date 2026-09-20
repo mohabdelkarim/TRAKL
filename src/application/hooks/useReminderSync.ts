@@ -1,5 +1,5 @@
 import { AppState } from 'react-native';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,11 +15,7 @@ import { computeAchievements } from '@/src/application/achievements';
 
 /**
  * Keeps on-device local notifications in sync with the store.
- *
- * Re-schedules reminders whenever the reminder-bearing data changes
- * (habits, tasks, custom trackers) or the user toggles notifications.
- * Runs only after the persisted store has hydrated, so we never schedule
- * against stale seed data on cold start.
+ * Runs only after the persisted store has hydrated.
  */
 export function useReminderSync(): void {
   const { i18n } = useTranslation();
@@ -38,52 +34,68 @@ export function useReminderSync(): void {
   const water = useTrakl((s) => s.water);
   const weight = useTrakl((s) => s.weight);
   const meditation = useTrakl((s) => s.meditation);
-  const achievements = computeAchievements({
-    transactions,
-    habits,
-    tasks,
-    goals,
-    sleep,
-    workouts,
-    mood,
-    water,
-    weight,
-    meditation,
-    customTrackers,
-  });
   const retentionNotifiedAchievementIds = useTrakl((s) => s.retentionNotifiedAchievementIds);
   const retentionNotificationsEnabled = useTrakl((s) => s.retentionNotificationsEnabled);
   const quietHoursEnabled = useTrakl((s) => s.quietHoursEnabled);
   const quietHoursStart = useTrakl((s) => s.quietHoursStart);
   const quietHoursEnd = useTrakl((s) => s.quietHoursEnd);
   const markRetentionAchievementsNotified = useTrakl((s) => s.markRetentionAchievementsNotified);
-  const retentionLastInactivityNotificationAt = useTrakl((s) => s.retentionLastInactivityNotificationAt);
+  const retentionLastInactivityNotificationAt = useTrakl(
+    (s) => s.retentionLastInactivityNotificationAt,
+  );
   const markRetentionInactivityScheduled = useTrakl((s) => s.markRetentionInactivityScheduled);
 
-  // Configure the foreground presentation handler and mirror delivered
-  // notifications into the app's persisted in-app notification history.
+  const achievements = useMemo(
+    () =>
+      computeAchievements({
+        transactions,
+        habits,
+        tasks,
+        goals,
+        sleep,
+        workouts,
+        mood,
+        water,
+        weight,
+        meditation,
+        customTrackers,
+      }),
+    [
+      transactions,
+      habits,
+      tasks,
+      goals,
+      sleep,
+      workouts,
+      mood,
+      water,
+      weight,
+      meditation,
+      customTrackers,
+    ],
+  );
+
   useEffect(() => {
     configureNotificationHandler();
     void syncDeliveredNotifications(addNotification);
     return subscribeToNotificationEvents(addNotification);
   }, [addNotification]);
 
-  // Request permission once on the first suitable native app opening.
+  // Only force the preference OFF when the OS denies. Never force ON.
   useEffect(() => {
     if (!hydrated) return;
     void requestNotificationPermissionOnce().then((granted) => {
-      setNotificationsEnabled(granted);
+      if (!granted) setNotificationsEnabled(false);
     });
   }, [hydrated, setNotificationsEnabled]);
 
-  // Keep the in-app switch synchronized with the OS permission. This runs
-  // on launch and whenever the app returns from Android/iOS settings.
   useEffect(() => {
     let active = true;
     const refresh = async () => {
       const granted = await hasNotificationPermission();
-      if (active && useTrakl.getState().notificationsEnabled !== granted) {
-        setNotificationsEnabled(granted);
+      if (!active) return;
+      if (!granted && useTrakl.getState().notificationsEnabled) {
+        setNotificationsEnabled(false);
       }
     };
     void refresh();
@@ -96,12 +108,6 @@ export function useReminderSync(): void {
     };
   }, [setNotificationsEnabled]);
 
-  // Serialize schedule runs. A naive boolean guard that *drops* a run while
-  // another is in flight causes two problems: (1) the latest state can be lost,
-  // and (2) two runs starting near-simultaneously each do cancel-then-reschedule
-  // and can race into scheduling duplicate notifications. Instead we chain every
-  // request onto a single promise so runs execute strictly one after another,
-  // and always run the most recent snapshot last.
   const chain = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
