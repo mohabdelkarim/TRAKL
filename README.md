@@ -154,7 +154,7 @@ TRAKL is open source (Expo / React Native). Contributions welcome.
 
 | Layer | Choice |
 | --- | --- |
-| Framework | Expo SDK 57, React Native 0.86, React 19 |
+| Framework | Expo SDK 58, React Native 0.88, React 19 |
 | Language | TypeScript (strict) |
 | Navigation | Expo Router |
 | State | Zustand + versioned migrations |

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Tabs, useRouter } from 'expo-router';
+import type { BottomTabBarProps } from 'expo-router/tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useTranslation } from 'react-i18next';
 

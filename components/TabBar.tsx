@@ -1,9 +1,8 @@
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BarChart2, LayoutGrid, Home as HomeIcon, Plus, User } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import type { BottomTabBarProps } from 'expo-router/tabs';
 import { useTranslation } from 'react-i18next';
 
 import { useColors } from '@/src/shared/theme';
@@ -20,8 +19,7 @@ const TAB_META: Record<
 };
 
 /** Custom bottom nav: 4 tabs + a centered FAB that opens Quick Add. */
-export function TabBar({ state, navigation }: BottomTabBarProps) {
-  const insets = useSafeAreaInsets();
+export function TabBar({ state, emitter, navigateToTab, insets }: BottomTabBarProps) {
   const router = useRouter();
   const colors = useColors();
   const { t } = useTranslation();
@@ -39,18 +37,19 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
     const Icon = meta.icon;
     const color = focused ? colors.text : colors.muted;
     const label = t(`tabs.${meta.key}`);
+    const routeKey = state.routes[routeIndex].key;
     return (
       <PressableScale
         feedback="tab"
         key={key}
         onPress={() => {
-          const event = navigation.emit({
+          const event = emitter.emit({
             type: 'tabPress',
-            target: state.routes[routeIndex].key,
+            target: routeKey,
             canPreventDefault: true,
           });
           if (!focused && !event.defaultPrevented) {
-            navigation.navigate(routeName);
+            navigateToTab(routeKey);
           }
         }}
         accessibilityRole="button"

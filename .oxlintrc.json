@@ -24,7 +24,7 @@
     "typeCheck": true
   },
   "settings": {
-    "react": { "version": "19.1.0" }
+    "react": { "version": "19.3.0" }
   },
   "rules": {
     "custom/require-asset-exists": "error",

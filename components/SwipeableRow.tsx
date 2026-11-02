@@ -1,6 +1,11 @@
 import { type ReactNode } from 'react';
-import { Animated, View } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
+import { View } from 'react-native';
+import Swipeable, { SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Animated, {
+  type SharedValue,
+  interpolate,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { Check, Trash2 } from 'lucide-react-native';
 
 import { useColors } from '@/src/shared/theme';
@@ -31,12 +36,15 @@ function ActionPane({
   align,
 }: {
   action: SwipeAction;
-  progress: Animated.AnimatedInterpolation<string | number>;
+  progress: SharedValue<number>;
   align: 'left' | 'right';
 }) {
   const Icon = ICONS[action.icon];
-  const opacity = progress.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 0.6, 1] });
-  const scale = progress.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1] });
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.5, 1], [0, 0.6, 1]),
+    transform: [{ scale: interpolate(progress.value, [0, 1], [0.7, 1]) }],
+  }));
+
   return (
     <View
       style={{
@@ -49,13 +57,14 @@ function ActionPane({
       }}
     >
       <Animated.View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8,
-          opacity,
-          transform: [{ scale }],
-        }}
+        style={[
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+          },
+          animatedStyle,
+        ]}
       >
         <Icon size={20} color={action.color} strokeWidth={2} />
         <InterText weight="semibold" color={action.color} style={{ fontSize: 14 }}>
@@ -93,12 +102,12 @@ export function SwipeableRow({ children, right, left }: Props) {
           : undefined
       }
       onSwipeableOpen={(direction) => {
-        if (direction === 'right' && right) {
+        if (direction === SwipeDirection.RIGHT && right) {
           if (right.icon === 'trash') haptics.notifyWarning();
           else haptics.tapMedium();
           right.onTrigger();
         }
-        if (direction === 'left' && left) {
+        if (direction === SwipeDirection.LEFT && left) {
           if (left.icon === 'trash') haptics.notifyWarning();
           else haptics.tapMedium();
           left.onTrigger();

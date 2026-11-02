@@ -154,7 +154,7 @@ export function useThemeSync() {
 
   useEffect(() => {
     const sub = Appearance.addChangeListener(({ colorScheme }) => {
-      setSystemScheme(colorScheme);
+      setSystemScheme(colorScheme ?? 'light');
     });
     return () => sub.remove();
   }, [setSystemScheme]);
