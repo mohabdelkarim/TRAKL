@@ -39,7 +39,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -57,7 +57,8 @@ jobs:
         run: npm test -- --coverage --coverageReporters=json-summary
 
       - name: Notify Slack on failure
-        if: failure()
+        if: failure() && secrets.SLACK_WEBHOOK_ALERTS != ''
+        continue-on-error: true
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_ALERTS }}
