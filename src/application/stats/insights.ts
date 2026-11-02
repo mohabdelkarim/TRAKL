@@ -13,9 +13,9 @@ import type {
   WeightEntry,
   Workout,
 } from '@/src/domain/types';
-import { dayISO, localDateKey } from './dates';
+import { dayStartMs, localDateKey } from './dates';
 import { budgetLeft } from './finance';
-import { habitsToday, habitDayCount, habitSeries } from './habits';
+import { habitsToday, habitSeries } from './habits';
 import { tasksDueToday, taskSeries } from './tasks';
 import { lastSleepHours, sleepNightsInWindow, sleepSeries } from './sleep';
 import {
@@ -67,8 +67,8 @@ const WATER_GOAL_GLASSES = 8;
 function expenseSeries(transactions: Transaction[]): number[] {
   const out: number[] = [];
   for (let i = 6; i >= 0; i--) {
-    const dayStart = +new Date(dayISO(-i));
-    const dayEnd = +new Date(dayISO(-i + 1));
+    const dayStart = dayStartMs(-i);
+    const dayEnd = dayStartMs(-i + 1);
     const sum = transactions
       .filter((t) => t.kind === 'expense')
       .filter((t) => {
@@ -269,8 +269,8 @@ export function trackerInsight(key: TrackerKey, data: InsightInput): TrackerInsi
       const allLogs = data.customTrackers.flatMap((c) => c.logs ?? []);
       const series: number[] = [];
       for (let i = 6; i >= 0; i--) {
-        const dayStart = +new Date(dayISO(-i));
-        const dayEnd = +new Date(dayISO(-i + 1));
+        const dayStart = dayStartMs(-i);
+        const dayEnd = dayStartMs(-i + 1);
         series.push(
           allLogs.filter((l) => {
             const time = +new Date(l.date);

@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Install Semgrep
         run: pip install semgrep
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload SARIF
         if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
         continue-on-error: true
         with:
           sarif_file: semgrep.sarif
@@ -64,14 +64,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
 
       - name: TruffleHog OSS
         id: trufflehog
-        uses: trufflesecurity/trufflehog@v3.96.0
-        continue-on-error: true
+        uses: trufflesecurity/trufflehog@6f3c981e7b77f235fd2702dd74af25fc4b72bf11 # v3.96.0
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
@@ -84,11 +83,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Run Checkov
         id: checkov
-        uses: bridgecrewio/checkov-action@v2
+        uses: bridgecrewio/checkov-action@790ad7588e741a9db4599bb8b7067fb58590fbd6 # v2
         with:
           directory: .
           framework: github-actions,secrets
@@ -97,7 +96,7 @@ jobs:
           soft_fail: true
 
       - name: Upload Checkov results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
         if: always() && (github.event_name != 'pull_request' || github.event_pull_request.head.repo.full_name == github.repository)
         continue-on-error: true
         with:
@@ -109,7 +108,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Prepare results directory
         run: mkdir -p kics-results
@@ -129,14 +128,14 @@ jobs:
             -e node_modules,.expo,dist,android,ios,.git,__tests__
 
       - name: Upload KICS results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
         if: always() && (github.event_name != 'pull_request' || github.event_pull_request.head.repo.full_name == github.repository)
         continue-on-error: true
         with:
           sarif_file: kics-results/results.sarif
 
       - name: Upload KICS results as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: kics-results

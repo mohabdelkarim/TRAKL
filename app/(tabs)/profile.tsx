@@ -104,13 +104,13 @@ function PrefRow({
         </InterText>
       </View>
       {toggle ? (
-        <View style={{ flexShrink: 0, marginLeft: 12 }}>
+        <View style={{ flexShrink: 0, marginStart: 12 }}>
           <Switch isSelected={toggleValue} onSelectedChange={onToggle} />
         </View>
       ) : (
         <View
           className="flex-row items-center gap-1"
-          style={{ flexShrink: 1, maxWidth: '48%', marginLeft: 12 }}
+          style={{ flexShrink: 1, maxWidth: '48%', marginStart: 12 }}
         >
           {value ? (
             <InterText
@@ -274,11 +274,13 @@ export default function ProfileScreen() {
   };
 
   const confirmImport = () => {
-    const res = importAppData(pendingImport);
-    setImportResult(res);
-    setImportResultOpen(true);
-    setImportConfirmOpen(false);
-    setPendingImport('');
+    void (async () => {
+      const res = await importAppData(pendingImport);
+      setImportResult(res);
+      setImportResultOpen(true);
+      setImportConfirmOpen(false);
+      setPendingImport('');
+    })();
   };
 
   // True once the user has logged anything across any tracker.

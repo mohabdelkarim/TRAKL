@@ -130,7 +130,12 @@ function TxRow({
     <SwipeableRow
       right={{ label: deleteLabel, icon: 'trash', color: colors.destructive, onTrigger: onDelete }}
     >
-      <Card padded={false} className="p-4" onPress={onPress}>
+      <Card
+        padded={false}
+        className="p-4"
+        onPress={onPress}
+        accessibilityLabel={`${categoryLabel}, ${tx.merchant}`}
+      >
         <View className="flex-row items-center">
           <View
             style={{
@@ -175,6 +180,7 @@ export default function FinanceScreen() {
   const monthlyBudget = useTrakl((s) => s.monthlyBudget);
   const setMonthlyBudget = useTrakl((s) => s.setMonthlyBudget);
   const addTransaction = useTrakl((s) => s.addTransaction);
+  const transactionsHydrated = useTrakl((s) => s.transactionsHydrated);
   const deleteTransaction = useTrakl((s) => s.deleteTransaction);
   const params = useLocalSearchParams();
   const [formOpen, setFormOpen] = useState(false);
@@ -346,7 +352,7 @@ export default function FinanceScreen() {
                           backgroundColor: cat.color,
                         }}
                       />
-                      <InterText style={{ fontSize: 13, marginLeft: 8, flex: 1 }} numberOfLines={1}>
+                      <InterText style={{ fontSize: 13, marginStart: 8, flex: 1 }} numberOfLines={1}>
                         {isCategoryKey(cat.category)
                           ? t(`categories.${cat.category}`)
                           : cat.category}
@@ -436,7 +442,11 @@ export default function FinanceScreen() {
           </View>
 
           <View className="px-5 pt-6">
-            <PrimaryButton label={t('finance.addTransaction')} onPress={() => setFormOpen(true)} />
+            <PrimaryButton
+              label={t('finance.addTransaction')}
+              onPress={() => setFormOpen(true)}
+              disabled={!transactionsHydrated}
+            />
           </View>
         </ScrollView>
       </View>

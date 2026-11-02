@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react-native';
 import { useTrakl } from '@/src/application/store';
 import { createBackup } from '@/src/application/backup';
+import { localDateKey } from '@/src/application/stats/dates';
 
 function resetData() {
   return {
@@ -91,7 +92,7 @@ describe('Store: Habits', () => {
       result.current.addHabit('Morning Run', '#f0c061');
     });
     const habitId = result.current.habits[0].id;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateKey(new Date());
 
     act(() => {
       result.current.toggleHabitToday(habitId);
@@ -176,7 +177,7 @@ describe('Store: Profile', () => {
     expect(result.current.monthlyBudget).toBe(2000);
   });
 
-  it('should import a backup and restore state', () => {
+  it('should import a backup and restore state', async () => {
     const { result } = renderHook(() => useTrakl());
 
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
@@ -196,8 +197,8 @@ describe('Store: Profile', () => {
       ],
     } as unknown as Parameters<typeof createBackup>[0]);
 
-    act(() => {
-      result.current.importAppData(backup);
+    await act(async () => {
+      await result.current.importAppData(backup);
     });
 
     expect(result.current.profile.name).toBe('Imported User');
@@ -206,12 +207,12 @@ describe('Store: Profile', () => {
     expect(result.current.transactions[0].merchant).toBe('Gift');
   });
 
-  it('should reject an invalid backup import', () => {
+  it('should reject an invalid backup import', async () => {
     const { result } = renderHook(() => useTrakl());
 
     let res: { success: boolean; message: string } = { success: true, message: '' };
-    act(() => {
-      res = result.current.importAppData('not-valid');
+    await act(async () => {
+      res = await result.current.importAppData('not-valid');
     });
 
     expect(res.success).toBe(false);

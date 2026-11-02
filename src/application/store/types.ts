@@ -162,6 +162,8 @@ export interface NotificationsSlice {
 
 export interface OnboardingSlice {
   hydrated: boolean;
+  /** True after the first vault restore pass finishes (success or empty). */
+  transactionsHydrated: boolean;
   rehydrateFailed: boolean;
   onboarded: boolean;
   enabledTrackers: TrackerKey[];
@@ -184,7 +186,7 @@ export interface BackupSlice {
   loadSampleData: () => void;
   clearAllData: () => void;
   exportAppData: () => string;
-  importAppData: (json: string) => { success: boolean; message: string };
+  importAppData: (json: string) => Promise<{ success: boolean; message: string }>;
 }
 
 export interface PreferencesSlice {

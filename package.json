@@ -56,7 +56,7 @@
     "heroui-native": "^1.0.4",
     "i18next": "^26.3.3",
     "lucide-react-native": "^0.562.0",
-    "posthog-js": "^1.360.0",
+    "posthog-js": "^1.444.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-i18next": "^17.0.8",

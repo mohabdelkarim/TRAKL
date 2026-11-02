@@ -1,4 +1,5 @@
 import type { Achievement, CustomTracker, Habit, Task } from '@/src/domain/types';
+import { localDateKey } from '@/src/application/stats/dates';
 
 export type RetentionKind = 'weekly-review' | 'streak-protection' | 'milestone' | 'inactivity';
 
@@ -47,13 +48,11 @@ export function isWithinQuietHours(
     : current >= startMinutes && current <= endMinutes;
 }
 
-function dayKey(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-
 function hasCompletionOn(habit: Habit, date: Date): boolean {
-  const key = dayKey(date);
-  return Object.entries(habit.completions ?? {}).some(([value, complete]) => complete && value.slice(0, 10) === key);
+  const key = localDateKey(date);
+  return Object.entries(habit.completions ?? {}).some(
+    ([value, complete]) => complete && localDateKey(value) === key,
+  );
 }
 
 function activeStreak(habit: Habit, now: Date): boolean {
@@ -92,7 +91,7 @@ function nextSunday(now: Date): Date {
 export function selectRetentionCandidates(input: RetentionInput): RetentionCandidate[] {
   const now = input.now ?? new Date();
   const candidates: RetentionCandidate[] = [];
-  const today = dayKey(now);
+  const today = localDateKey(now);
   const latestActivity = input.lastActivityAt ? new Date(input.lastActivityAt) : inferredLastActivity(input);
   const inactivityDays = latestActivity
     ? Math.floor((new Date(now).setHours(0, 0, 0, 0) - new Date(latestActivity).setHours(0, 0, 0, 0)) / 86400000)
@@ -118,12 +117,24 @@ export function selectRetentionCandidates(input: RetentionInput): RetentionCandi
   if (inactivityDays >= 4 && latestActivity && inactivityCooldownElapsed) {
     const date = new Date(now);
     date.setDate(date.getDate() + 1);
-    candidates.push({ kind: 'inactivity', stableId: `retention:inactivity:${dayKey(date)}`, date: dayKey(date), hour: 18, minute: 0 });
+    candidates.push({
+      kind: 'inactivity',
+      stableId: `retention:inactivity:${localDateKey(date)}`,
+      date: localDateKey(date),
+      hour: 18,
+      minute: 0,
+    });
   }
 
   if (hasActivity(input)) {
     const date = nextSunday(now);
-    candidates.push({ kind: 'weekly-review', stableId: `retention:weekly:${dayKey(date)}`, date: dayKey(date), hour: 18, minute: 0 });
+    candidates.push({
+      kind: 'weekly-review',
+      stableId: `retention:weekly:${localDateKey(date)}`,
+      date: localDateKey(date),
+      hour: 18,
+      minute: 0,
+    });
   }
 
   const chosen = new Map<string, RetentionCandidate>();

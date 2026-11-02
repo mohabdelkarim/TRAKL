@@ -10,10 +10,7 @@ import {
   WATER_GOAL,
   defaultProfile,
 } from '../types';
-import {
-  saveTransactionsSecure,
-  deleteTransactionsSecure,
-} from '@/src/infrastructure/storage/secureStorage';
+import { deleteTransactionsSecure } from '@/src/infrastructure/storage/secureStorage';
 import i18n from '@/src/infrastructure/services/i18n';
 import {
   buildCustom,
@@ -62,8 +59,9 @@ function buildSampleData() {
 
 export { buildSampleData };
 
-export const createOnboardingSlice: StateCreator<TraklState, [], [], OnboardingSlice> = (set, get) => ({
+export const createOnboardingSlice: StateCreator<TraklState, [], [], OnboardingSlice> = (set, _get) => ({
   hydrated: false,
+  transactionsHydrated: false,
   rehydrateFailed: false,
   onboarded: false,
   enabledTrackers: [...ALL_TRACKERS],

@@ -47,7 +47,7 @@ function GoalCard({ goal, onOpen }: { goal: Goal; onOpen: () => void }) {
       <View className="flex-row items-start justify-between">
         <ClashText
           weight="medium"
-          style={{ fontSize: 20, flex: 1, paddingRight: 12 }}
+          style={{ fontSize: 20, flex: 1, paddingEnd: 12 }}
           numberOfLines={2}
         >
           {goal.name}

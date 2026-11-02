@@ -1,5 +1,5 @@
 import type { Transaction } from '@/src/domain/types';
-import { dayISO } from './dates';
+import { dayStartMs } from './dates';
 
 /** Single-pass month summary — income, expenses, net, and budget left. */
 export function monthSummary(
@@ -156,15 +156,15 @@ export function recurringMonthlyTotal(transactions: Transaction[]): number {
 
 /** Expenses (sum) within the last `days` days. */
 export function expensesInWindow(transactions: Transaction[], days: number): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   return transactions
     .filter((t) => t.kind === 'expense' && +new Date(t.date) >= cutoff)
     .reduce((s, t) => s + t.amount, 0);
 }
 
 export function expensesInPrevWindow(transactions: Transaction[], days: number): number {
-  const start = +new Date(dayISO(-(days * 2 - 1)));
-  const end = +new Date(dayISO(-(days - 1)));
+  const start = dayStartMs(-(days * 2 - 1));
+  const end = dayStartMs(-(days - 1));
   return transactions
     .filter((t) => {
       if (t.kind !== 'expense') return false;

@@ -87,4 +87,5 @@ export {
   lastSevenCalendarDays,
   inDay,
   dayISO,
+  dayStartMs,
 } from './dates';

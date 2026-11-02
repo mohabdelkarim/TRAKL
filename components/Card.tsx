@@ -65,6 +65,8 @@ export function Card({
       <PressableScale
         feedback="card"
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={rest.accessibilityLabel}
         className={cn(className?.includes('flex-1') && 'flex-1')}
       >
         {content}

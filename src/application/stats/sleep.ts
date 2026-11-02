@@ -1,5 +1,5 @@
 import type { SleepEntry } from '@/src/domain/types';
-import { dayISO } from './dates';
+import { dayStartMs } from './dates';
 
 export function lastSleepHours(sleep: SleepEntry[]): number {
   if (sleep.length === 0) return 0;
@@ -21,13 +21,13 @@ export function fmtSleep(minutes: number): string {
 
 /** Count of sleep entries recorded within the last `days` days. */
 export function sleepNightsInWindow(sleep: SleepEntry[], days: number): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   return sleep.filter((e) => +new Date(e.date) >= cutoff).length;
 }
 
 /** Average sleep hours over a recent window (defaults to 7 days). */
 export function avgSleepHoursWindow(sleep: SleepEntry[], days = 7): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   const recent = sleep.filter((e) => +new Date(e.date) >= cutoff);
   if (recent.length === 0) return 0;
   const avg = recent.reduce((s, e) => s + e.durationMinutes, 0) / recent.length / 60;
@@ -41,8 +41,8 @@ export function avgSleepHoursWindow(sleep: SleepEntry[], days = 7): number {
  * directly comparable.
  */
 export function avgSleepHoursPrevWindow(sleep: SleepEntry[], days = 7): number {
-  const start = +new Date(dayISO(-(days * 2 - 1)));
-  const end = +new Date(dayISO(-(days - 1)));
+  const start = dayStartMs(-(days * 2 - 1));
+  const end = dayStartMs(-(days - 1));
   const recent = sleep.filter((e) => {
     const t = +new Date(e.date);
     return t >= start && t < end;
@@ -56,8 +56,8 @@ export function avgSleepHoursPrevWindow(sleep: SleepEntry[], days = 7): number {
 export function sleepSeries(sleep: SleepEntry[]): number[] {
   const out: number[] = [];
   for (let i = 6; i >= 0; i--) {
-    const dayStart = +new Date(dayISO(-i));
-    const dayEnd = +new Date(dayISO(-i + 1));
+    const dayStart = dayStartMs(-i);
+    const dayEnd = dayStartMs(-i + 1);
     const entry = sleep.find((e) => {
       const time = +new Date(e.date);
       return time >= dayStart && time < dayEnd;

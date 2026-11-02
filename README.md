@@ -5,7 +5,8 @@
 <div align="center">
   <p>
     Habits, money, sleep, tasks, goals, fitness, mood, water, meditation, and more,<br />
-    in one calm app. No account. No cloud. Your data stays on your device.
+    in one calm app. No account. No cloud. Your data stays on your device.<br />
+    <small>Web preview caveat: finance data is encrypted in the browser with WebCrypto; the key also lives in localStorage. PostHog recording only runs inside an allow-listed preview iframe.</small>
   </p>
 
   <p>
@@ -42,7 +43,9 @@ TRAKL is different:
 * **Yours to customize**: build your own trackers when the built-ins are not enough
 
 > [!TIP]
-> Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support.
+> Free on [App Store](https://apps.apple.com/gr/app/trakl/id6800000662) and [Google Play](https://play.google.com/store/apps/details?id=trakl.app). Available in **20 languages**, with RTL support (native builds reload after language change; Expo Go needs a manual restart).
+
+Crash reporting via Sentry is optional and opt-in (ADR-007). `@sentry/react-native` is not shipped unless you add it and set `SENTRY_DSN`.
 
 <hr />
 

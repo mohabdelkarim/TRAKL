@@ -2,8 +2,7 @@ import type { StateCreator } from 'zustand';
 
 import type { TraklState, HealthSlice } from '../types';
 import { generateId } from '@/src/shared/utils/id';
-import { dayISO } from '@/src/application/seed';
-import { WATER_GOAL } from '../types';
+import { dayStartMs } from '@/src/application/stats/dates';
 
 export const createHealthSlice: StateCreator<TraklState, [], [], HealthSlice> = (set) => ({
   sleep: [],
@@ -33,8 +32,8 @@ export const createHealthSlice: StateCreator<TraklState, [], [], HealthSlice> = 
 
   resetWaterToday: () =>
     set((s) => {
-      const start = +new Date(dayISO(0));
-      const end = +new Date(dayISO(1));
+      const start = dayStartMs(0);
+      const end = dayStartMs(1);
       return {
         water: s.water.filter((w) => {
           const time = +new Date(w.date);

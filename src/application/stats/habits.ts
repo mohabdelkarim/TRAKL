@@ -1,5 +1,5 @@
 import type { Habit } from '@/src/domain/types';
-import { localDateKey, calendarDay, dayISO } from './dates';
+import { localDateKey, calendarDay } from './dates';
 
 export function hasHabitCompletionOnDate(habit: Habit, date: Date | string): boolean {
   const dayKey = localDateKey(date);

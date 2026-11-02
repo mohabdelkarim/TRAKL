@@ -4,6 +4,18 @@ import {
   saveTransactionsSecure,
 } from '@/src/infrastructure/storage/secureStorage';
 import { useTrakl } from '@/src/application/store';
+import type { Transaction } from '@/src/domain/types';
+
+/** Merge vault and in-memory transactions by id (memory wins on conflict). */
+export function mergeTransactionsById(
+  secure: Transaction[],
+  current: Transaction[],
+): Transaction[] {
+  const byId = new Map<string, Transaction>();
+  for (const tx of secure) byId.set(tx.id, tx);
+  for (const tx of current) byId.set(tx.id, tx);
+  return [...byId.values()];
+}
 
 /**
  * Syncs transactions to encrypted secure storage whenever they change.
@@ -14,25 +26,29 @@ export function useTransactionSync(): void {
   const transactions = useTrakl((s) => s.transactions);
   const restoredRef = useRef(false);
 
-  // On mount, restore transactions from secure storage if available
   useEffect(() => {
     if (!hydrated) return;
-    void getTransactionsSecure().then((secure) => {
-      if (secure && secure.length > 0) {
-        const current = useTrakl.getState().transactions;
-        if (current.length === 0) {
-          useTrakl.setState({ transactions: secure });
+    void getTransactionsSecure()
+      .then((secure) => {
+        if (secure && secure.length > 0) {
+          const current = useTrakl.getState().transactions;
+          const merged = mergeTransactionsById(secure, current);
+          useTrakl.setState({ transactions: merged, transactionsHydrated: true });
+        } else {
+          useTrakl.setState({ transactionsHydrated: true });
         }
-      }
-      restoredRef.current = true;
-    });
+        restoredRef.current = true;
+      })
+      .catch(() => {
+        useTrakl.setState({ transactionsHydrated: true });
+        restoredRef.current = true;
+      });
   }, [hydrated]);
 
-  // Save transactions to secure storage whenever they change.
-  // Wait until the restore pass has completed to avoid overwriting
-  // secure data with empty in-memory state before it's been read.
   useEffect(() => {
     if (!hydrated || !restoredRef.current) return;
-    void saveTransactionsSecure(transactions);
+    void saveTransactionsSecure(transactions).catch((error) => {
+      if (__DEV__) console.warn('[TransactionSync] save failed:', error);
+    });
   }, [hydrated, transactions]);
 }

@@ -39,7 +39,7 @@
   <main id="main">
     <article class="content-card">
       <h1 class="page-title">Privacy Policy</h1>
-      <p class="page-meta">Last updated: September 1, 2026</p>
+      <p class="page-meta">Last updated: November 2, 2026</p>
 
       <p class="lead reveal-load">
         TRAKL is built around a simple idea: your habits, finances, sleep logs, and everything else you track
@@ -75,9 +75,11 @@
 
       <section class="legal-section reveal"><h2>Financial data</h2>
       <p>
-        Finance tracker entries are treated as sensitive. On iOS and Android, they are stored in the device
-        Keychain or Keystore through encrypted secure storage. On web, they are stored in your browser's
-        local storage. We recommend using TRAKL on web only over HTTPS.
+        Finance tracker entries are treated as sensitive. On iOS and Android, entries are encrypted with
+        AES-GCM and stored as a file in the app sandbox; the encryption key is kept in the device
+        Keychain or Keystore. On web, the same AES-GCM encryption is used via WebCrypto, with the
+        ciphertext and key both stored in the browser's localStorage (weaker than native Keychain).
+        We recommend using TRAKL on web only over HTTPS.
       </p>
 
       </section>
@@ -104,8 +106,9 @@
       <section class="legal-section reveal"><h2>Web preview analytics</h2>
       <p>
         The web version of TRAKL does not run analytics in normal use. PostHog session recording may only
-        activate when the app is loaded inside a specific preview iframe with analytics parameters in the URL.
-        Regular users browsing the app directly are not tracked this way.
+        activate when the app is loaded inside a specific preview iframe with analytics parameters in the URL,
+        and only when the analytics host is on an allow-listed PostHog domain. When recording is active,
+        all inputs and on-screen text are masked. Regular users browsing the app directly are not tracked this way.
       </p>
 
       </section>

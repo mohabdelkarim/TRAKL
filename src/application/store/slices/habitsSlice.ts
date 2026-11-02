@@ -2,7 +2,7 @@ import type { StateCreator } from 'zustand';
 
 import type { TraklState, HabitsSlice } from '../types';
 import { generateId } from '@/src/shared/utils/id';
-import { dayISO } from '@/src/application/seed';
+import { dayISO, localDateKey } from '@/src/application/stats/dates';
 import { maybeArmRatePrompt } from '@/src/shared/ratePrompt';
 
 export const createHabitsSlice: StateCreator<TraklState, [], [], HabitsSlice> = (set) => ({
@@ -13,14 +13,14 @@ export const createHabitsSlice: StateCreator<TraklState, [], [], HabitsSlice> = 
       let completedNow = false;
       const habits = s.habits.map((h) => {
         if (h.id !== hid) return h;
-        const today = dayISO(0).slice(0, 10);
+        const today = dayISO(0);
         const completions = { ...h.completions };
         const alreadyDone = Object.entries(completions).some(
-          ([key, completed]) => completed && key.slice(0, 10) === today,
+          ([key, completed]) => completed && localDateKey(key) === today,
         );
         if (alreadyDone) {
           Object.keys(completions).forEach((key) => {
-            if (key.slice(0, 10) === today) delete completions[key];
+            if (localDateKey(key) === today) delete completions[key];
           });
         } else {
           completions[today] = true;

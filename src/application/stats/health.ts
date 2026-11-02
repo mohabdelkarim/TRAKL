@@ -5,13 +5,13 @@ import type {
   WeightEntry,
   Workout,
 } from '@/src/domain/types';
-import { dayISO, inDay } from './dates';
+import { dayStartMs, inDay } from './dates';
 
 // Mood
 
 /** Average mood (1-5) over the last `days`, or 0 when no entries. */
 export function avgMood(mood: MoodEntry[], days = 7): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   const recent = mood.filter((m) => +new Date(m.date) >= cutoff);
   if (recent.length === 0) return 0;
   return Math.round((recent.reduce((s, m) => s + m.mood, 0) / recent.length) * 10) / 10;
@@ -63,7 +63,7 @@ export function latestWeight(weight: WeightEntry[]): number | null {
 /** Signed change between the latest weight and the oldest within `days`. */
 export function weightChange(weight: WeightEntry[], days = 30): number | null {
   if (weight.length < 2) return null;
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   const window = weight.filter((w) => +new Date(w.date) >= cutoff);
   const series = (window.length >= 2 ? window : weight).sort(
     (a, b) => +new Date(a.date) - +new Date(b.date),
@@ -89,7 +89,7 @@ export function meditationToday(sessions: MeditationSession[]): number {
 
 /** Total meditation minutes over the last `days`. */
 export function meditationMinutes(sessions: MeditationSession[], days = 7): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   return sessions
     .filter((m) => +new Date(m.date) >= cutoff)
     .reduce((s, m) => s + m.durationMinutes, 0);
@@ -122,8 +122,8 @@ export function meditationSeries(sessions: MeditationSession[]): number[] {
 export function workoutSeries(workouts: Workout[]): number[] {
   const out: number[] = [];
   for (let i = 6; i >= 0; i--) {
-    const dayStart = +new Date(dayISO(-i));
-    const dayEnd = +new Date(dayISO(-i + 1));
+    const dayStart = dayStartMs(-i);
+    const dayEnd = dayStartMs(-i + 1);
     out.push(
       workouts.filter((w) => {
         const time = +new Date(w.date);

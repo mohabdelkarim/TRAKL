@@ -16,17 +16,12 @@ import type {
   WeightEntry,
   Workout,
 } from '@/src/domain/types';
+import { dayISO } from '@/src/application/stats/dates';
+
+export { dayISO };
 
 /** A minimal translate function compatible with i18next's `t`. */
 type T = (key: ParseKeys) => string;
-
-/** ISO date (no time) offset from today by `days`. */
-export function dayISO(offset = 0): string {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + offset);
-  return d.toISOString();
-}
 
 function isoAt(offset: number, h: number, m: number): string {
   const d = new Date();
@@ -100,7 +95,7 @@ function habitCompletions(pattern: number[]): Record<string, boolean> {
   // pattern: offsets (negative) that are completed within the last 30 days
   const map: Record<string, boolean> = {};
   pattern.forEach((o) => {
-    map[dayISO(o).slice(0, 10)] = true;
+    map[dayISO(o)] = true;
   });
   return map;
 }

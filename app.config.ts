@@ -4,6 +4,10 @@ type ExpoPlugins = NonNullable<ExpoConfig['plugins']>;
 
 const CURRENT_VERSION_CODE = 22;
 
+const PLACEHOLDER_BUNDLE = 'com.example.trakl';
+const PLACEHOLDER_OWNER = 'your-expo-account';
+const PLACEHOLDER_EAS = '00000000-0000-0000-0000-000000000000';
+
 function requireEnv(name: string, fallback: string): string {
   // oxlint-disable-next-line expo/no-dynamic-env-var
   const value = process.env[name];
@@ -17,14 +21,23 @@ function isFlagEnabled(name: string): boolean {
   return ['1', 'true', 'yes'].includes(value.trim().toLowerCase());
 }
 
+function isReleaseBuild(): boolean {
+  // oxlint-disable-next-line expo/no-dynamic-env-var
+  const profile = process.env.EAS_BUILD_PROFILE ?? '';
+  // oxlint-disable-next-line expo/no-dynamic-env-var
+  return profile === 'production' || process.env.TRAKL_REQUIRE_RELEASE_IDS === '1';
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   // Keep expo-dev-client out of default Expo Go sessions. Opt in with TRAKL_DEV_CLIENT=1.
   const includeDevClient = isFlagEnabled('TRAKL_DEV_CLIENT');
   const nativePlugins: ExpoPlugins = includeDevClient ? ['expo-dev-client'] : [];
 
   const appVersion = requireEnv('TRAKL_APP_VERSION', '1.0.9');
-  const androidPackage = requireEnv('TRAKL_ANDROID_PACKAGE', 'com.example.trakl');
-  const iosBundleId = requireEnv('TRAKL_IOS_BUNDLE_ID', 'com.example.trakl');
+  const androidPackage = requireEnv('TRAKL_ANDROID_PACKAGE', PLACEHOLDER_BUNDLE);
+  const iosBundleId = requireEnv('TRAKL_IOS_BUNDLE_ID', PLACEHOLDER_BUNDLE);
+  const expoOwner = requireEnv('TRAKL_EXPO_OWNER', PLACEHOLDER_OWNER);
+  const easProjectId = requireEnv('TRAKL_EAS_PROJECT_ID', PLACEHOLDER_EAS);
   const androidVersionCode = Number(
     requireEnv('TRAKL_ANDROID_VERSION_CODE', String(CURRENT_VERSION_CODE)),
   );
@@ -35,9 +48,21 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     );
   }
 
+  if (isReleaseBuild()) {
+    if (androidPackage === PLACEHOLDER_BUNDLE || iosBundleId === PLACEHOLDER_BUNDLE) {
+      throw new Error('Release build requires TRAKL_ANDROID_PACKAGE / TRAKL_IOS_BUNDLE_ID.');
+    }
+    if (expoOwner === PLACEHOLDER_OWNER) {
+      throw new Error('Release build requires TRAKL_EXPO_OWNER.');
+    }
+    if (easProjectId === PLACEHOLDER_EAS) {
+      throw new Error('Release build requires TRAKL_EAS_PROJECT_ID.');
+    }
+  }
+
   return {
     ...config,
-    owner: requireEnv('TRAKL_EXPO_OWNER', 'your-expo-account'),
+    owner: expoOwner,
     name: 'TRAKL',
     slug: 'trakl',
     version: appVersion,
@@ -55,6 +80,26 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       supportsTablet: true,
       bundleIdentifier: iosBundleId,
+      privacyManifests: {
+        NSPrivacyAccessedAPITypes: [
+          {
+            NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryUserDefaults',
+            NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+          },
+          {
+            NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryFileTimestamp',
+            NSPrivacyAccessedAPITypeReasons: ['C617.1'],
+          },
+          {
+            NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryDiskSpace',
+            NSPrivacyAccessedAPITypeReasons: ['E174.1'],
+          },
+          {
+            NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategorySystemBootTime',
+            NSPrivacyAccessedAPITypeReasons: ['35F9.1'],
+          },
+        ],
+      },
     },
     android: {
       package: androidPackage,
@@ -62,9 +107,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       appStoreAppId: process.env.TRAKL_APP_STORE_APP_ID ?? '6800000662',
-      playStorePackage: androidPackage === 'com.example.trakl' ? 'trakl.app' : androidPackage,
+      playStorePackage: androidPackage === PLACEHOLDER_BUNDLE ? 'trakl.app' : androidPackage,
       eas: {
-        projectId: requireEnv('TRAKL_EAS_PROJECT_ID', '00000000-0000-0000-0000-000000000000'),
+        projectId: easProjectId,
       },
     },
     plugins: [

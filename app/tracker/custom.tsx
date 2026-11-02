@@ -344,7 +344,7 @@ export default function CustomBuilderScreen() {
                       <InterText style={{ fontSize: 14 }}>{t('custom.time')}</InterText>
                       <InterText
                         weight="medium"
-                        style={{ fontSize: 14, marginLeft: 'auto' }}
+                        style={{ fontSize: 14, marginStart: 'auto' }}
                         color={colors.text}
                       >
                         {reminderTime}

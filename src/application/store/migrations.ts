@@ -1,4 +1,5 @@
 import { RETENTION_DEFAULTS, WATER_GOAL } from './types';
+import { migrateHabitCompletions } from '@/src/application/stats/dates';
 
 /**
  * Structured, versioned migration framework.
@@ -248,7 +249,27 @@ const backfillAsoPrefs: MigrationStep = {
   },
 };
 
-// Ordered migration pipeline
+/** One-shot remap of UTC-shifted habit completion keys to local yyyy-MM-dd. */
+const normalizeHabitCompletionKeys: MigrationStep = {
+  name: 'habitCompletionLocalDates',
+  fn: (record) => {
+    if (!Array.isArray(record.habits)) return record;
+    return {
+      ...record,
+      habits: record.habits.map((h: unknown) => {
+        if (!h || typeof h !== 'object') return h;
+        const habit = { ...(h as Record<string, unknown>) };
+        if (!habit.completions || typeof habit.completions !== 'object') return habit;
+        habit.completions = migrateHabitCompletions(
+          habit.completions as Record<string, boolean>,
+        );
+        return habit;
+      }),
+    };
+  },
+};
+
+// Ordered migration pipeline (idempotent steps)
 
 const MIGRATION_STEPS: MigrationStep[] = [
   backfillCustomTrackerLogs,
@@ -273,12 +294,16 @@ const MIGRATION_STEPS: MigrationStep[] = [
  * Never throws — on error, returns the original persisted object
  * so the user's real data is preserved.
  */
-export function migrate(persisted: unknown, _version: number): unknown {
+export function migrate(persisted: unknown, version: number): unknown {
   try {
     if (!persisted || typeof persisted !== 'object') return persisted;
     let record: MigrationRecord = { ...(persisted as Record<string, unknown>) };
     for (const step of MIGRATION_STEPS) {
       record = step.fn(record);
+    }
+    // Non-idempotent: only when upgrading from store versions that used UTC-shifted keys.
+    if (version < 13) {
+      record = normalizeHabitCompletionKeys.fn(record);
     }
     return record;
   } catch {

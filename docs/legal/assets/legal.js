@@ -16,7 +16,7 @@
     document.documentElement.setAttribute('data-theme', theme);
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch (e) {
+    } catch (_e) {
       /* ignore */
     }
 

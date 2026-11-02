@@ -12,7 +12,9 @@ import { buildSampleData } from './settingsSlice';
 export const createBackupSlice: StateCreator<TraklState, [], [], BackupSlice> = (set, get) => ({
   loadSampleData: () => {
     const data = buildSampleData();
-    void saveTransactionsSecure(data.transactions);
+    void Promise.resolve(saveTransactionsSecure(data.transactions)).catch((error) => {
+      if (__DEV__) console.warn('[Backup] Failed to persist sample transactions:', error);
+    });
     set({
       ...data,
       retentionNotifiedAchievementIds: data.achievements
@@ -22,26 +24,29 @@ export const createBackupSlice: StateCreator<TraklState, [], [], BackupSlice> = 
   },
 
   clearAllData: () => {
-    void deleteTransactionsSecure();
+    void Promise.resolve(deleteTransactionsSecure()).catch((error) => {
+      if (__DEV__) console.warn('[Backup] Failed to clear secure transactions:', error);
+    });
     set({ ...EMPTY_DATA, pinnedTrackers: [], monthlyBudget: 0 });
   },
 
   exportAppData: () => createBackup(get()),
 
-  importAppData: (json) => {
+  importAppData: async (json) => {
     const result = parseBackup(json);
     if (!result.ok) {
       return { success: false, message: result.error };
     }
     const data = result.data;
     try {
-      saveTransactionsSecure(data.transactions);
+      await saveTransactionsSecure(data.transactions);
     } catch {
       return { success: false, message: 'Failed to save transactions securely.' };
     }
     set({
       onboarded: true,
       hydrated: true,
+      transactionsHydrated: true,
       rehydrateFailed: false,
       enabledTrackers: data.enabledTrackers,
       pinnedTrackers: data.pinnedTrackers,

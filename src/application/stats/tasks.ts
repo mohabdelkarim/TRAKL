@@ -1,5 +1,5 @@
 import type { Task } from '@/src/domain/types';
-import { dayISO } from './dates';
+import { dayStartMs } from './dates';
 
 export function tasksDueToday(tasks: Task[]): number {
   const today = new Date();
@@ -16,7 +16,7 @@ export function tasksDueToday(tasks: Task[]): number {
  * done before completion tracking existed.
  */
 export function tasksDoneInWindow(tasks: Task[], days: number): number {
-  const cutoff = +new Date(dayISO(-(days - 1)));
+  const cutoff = dayStartMs(-(days - 1));
   return tasks.filter((t) => {
     if (!t.done) return false;
     const when = +new Date(t.completedAt ?? t.due);
@@ -83,8 +83,8 @@ export function groupTasks(tasks: Task[], sort: TaskSort): TaskGroup[] {
 export function taskSeries(tasks: Task[]): number[] {
   const out: number[] = [];
   for (let i = 6; i >= 0; i--) {
-    const dayStart = +new Date(dayISO(-i));
-    const dayEnd = +new Date(dayISO(-i + 1));
+    const dayStart = dayStartMs(-i);
+    const dayEnd = dayStartMs(-i + 1);
     out.push(
       tasks.filter((t) => {
         if (!t.done) return false;
