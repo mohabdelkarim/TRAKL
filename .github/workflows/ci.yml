@@ -57,11 +57,13 @@ jobs:
         run: npm test -- --coverage --coverageReporters=json-summary
 
       - name: Notify Slack on failure
-        if: failure() && secrets.SLACK_WEBHOOK_ALERTS != ''
+        if: failure()
         continue-on-error: true
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ALERTS }}
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_ALERTS }}
+          webhook: ${{ env.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             text: "CI failed: ${{ github.repository }} / ${{ github.workflow }}"
@@ -69,4 +71,4 @@ jobs:
               - type: section
                 text:
                   type: mrkdwn
-                  text: "*${{ github.repository }}* — `${{ github.workflow }}` failed\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+                  text: "*${{ github.repository }}* CI `${{ github.workflow }}` failed\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
