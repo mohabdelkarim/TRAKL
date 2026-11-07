@@ -181,6 +181,8 @@ export default function FinanceScreen() {
   const setMonthlyBudget = useTrakl((s) => s.setMonthlyBudget);
   const addTransaction = useTrakl((s) => s.addTransaction);
   const transactionsHydrated = useTrakl((s) => s.transactionsHydrated);
+  const transactionsPersistError = useTrakl((s) => s.transactionsPersistError);
+  const clearTransactionsPersistError = useTrakl((s) => s.clearTransactionsPersistError);
   const deleteTransaction = useTrakl((s) => s.deleteTransaction);
   const params = useLocalSearchParams();
   const [formOpen, setFormOpen] = useState(false);
@@ -226,6 +228,22 @@ export default function FinanceScreen() {
           contentContainerStyle={{ paddingBottom: 28 }}
           showsVerticalScrollIndicator={false}
         >
+          {transactionsPersistError ? (
+            <View className="px-5 pt-2">
+              <PressableScale
+                feedback="card"
+                onPress={clearTransactionsPersistError}
+                accessibilityRole="button"
+                accessibilityLabel="Dismiss save error"
+                className="rounded-2xl p-3"
+                style={{ backgroundColor: withAlpha(colors.destructive, 0.12) }}
+              >
+                <InterText color={colors.destructive} style={{ fontSize: 13 }}>
+                  {transactionsPersistError}
+                </InterText>
+              </PressableScale>
+            </View>
+          ) : null}
           <View className="px-5 pt-2">
             <Card elevated className="p-6">
               <Caption>{t('finance.netBalance')}</Caption>

@@ -108,6 +108,7 @@ describe('Persistence: partialize config', () => {
 
     expect(partialized).not.toHaveProperty('hydrated');
     expect(partialized).not.toHaveProperty('rehydrateFailed');
+    expect(partialized).not.toHaveProperty('transactionsPersistError');
   });
 });
 

@@ -153,6 +153,7 @@ export default function RootLayout() {
     if (Platform.OS === 'web') {
       initPostHog();
     } else {
+      // Opt-in crash reporting: needs SENTRY_DSN and @sentry/react-native installed.
       void initSentry();
     }
   }, []);

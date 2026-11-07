@@ -88,9 +88,12 @@ export { ALL_TRACKERS, MONTHLY_BUDGET };
 export interface FinanceSlice {
   transactions: Transaction[];
   monthlyBudget: number;
+  /** Set when the encrypted vault write fails; ephemeral (not persisted). */
+  transactionsPersistError: string | null;
   addTransaction: (tx: Omit<Transaction, 'id'>) => void;
   deleteTransaction: (id: string) => void;
   setMonthlyBudget: (budget: number) => void;
+  clearTransactionsPersistError: () => void;
 }
 
 export interface HabitsSlice {

@@ -79,7 +79,7 @@ describe('Security: Transactions Storage', () => {
     expect(newState.transactions[0].merchant).toBe('Test Store');
   });
 
-  it('should call saveTransactionsSecure when adding a transaction', () => {
+  it('addTransaction updates memory only (vault write is useTransactionSync)', () => {
     useTrakl.getState().addTransaction({
       kind: 'expense',
       merchant: 'Test',
@@ -88,14 +88,11 @@ describe('Security: Transactions Storage', () => {
       date: '2024-01-01',
     });
 
-    expect(saveTransactionsSecure).toHaveBeenCalledTimes(1);
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const savedTx = saveTransactionsSecure.mock.calls[0][0] as Array<{ merchant: string }>;
-    expect(savedTx).toHaveLength(1);
-    expect(savedTx[0].merchant).toBe('Test');
+    expect(saveTransactionsSecure).not.toHaveBeenCalled();
+    expect(useTrakl.getState().transactions[0]?.merchant).toBe('Test');
   });
 
-  it('should call saveTransactionsSecure when deleting a transaction', () => {
+  it('deleteTransaction updates memory only (vault write is useTransactionSync)', () => {
     useTrakl.setState({
       transactions: [
         {
@@ -111,8 +108,8 @@ describe('Security: Transactions Storage', () => {
 
     useTrakl.getState().deleteTransaction('tx-del-1');
 
-    expect(saveTransactionsSecure).toHaveBeenCalledTimes(1);
-    expect(saveTransactionsSecure.mock.calls[0][0]).toHaveLength(0);
+    expect(saveTransactionsSecure).not.toHaveBeenCalled();
+    expect(useTrakl.getState().transactions).toHaveLength(0);
   });
 
   it('should call deleteTransactionsSecure on clearAllData', () => {

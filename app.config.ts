@@ -48,6 +48,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     );
   }
 
+  const appStoreAppId = process.env.TRAKL_APP_STORE_APP_ID ?? '6800000662';
+
   if (isReleaseBuild()) {
     if (androidPackage === PLACEHOLDER_BUNDLE || iosBundleId === PLACEHOLDER_BUNDLE) {
       throw new Error('Release build requires TRAKL_ANDROID_PACKAGE / TRAKL_IOS_BUNDLE_ID.');
@@ -57,6 +59,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     }
     if (easProjectId === PLACEHOLDER_EAS) {
       throw new Error('Release build requires TRAKL_EAS_PROJECT_ID.');
+    }
+    if (!process.env.TRAKL_APP_STORE_APP_ID?.trim()) {
+      throw new Error('Release build requires TRAKL_APP_STORE_APP_ID.');
     }
   }
 
@@ -106,7 +111,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       versionCode: androidVersionCode,
     },
     extra: {
-      appStoreAppId: process.env.TRAKL_APP_STORE_APP_ID ?? '6800000662',
+      appStoreAppId,
       playStorePackage: androidPackage === PLACEHOLDER_BUNDLE ? 'trakl.app' : androidPackage,
       eas: {
         projectId: easProjectId,

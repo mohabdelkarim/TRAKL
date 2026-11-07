@@ -20,6 +20,7 @@ export function mergeTransactionsById(
 /**
  * Syncs transactions to encrypted secure storage whenever they change.
  * Runs after the store has hydrated to avoid overwriting persisted data.
+ * This is the single writer for the vault (financeSlice only mutates memory).
  */
 export function useTransactionSync(): void {
   const hydrated = useTrakl((s) => s.hydrated);
@@ -40,15 +41,27 @@ export function useTransactionSync(): void {
         restoredRef.current = true;
       })
       .catch(() => {
-        useTrakl.setState({ transactionsHydrated: true });
+        useTrakl.setState({
+          transactionsHydrated: true,
+          transactionsPersistError: 'Failed to load transactions from secure storage.',
+        });
         restoredRef.current = true;
       });
   }, [hydrated]);
 
   useEffect(() => {
     if (!hydrated || !restoredRef.current) return;
-    void saveTransactionsSecure(transactions).catch((error) => {
-      if (__DEV__) console.warn('[TransactionSync] save failed:', error);
-    });
+    void saveTransactionsSecure(transactions)
+      .then(() => {
+        if (useTrakl.getState().transactionsPersistError) {
+          useTrakl.setState({ transactionsPersistError: null });
+        }
+      })
+      .catch((error) => {
+        if (__DEV__) console.warn('[TransactionSync] save failed:', error);
+        useTrakl.setState({
+          transactionsPersistError: 'Failed to save transactions securely.',
+        });
+      });
   }, [hydrated, transactions]);
 }
