@@ -94,4 +94,20 @@ describe('transaction vault', () => {
     const loaded = await getTransactionsVault();
     expect(loaded).toHaveLength(500);
   });
+
+  it('round-trips when global crypto is missing (Hermes / Expo Go)', async () => {
+    const previous = globalThis.crypto;
+    // oxlint-disable-next-line typescript/no-explicit-any
+    delete (globalThis as { crypto?: Crypto }).crypto;
+    try {
+      await saveTransactionsVault(sample);
+      const loaded = await getTransactionsVault();
+      expect(loaded).toEqual(sample);
+    } finally {
+      Object.defineProperty(globalThis, 'crypto', {
+        configurable: true,
+        value: previous,
+      });
+    }
+  });
 });

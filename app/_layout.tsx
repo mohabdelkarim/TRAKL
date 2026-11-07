@@ -11,7 +11,8 @@ import {
 } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { HeroUINativeProvider } from 'heroui-native';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
+import Constants from 'expo-constants';
+import { isRunningInExpoGo } from 'expo';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -132,8 +133,8 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
-    if (!(__DEV__ && Platform.OS !== 'web' && !isExpoGo)) return undefined;
+    // Expo Go has no ExpoDevMenu native module; StoreClient alone is unreliable.
+    if (!(__DEV__ && Platform.OS !== 'web') || isRunningInExpoGo()) return undefined;
 
     let DevClient: typeof import('expo-dev-client') | null = null;
     try {
@@ -143,8 +144,12 @@ export default function RootLayout() {
     }
     if (!DevClient) return undefined;
     const timer = setTimeout(() => {
-      DevClient?.closeMenu();
-      DevClient?.hideMenu();
+      try {
+        DevClient?.closeMenu();
+        DevClient?.hideMenu();
+      } catch {
+        // Native ExpoDevMenu missing (Expo Go / StoreClient without native module)
+      }
     }, 1000);
     return () => clearTimeout(timer);
   }, []);

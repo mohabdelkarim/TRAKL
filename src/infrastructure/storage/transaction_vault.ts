@@ -1,5 +1,7 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as SecureStore from 'expo-secure-store';
+import { getRandomBytes } from 'expo-crypto';
+import { gcm } from '@noble/ciphers/aes';
 import { Platform } from 'react-native';
 import type { Transaction } from '@/src/domain/types';
 
@@ -10,11 +12,13 @@ const WEB_KEY_STORAGE = 'trakl_tx_vault_key_v1';
 const FILE_NAME = 'trakl_transactions_vault_v1.enc';
 const PREFIX = 'trakl1.';
 
-function getSubtle(): SubtleCrypto {
-  if (typeof crypto === 'undefined' || !crypto.subtle) {
-    throw new Error('Web Crypto API is unavailable');
+/** Hermes has no global `crypto`; use globalThis + expo-crypto fallback. */
+function randomBytes(byteLength: number): Uint8Array {
+  const webCrypto = globalThis.crypto;
+  if (webCrypto && typeof webCrypto.getRandomValues === 'function') {
+    return webCrypto.getRandomValues(new Uint8Array(byteLength));
   }
-  return crypto.subtle;
+  return getRandomBytes(byteLength);
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
@@ -36,11 +40,6 @@ function base64ToBytes(value: string): Uint8Array {
   return out;
 }
 
-async function importAesKey(raw: Uint8Array): Promise<CryptoKey> {
-  const keyBytes = raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength) as ArrayBuffer;
-  return getSubtle().importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
-}
-
 async function loadOrCreateRawKey(): Promise<Uint8Array> {
   if (Platform.OS === 'web') {
     if (typeof localStorage === 'undefined') {
@@ -48,25 +47,24 @@ async function loadOrCreateRawKey(): Promise<Uint8Array> {
     }
     const existing = localStorage.getItem(WEB_KEY_STORAGE);
     if (existing) return base64ToBytes(existing);
-    const raw = crypto.getRandomValues(new Uint8Array(32));
+    const raw = randomBytes(32);
     localStorage.setItem(WEB_KEY_STORAGE, bytesToBase64(raw));
     return raw;
   }
 
   const existing = await SecureStore.getItemAsync(VAULT_KEY_ID);
   if (existing) return base64ToBytes(existing);
-  const raw = crypto.getRandomValues(new Uint8Array(32));
+  const raw = randomBytes(32);
   await SecureStore.setItemAsync(VAULT_KEY_ID, bytesToBase64(raw));
   return raw;
 }
 
 async function encryptJson(json: string): Promise<string> {
   const rawKey = await loadOrCreateRawKey();
-  const key = await importAesKey(rawKey);
-  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const iv = randomBytes(12);
   const encoded = new TextEncoder().encode(json);
-  const cipherBuf = await getSubtle().encrypt({ name: 'AES-GCM', iv }, key, encoded);
-  const cipher = new Uint8Array(cipherBuf);
+  // Pure-JS AES-GCM (same wire format as WebCrypto: ciphertext || tag)
+  const cipher = gcm(rawKey, iv).encrypt(encoded);
   const packed = new Uint8Array(iv.length + cipher.length);
   packed.set(iv, 0);
   packed.set(cipher, iv.length);
@@ -82,9 +80,8 @@ async function decryptPayload(payload: string): Promise<string> {
   const iv = packed.slice(0, 12);
   const cipher = packed.slice(12);
   const rawKey = await loadOrCreateRawKey();
-  const key = await importAesKey(rawKey);
-  const plainBuf = await getSubtle().decrypt({ name: 'AES-GCM', iv }, key, cipher);
-  return new TextDecoder().decode(plainBuf);
+  const plain = gcm(rawKey, iv).decrypt(cipher);
+  return new TextDecoder().decode(plain);
 }
 
 function vaultFileUri(): string {
@@ -217,4 +214,3 @@ export async function deleteTransactionsVault(): Promise<void> {
   }
   await deleteLegacyPlaintext();
 }
-

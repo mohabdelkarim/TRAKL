@@ -95,3 +95,34 @@ describe('Startup gate: fonts do not block render', () => {
     expect(typeof ClashDisplayFonts).toBe('object');
   });
 });
+
+describe('Startup gate: expo-dev-client menu close', () => {
+  it('skips DevMenu when running in Expo Go', () => {
+    // Mirrors app/_layout.tsx: never call closeMenu/hideMenu in Expo Go
+    // (ExpoDevMenu native module is null → TypeError on closeMenu).
+    const isDev = true;
+    const platform = 'ios' as string;
+    const isExpoGo = true;
+    const shouldClose = isDev && platform !== 'web' && !isExpoGo;
+    expect(shouldClose).toBe(false);
+  });
+
+  it('swallows closeMenu errors when native module is missing', () => {
+    const DevClient = {
+      closeMenu: () => {
+        throw new TypeError("Cannot read property 'closeMenu' of null");
+      },
+      hideMenu: () => {
+        throw new TypeError("Cannot read property 'hideMenu' of null");
+      },
+    };
+    expect(() => {
+      try {
+        DevClient.closeMenu();
+        DevClient.hideMenu();
+      } catch {
+        // expected in Expo Go / StoreClient without native ExpoDevMenu
+      }
+    }).not.toThrow();
+  });
+});

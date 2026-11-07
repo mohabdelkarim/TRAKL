@@ -16,6 +16,14 @@ jest.mock('expo-secure-store', () => ({
   deleteItemAsync: jest.fn(() => Promise.resolve()),
 }));
 
+jest.mock('expo-crypto', () => ({
+  getRandomBytes: jest.fn((n) => {
+    const out = new Uint8Array(n);
+    for (let i = 0; i < n; i++) out[i] = (i * 17 + 3) % 256;
+    return out;
+  }),
+}));
+
 const mockFsStore = new Map();
 jest.mock('expo-file-system/legacy', () => ({
   documentDirectory: 'file:///mock-docs/',
